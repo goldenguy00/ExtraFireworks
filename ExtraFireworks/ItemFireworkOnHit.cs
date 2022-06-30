@@ -36,6 +36,11 @@ public class ItemFireworkOnHit : FireworkItem
     {
         return ItemTiers.White;
     }
+    
+    public override ItemTag[] GetTags()
+    {
+        return new[] { ItemTag.Damage };
+    }
 
     public override float GetModelScale()
     {
@@ -54,7 +59,7 @@ public class ItemFireworkOnHit : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Whenever you <style=cIsDamage>hit an enemy</style>, you have a <style=cIsUtility>{scaler.Base:0}% chance</style> to spawn {numFireworks.Value} fireworks.";
+        return $"Whenever you <style=cIsDamage>hit an enemy</style>, you have a <style=cIsDamage>{scaler.Base:0}%</style> <style=cStack>(+{scaler.Scaling}% per stack)</style> <style=cIsDamage>chance</style> to proc <style=cIsDamage>{numFireworks.Value} fireworks</style>.";
     }
 
     public override string GetItemLore()

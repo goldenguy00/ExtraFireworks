@@ -43,6 +43,11 @@ public class ItemFireworkDaisy : FireworkItem
     {
         return ItemTiers.Green;
     }
+    
+    public override ItemTag[] GetTags()
+    {
+        return new[] { ItemTag.Damage, ItemTag.HoldoutZoneRelated, ItemTag.AIBlacklist };
+    }
 
     public override float GetModelScale()
     {
@@ -56,12 +61,12 @@ public class ItemFireworkDaisy : FireworkItem
 
     public override string GetItemPickup()
     {
-        return "Spawns waves of fireworks during the teleporter event";
+        return "Periodically releases waves of fireworks during the teleporter event";
     }
 
     public override string GetItemDescription()
     {
-        return $"Periodically spawns waves of {fireworksPerWave.Value} fireworks during the teleporter event";
+        return $"Release a barrage of <style=cIsDamage>{fireworksPerWave.Value} fireworks</style> during a teleporter or holdout-zone event. Occurs <style=cIsDamage>2</style> <style=cStack>(+1 per stack)</style> times.";
     }
 
     public override string GetItemLore()

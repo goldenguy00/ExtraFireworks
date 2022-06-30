@@ -44,6 +44,12 @@ public class ItemFireworkDrones : FireworkItem
     {
         return ItemTiers.Red;
     }
+    
+    public override ItemTag[] GetTags()
+    {
+        return new[] { ItemTag.Damage };
+    }
+
 
     public override float GetModelScale()
     {
@@ -62,7 +68,7 @@ public class ItemFireworkDrones : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Every {fireworkInterval.Value} seconds, each non-player ally spawns {scaler.Base} fireworks <style=cStack>(+{scaler.Scaling} per stack)</style>";
+        return $"Every <style=cIsDamage>{fireworkInterval.Value} seconds</style>, all non-player allies spawn <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>";
     }
 
     public override string GetItemLore()

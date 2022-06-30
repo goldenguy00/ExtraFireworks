@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
@@ -25,6 +26,7 @@ public abstract class FireworkItem
     public abstract string GetPickupModelName();
     public abstract string GetPickupIconName();
     public abstract ItemTiers GetTier();
+    public abstract ItemTag[] GetTags();
     public abstract float GetModelScale();
     public abstract string GetItemName();
     public abstract string GetItemPickup();
@@ -84,6 +86,7 @@ public abstract class FireworkItem
         Item._itemTierDef = Addressables.LoadAssetAsync<ItemTierDef>($"RoR2/Base/Common/{GetTier()}Def.asset").WaitForCompletion();
         Item.canRemove = true;
         Item.hidden = false;
+        Item.tags = GetTags();
 
         if (bundle != null)
         {

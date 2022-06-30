@@ -35,6 +35,11 @@ public class ItemFireworkOnKill : FireworkItem
         return ItemTiers.Green;
     }
 
+    public override ItemTag[] GetTags()
+    {
+        return new[] { ItemTag.Damage, ItemTag.OnKillEffect };
+    }
+    
     public override float GetModelScale()
     {
         return .6f;
@@ -52,7 +57,7 @@ public class ItemFireworkOnKill : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Whenever you <style=cIsDamage>kill an enemy</style>, it explodes into a barrage of {scaler.Base} fireworks <style=cStack>(+{scaler.Scaling} per stack)</style>.";
+        return $"Whenever you <style=cIsDamage>kill an enemy</style>, it explodes into a barrage of <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>.";
     }
 
     public override string GetItemLore()

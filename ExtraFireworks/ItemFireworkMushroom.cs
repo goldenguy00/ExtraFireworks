@@ -44,6 +44,11 @@ public class ItemFireworkMushroom : FireworkItem
     {
         return ItemTiers.White;
     }
+    
+    public override ItemTag[] GetTags()
+    {
+        return new[] { ItemTag.Damage, ItemTag.AIBlacklist };
+    }
 
     public override float GetModelScale()
     {
@@ -57,12 +62,12 @@ public class ItemFireworkMushroom : FireworkItem
 
     public override string GetItemPickup()
     {
-        return "Spawns fireworks when you stand still";
+        return "Become a firework launcher when you stand still.";
     }
 
     public override string GetItemDescription()
     {
-        return $"Whenever you stand still, fire a stream of fireworks starting at {scaler.GetValue(1):0.00} speed. Fire speed increases hyperbolically with number of stacks to {scaler.Base}x interactable/default speed.</style>.";
+        return $"Whenever you <style=cIsUtility>stand still</style>, fire a stream of fireworks starting at about <style=cIsDamage>{scaler.GetValue(1) * 100:0}%</style> speed. <style=cStack>Fire speed increases hyperbolically</style> with number of stacks, starting with <style=cStack>+{(scaler.GetValue(2) - scaler.GetValue(1)) * 100:0}%</style> up to <style=cIsDamage>{scaler.Base}x</style> interactable/default speed.";
     }
 
     public override string GetItemLore()

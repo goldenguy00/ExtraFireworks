@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using RoR2;
 using UnityEngine;
 
 namespace ExtraFireworks;
@@ -35,6 +36,11 @@ public class ItemFireworkAbility : FireworkItem
         return ItemTiers.Green;
     }
 
+    public override ItemTag[] GetTags()
+    {
+        return new[] { ItemTag.Damage };
+    }
+
     public override float GetModelScale()
     {
         return .4f;
@@ -47,12 +53,12 @@ public class ItemFireworkAbility : FireworkItem
 
     public override string GetItemPickup()
     {
-        return "Spawn fireworks whenever you use abilities";
+        return "Using abilities now spawns fireworks";
     }
 
     public override string GetItemDescription()
     {
-        return $"Whenever you use an ability, spawn {scaler.Base} firework <style=cStack>(+{scaler.Scaling} per stack)</style>.";
+        return $"Whenever you use an <style=cIsUtility>non-primary ability</style>, spawn <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>.";
     }
 
     public override string GetItemLore()
