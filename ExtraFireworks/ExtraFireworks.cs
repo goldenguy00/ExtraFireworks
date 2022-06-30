@@ -50,9 +50,11 @@ namespace ExtraFireworks
             {
                 orig(self);
 
-                if (self.pickupIndex == null || self.pickupIndex.pickupDef == null)
+                if (self.pickupIndex == null || self.pickupIndex.pickupDef == null 
+                    || self.modelObject && self.modelObject.name == "PickupMystery(Clone)" // edge case where item in trishop
+                    || self.highlight && self.highlight.name == "CommandCube(Clone)") // edge case where item turns into command essence
                     return;
-                
+
                 foreach (var item in items)
                     if (self.pickupIndex.pickupDef.itemIndex == item.Item.itemIndex)
                     {
