@@ -1,0 +1,10 @@
+﻿{
+	"name": "ExtraFireworks",
+	"version_number": "1.2.2",
+	"website_url": "",
+	"description": "Adds 6 new firework themed items, for only the most hardcore firework fans... Now rebalanced and fully configurable!",
+	"dependencies": [
+		"bbepis-BepInExPack-5.4.9",
+		"RiskofThunder-HookGenPatcher-1.2.1"
+	]
+}
