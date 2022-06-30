@@ -10,6 +10,8 @@ public class ItemFireworkOnHit : FireworkItem
 {
     private ConfigurableLinearScaling scaler;
     private ConfigEntry<int> numFireworks;
+
+    private static readonly float MAX_FIREWORK_HEIGHT = 50f;
     
     public ItemFireworkOnHit(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
@@ -96,8 +98,6 @@ public class ItemFireworkOnHit : FireworkItem
             var count = body.inventory.GetItemCount(Item.itemIndex);
             if (count > 0 && Util.CheckRoll(scaler.GetValue(count) * damageInfo.procCoefficient, body.master))
             {
-                Log.LogDebug(victim);
-                Log.LogDebug(victim.name);
                 //var fireworkPos = victim.transform;
                 var victimBody = victim.GetComponent<CharacterBody>();
 
@@ -111,7 +111,7 @@ public class ItemFireworkOnHit : FireworkItem
                 var bestPoint = basePos;
                 var bestHeight = basePos.y;
                 
-                var hits = Physics.RaycastAll(basePos, Vector3.up, 1000f);
+                var hits = Physics.RaycastAll(basePos, Vector3.up, MAX_FIREWORK_HEIGHT);
                 foreach (var hit in hits)
                 {
                     var cm = hit.transform.GetComponentInParent<CharacterModel>();
@@ -132,7 +132,7 @@ public class ItemFireworkOnHit : FireworkItem
                         if (!col)
                             continue;
                         
-                        var highestPoint = col.ClosestPoint(basePos + 1000f * Vector3.up);
+                        var highestPoint = col.ClosestPoint(basePos + MAX_FIREWORK_HEIGHT * Vector3.up);
                         if (highestPoint.y > bestHeight)
                         {
                             bestPoint = highestPoint;
@@ -142,7 +142,7 @@ public class ItemFireworkOnHit : FireworkItem
                 }
                 
                 
-                ExtraFireworks.CreateLauncher(body, bestPoint + Vector3.up * 0.05f, numFireworks.Value);
+                ExtraFireworks.CreateLauncher(body, bestPoint + Vector3.up * 2f, numFireworks.Value);
                 damageInfo.procChainMask.AddProc(ProcType.MicroMissile);
             }
 

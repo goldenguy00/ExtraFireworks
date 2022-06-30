@@ -16,7 +16,7 @@ namespace ExtraFireworks
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "PhysicsFox";
         public const string PluginName = "ExtraFireworks";
-        public const string PluginVersion = "1.2.2";
+        public const string PluginVersion = "1.2.3";
         
         private static List<FireworkItem> items;
 
@@ -88,9 +88,6 @@ namespace ExtraFireworks
 
         public static FireworkLauncher FireFireworks(CharacterBody owner, int count)
         {
-            //float damageCoefficient = 3f * (float)itemCount5;
-            //float missileDamage = Util.OnHitProcDamage(damageInfo.damage, component2.damage, damageCoefficient);
-            //MissileUtils.FireMissile(component2.corePosition, component2, damageInfo.procChainMask, victim, damageInfo.crit);
             var fl = SpawnFireworks(owner.coreTransform, owner, count);
             fl.gameObject.transform.parent = owner.coreTransform;
             return fl;
