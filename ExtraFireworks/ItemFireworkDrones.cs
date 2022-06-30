@@ -68,7 +68,7 @@ public class ItemFireworkDrones : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Every <style=cIsDamage>{fireworkInterval.Value} seconds</style>, all non-player allies spawn <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>";
+        return $"Every <style=cIsDamage>{fireworkInterval.Value} seconds</style>, all non-player allies fire <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>";
     }
 
     public override string GetItemLore()

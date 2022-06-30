@@ -54,7 +54,7 @@ public class ItemFireworkOnHit : FireworkItem
 
     public override string GetItemPickup()
     {
-        return "Chance to spawn fireworks on hit";
+        return "Chance to fire fireworks on hit";
     }
 
     public override string GetItemDescription()
