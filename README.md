@@ -24,6 +24,9 @@ In no way I am responsible for any injuries sustained while playing with firewor
 Discord: @physicsfox#7810 
 
 ## Changelog
+**1.2.3**
+* Fixed firework placement for firework dagger, so that it now works correctly for magma worms and other large enemies
+
 **1.2.2**
 * Hotfix: fix acrid not inflicting poison/blight
 
