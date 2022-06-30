@@ -80,13 +80,19 @@ public class ItemFireworkOnHit : FireworkItem
                 goto end;
 
             // Fireworks can't proc themselves even if outside the proc chain
-            if (damageInfo.inflictor?.GetComponent<MissileController>())
+            if (damageInfo.inflictor && damageInfo.inflictor.GetComponent<MissileController>())
                 goto end;
 
-            var body = damageInfo.attacker?.GetComponent<CharacterBody>();
+            if (!damageInfo.attacker)
+                goto end;
+            
+            var body = damageInfo.attacker.GetComponent<CharacterBody>();
             if (!body)
                 goto end;
 
+            if (!body.inventory)
+                goto end;
+            
             var count = body.inventory.GetItemCount(Item.itemIndex);
             if (count > 0 && Util.CheckRoll(scaler.GetValue(count) * damageInfo.procCoefficient, body.master))
             {

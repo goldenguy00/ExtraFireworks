@@ -76,7 +76,7 @@ public class ItemFireworkAbility : FireworkItem
             var stack = self.inventory.GetItemCount(Item);
             if (stack > 0)
             {
-                if (primaryFireworks.Value || skill != self.skillLocator?.primary)
+                if (primaryFireworks.Value || self.skillLocator != null && skill != self.skillLocator.primary)
                     ExtraFireworks.FireFireworks(self, scaler.GetValueInt(stack));
             }
 
