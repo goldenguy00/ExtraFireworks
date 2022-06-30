@@ -4,8 +4,6 @@ using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
 
-using Random = System.Random;
-
 namespace ExtraFireworks;
 
 public class ItemFireworkDaisy : FireworkItem
@@ -105,7 +103,7 @@ public class ItemFireworkDaisy : FireworkItem
                 CharacterBody body = null;
                 while (body == null)
                 {
-                    var randMember = teamMembers[rand.Next(teamMembers.Count)];
+                    var randMember = teamMembers[Random.Range(0, teamMembers.Count)];
                     body = randMember.body;
                 }
 

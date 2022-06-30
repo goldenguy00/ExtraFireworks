@@ -92,11 +92,57 @@ public class ItemFireworkOnHit : FireworkItem
 
             if (!body.inventory)
                 goto end;
-            
+
             var count = body.inventory.GetItemCount(Item.itemIndex);
             if (count > 0 && Util.CheckRoll(scaler.GetValue(count) * damageInfo.procCoefficient, body.master))
             {
-                ExtraFireworks.SpawnFireworks(victim.transform, body, numFireworks.Value);
+                Log.LogDebug(victim);
+                Log.LogDebug(victim.name);
+                //var fireworkPos = victim.transform;
+                var victimBody = victim.GetComponent<CharacterBody>();
+
+                // Try to refine fireworkPos using a raycast
+                var basePos = damageInfo.position;
+                if (victimBody && Vector3.Distance(basePos, Vector3.zero) < Mathf.Epsilon)
+                {
+                    basePos = victimBody.mainHurtBox.randomVolumePoint;
+                }
+
+                var bestPoint = basePos;
+                var bestHeight = basePos.y;
+                
+                var hits = Physics.RaycastAll(basePos, Vector3.up, 1000f);
+                foreach (var hit in hits)
+                {
+                    var cm = hit.transform.GetComponentInParent<CharacterModel>();
+                    if (!cm)
+                        continue;
+                    
+                    var cb = cm.body;
+                    if (!cb)
+                        continue;
+
+                    if (cb != victimBody)
+                        continue;
+                    
+                    var hurtbox = hit.transform.GetComponentInChildren<HurtBox>();
+                    if (hurtbox)
+                    {
+                        var col = hurtbox.collider;
+                        if (!col)
+                            continue;
+                        
+                        var highestPoint = col.ClosestPoint(basePos + 1000f * Vector3.up);
+                        if (highestPoint.y > bestHeight)
+                        {
+                            bestPoint = highestPoint;
+                            bestHeight = highestPoint.y;
+                        }
+                    }
+                }
+                
+                
+                ExtraFireworks.CreateLauncher(body, bestPoint + Vector3.up * 0.05f, numFireworks.Value);
                 damageInfo.procChainMask.AddProc(ProcType.MicroMissile);
             }
 

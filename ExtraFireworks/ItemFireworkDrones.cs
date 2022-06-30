@@ -1,14 +1,10 @@
-﻿using System.Collections;
-
-namespace ExtraFireworks;
+﻿namespace ExtraFireworks;
 
 using System.Collections.Generic;
 using BepInEx.Configuration;
 using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
-
-using Random = System.Random;
 
 public class ItemFireworkDrones : FireworkItem
 {

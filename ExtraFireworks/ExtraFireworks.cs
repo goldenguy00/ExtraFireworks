@@ -1,17 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using BepInEx;
-using BepInEx.Configuration;
 using R2API;
 using R2API.Utils;
 using RoR2;
-using RoR2.Projectile;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
-using Random = System.Random;
 
 namespace ExtraFireworks
 {
