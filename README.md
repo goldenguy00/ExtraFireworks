@@ -16,8 +16,6 @@ In no way I am responsible for any injuries sustained while playing with firewor
 
 ## Known Issues
 
-* Fireworks spawn inside some of the larger foes on-hit, which is not intended
-* Not fully tested in multiplayer
 * This README probably should be buffed at some point
 * I don't know 3D modeling unfortunately
 
