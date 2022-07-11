@@ -22,6 +22,9 @@ In no way I am responsible for any injuries sustained while playing with firewor
 Discord: @physicsfox#7810 
 
 ## Changelog
+**1.2.5**
+* Fixed firework-stuffed head triggering on non-primary no-cooldown abilities, such as Railgunner secondary
+
 **1.2.4**
 * Fixed rare bug with item scaling being wrong in trishops 
 * Fixed scaling of firework items that become command essences

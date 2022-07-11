@@ -1,18 +1,19 @@
 ﻿using BepInEx.Configuration;
 using RoR2;
+using UnityEngine;
 
 namespace ExtraFireworks;
 
 public class ItemFireworkAbility : FireworkItem
 {
     private ConfigurableLinearScaling scaler;
-    private ConfigEntry<bool> primaryFireworks;
+    private ConfigEntry<bool> noSkillRestriction;
     
     public ItemFireworkAbility(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
         scaler = new ConfigurableLinearScaling(config, "", GetConfigSection(), 1, 1);
-        primaryFireworks = config.Bind(GetConfigSection(), "PrimaryAbilityFireworks", false,
-            "Whether primary should spawn fireworks or not... very unbalanced on commando");
+        noSkillRestriction = config.Bind(GetConfigSection(), "PrimaryAbilityFireworks", false,
+            "Whether abilities without a cooldown should spawn fireworks... be wary of brokenness, especially on Commando and Railgunner");
     }
 
     public override string GetName()
@@ -57,7 +58,7 @@ public class ItemFireworkAbility : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Whenever you use an <style=cIsUtility>non-primary ability</style>, fire <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>.";
+        return $"Whenever you use an <style=cIsUtility>ability with cooldown</style>, fire <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>.";
     }
 
     public override string GetItemLore()
@@ -75,7 +76,8 @@ public class ItemFireworkAbility : FireworkItem
             var stack = self.inventory.GetItemCount(Item);
             if (stack > 0)
             {
-                if (primaryFireworks.Value || self.skillLocator != null && skill != self.skillLocator.primary)
+                if (noSkillRestriction.Value || skill.baseRechargeInterval >= 1f - Mathf.Epsilon 
+                    && skill.skillDef && skill.skillDef.stockToConsume > 0)
                     ExtraFireworks.FireFireworks(self, scaler.GetValueInt(stack));
             }
 
