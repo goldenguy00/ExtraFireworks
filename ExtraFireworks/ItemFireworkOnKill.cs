@@ -71,7 +71,7 @@ public class ItemFireworkOnKill : FireworkItem
                 return;
 
             var attackerCharacterBody = report.attackerBody;
-            if (attackerCharacterBody.inventory)
+            if (attackerCharacterBody.inventory && attackerCharacterBody.teamComponent.teamIndex != report.victim.body.teamComponent.teamIndex)
             {
                 var count = attackerCharacterBody.inventory.GetItemCount(Item);
                 if (count > 0)
