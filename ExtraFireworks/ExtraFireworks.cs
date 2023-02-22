@@ -56,7 +56,7 @@ namespace ExtraFireworks
                     return;
 
                 foreach (var item in items)
-                    if (self.pickupIndex.pickupDef != null
+                    if (item.IsEnabled() && self.pickupIndex.pickupDef != null
                         && self.pickupIndex.pickupDef.itemTier == item.Item.tier
                         && self.pickupIndex.pickupDef.itemIndex == item.Item.itemIndex)
                     {
