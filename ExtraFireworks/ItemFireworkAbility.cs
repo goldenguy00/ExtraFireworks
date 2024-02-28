@@ -23,7 +23,12 @@ public class ItemFireworkAbility : FireworkItem
 
     public override string GetPickupModelName()
     {
-        return "FireworkStuffedHead.prefab";
+        return "Firework-Stuffed Head.prefab";
+    }
+
+    public override float GetModelScale()
+    {
+        return 1.5f;
     }
 
     public override string GetPickupIconName()
@@ -31,21 +36,16 @@ public class ItemFireworkAbility : FireworkItem
         return "FireworkStuffedHead.png";
     }
 
-    public override ItemTiers GetTier()
+    public override ItemTier GetTier()
     {
-        return ItemTiers.Green;
+        return ItemTier.Tier2;
     }
 
     public override ItemTag[] GetTags()
     {
         return new[] { ItemTag.Damage };
     }
-
-    public override float GetModelScale()
-    {
-        return .4f;
-    }
-
+    
     public override string GetItemName()
     {
         return "Firework-Stuffed Head";

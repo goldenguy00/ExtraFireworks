@@ -9,6 +9,7 @@ using UnityEngine;
 namespace ExtraFireworks
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
+    [BepInDependency(VoidItemAPI.VoidItemAPI.MODGUID)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI))]
     public class ExtraFireworks : BaseUnityPlugin
@@ -16,7 +17,7 @@ namespace ExtraFireworks
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "PhysicsFox";
         public const string PluginName = "ExtraFireworks";
-        public const string PluginVersion = "1.2.5";
+        public const string PluginVersion = "2.0.0";
         
         private static List<FireworkItem> items;
 
@@ -33,7 +34,9 @@ namespace ExtraFireworks
                 new ItemFireworkDrones(this, Config),
                 new ItemFireworkMushroom(this, Config),
                 new ItemFireworkOnHit(this, Config),
-                new ItemFireworkOnKill(this, Config)
+                new ItemFireworkOnKill(this, Config),
+                new ItemFireworkFinale(this, Config),
+                new ItemFireworkVoid(this, Config)
             };
 
             // Load assetpack and initialize

@@ -1,6 +1,7 @@
-# XXXTra Fireworks
+# Extra Fireworks
+#### Created by PhysicsFox and Smxrez
 
-Adds 6 new (fully configurable) firework-related items, only for the most hardcore firework enthusiasts. 
+Adds 8 new (fully configurable) firework-related items, only for the most hardcore firework enthusiasts. 
 
 ![](https://cdn.discordapp.com/attachments/980994338190426123/984597321339777024/fireworkdagger.PNG)
 ![](https://cdn.discordapp.com/attachments/980994338190426123/984600501825982514/fungus.PNG)
@@ -16,12 +17,20 @@ In no way I am responsible for any injuries sustained while playing with firewor
 
 ## Known Issues
 
-* This README probably should be buffed at some point
-* I don't know 3D modeling unfortunately
+* None at the moment! 
 
-Discord: @physicsfox#7810 
+### Contact info
+Discord: physicsfox (can be pinged in the RoR2 mod server)
 
 ## Changelog
+**2.0.0**
+* 3D models
+* 2 new items: the void item Power 'Works and legendary item Grand Finale
+
+**1.2.6**
+* Fixed funny scaling issues with lunar/equipment items
+* Possibly fixed NPE when items are disabled 
+
 **1.2.5**
 * Fixed firework-stuffed head triggering on non-primary no-cooldown abilities, such as Railgunner secondary
 

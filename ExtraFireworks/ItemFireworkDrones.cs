@@ -28,28 +28,27 @@ public class ItemFireworkDrones : FireworkItem
 
     public override string GetPickupModelName()
     {
-        return "SpareFireworks.prefab";
+        return "Spare Fireworks.prefab";
     }
 
+    public override float GetModelScale()
+    {
+        return 1.5f;
+    }
+    
     public override string GetPickupIconName()
     {
         return "SpareFireworks.png";
     }
 
-    public override ItemTiers GetTier()
+    public override ItemTier GetTier()
     {
-        return ItemTiers.Red;
+        return ItemTier.Tier3;
     }
     
     public override ItemTag[] GetTags()
     {
         return new[] { ItemTag.Damage };
-    }
-
-
-    public override float GetModelScale()
-    {
-        return .25f;
     }
 
     public override string GetItemName()

@@ -29,7 +29,12 @@ public class ItemFireworkDaisy : FireworkItem
 
     public override string GetPickupModelName()
     {
-        return "FireworkDaisy.prefab";
+        return "Firework Daisy.prefab";
+    }
+    
+    public override float GetModelScale()
+    {
+        return 2.5f;
     }
 
     public override string GetPickupIconName()
@@ -37,19 +42,14 @@ public class ItemFireworkDaisy : FireworkItem
         return "FireworkDaisy.png";
     }
 
-    public override ItemTiers GetTier()
+    public override ItemTier GetTier()
     {
-        return ItemTiers.Green;
+        return ItemTier.Tier2;
     }
     
     public override ItemTag[] GetTags()
     {
         return new[] { ItemTag.Damage, ItemTag.HoldoutZoneRelated, ItemTag.AIBlacklist };
-    }
-
-    public override float GetModelScale()
-    {
-        return 3f;
     }
 
     public override string GetItemName()

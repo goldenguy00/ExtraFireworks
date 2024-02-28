@@ -19,7 +19,12 @@ public class ItemFireworkOnKill : FireworkItem
 
     public override string GetPickupModelName()
     {
-        return "BottledFireworks.prefab";
+        return "Will-o-the-Firework.prefab";
+    }
+    
+    public override float GetModelScale()
+    {
+        return 1.3f;
     }
 
     public override string GetPickupIconName()
@@ -27,9 +32,9 @@ public class ItemFireworkOnKill : FireworkItem
         return "BottledFireworks.png";
     }
 
-    public override ItemTiers GetTier()
+    public override ItemTier GetTier()
     {
-        return ItemTiers.Green;
+        return ItemTier.Tier2;
     }
 
     public override ItemTag[] GetTags()
@@ -37,11 +42,6 @@ public class ItemFireworkOnKill : FireworkItem
         return new[] { ItemTag.Damage, ItemTag.OnKillEffect };
     }
     
-    public override float GetModelScale()
-    {
-        return .6f;
-    }
-
     public override string GetItemName()
     {
         return "Will-o'-the-Firework";

@@ -26,7 +26,12 @@ public class ItemFireworkOnHit : FireworkItem
 
     public override string GetPickupModelName()
     {
-        return "FireworkDagger.prefab";
+        return "Firework Dagger.prefab";
+    }
+    
+    public override float GetModelScale()
+    {
+        return 0.2f;
     }
 
     public override string GetPickupIconName()
@@ -34,21 +39,16 @@ public class ItemFireworkOnHit : FireworkItem
         return "FireworkDagger.png";
     }
 
-    public override ItemTiers GetTier()
+    public override ItemTier GetTier()
     {
-        return ItemTiers.White;
+        return ItemTier.Tier1;
     }
     
     public override ItemTag[] GetTags()
     {
         return new[] { ItemTag.Damage, ItemTag.AIBlacklist };
     }
-
-    public override float GetModelScale()
-    {
-        return 3f;
-    }
-
+    
     public override string GetItemName()
     {
         return "Firework Dagger";

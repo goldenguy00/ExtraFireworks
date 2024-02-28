@@ -34,27 +34,21 @@ public class ItemFireworkMushroom : FireworkItem
     {
         return "Fungus.prefab";
     }
-
+    
     public override string GetPickupIconName()
     {
         return "Fungus.png";
     }
 
-    public override ItemTiers GetTier()
+    public override ItemTier GetTier()
     {
-        return ItemTiers.White;
+        return ItemTier.Tier1;
     }
     
     public override ItemTag[] GetTags()
     {
         return new[] { ItemTag.Damage, ItemTag.AIBlacklist };
     }
-
-    public override float GetModelScale()
-    {
-        return .25f;
-    }
-
     public override string GetItemName()
     {
         return "Fungus";

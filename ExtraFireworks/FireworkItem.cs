@@ -1,6 +1,8 @@
-﻿using BepInEx.Configuration;
+﻿using System.Linq;
+using BepInEx.Configuration;
 using R2API;
 using RoR2;
+using RoR2.ExpansionManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -16,9 +18,8 @@ public abstract class FireworkItem
     public abstract string GetName();
     public abstract string GetPickupModelName();
     public abstract string GetPickupIconName();
-    public abstract ItemTiers GetTier();
+    public abstract ItemTier GetTier();
     public abstract ItemTag[] GetTags();
-    public abstract float GetModelScale();
     public abstract string GetItemName();
     public abstract string GetItemPickup();
     public abstract string GetItemDescription();
@@ -37,7 +38,12 @@ public abstract class FireworkItem
 
     public string GetPickupModel()
     {
-        return $"Assets/Import/{GetPickupModelName()}";
+        return $"Assets/ImportModels/{GetPickupModelName()}";
+    }
+
+    public virtual float GetModelScale()
+    {
+        return 1.0f;
     }
     
     public string GetPickupIcon()
@@ -74,7 +80,11 @@ public abstract class FireworkItem
         Item.descriptionToken = $"ITEM_{subtoken}_DESC";
         Item.loreToken = $"ITEM_{subtoken}_LORE";
         
-        Item._itemTierDef = Addressables.LoadAssetAsync<ItemTierDef>($"RoR2/Base/Common/{GetTier()}Def.asset").WaitForCompletion();
+        Item.tier = GetTier();
+        Item.deprecatedTier = GetTier();
+        // STINKY!!!
+        if (GetTier() == ItemTier.VoidTier1)
+            Item.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(def => def.nameToken == "DLC1_NAME"); //Addressables.LoadAssetAsync<ExpansionDef>("RoR2/DLC1/Common/DLC1.asset").WaitForCompletion();
         Item.canRemove = true;
         Item.hidden = false;
         Item.tags = GetTags();
