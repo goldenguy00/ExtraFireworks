@@ -1,0 +1,84 @@
+ManifestFileVersion: 0
+CRC: 1249715560
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 69e7914727490a96050d3f07d4870665
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 1fe3abd029edb3522ae5dbbc711d0a74
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/ImportModels/Will-o-the-Firework.prefab
+- Assets/ImportModels/Textures/texGlassJarNormal.png
+- Assets/ImportModels/Textures/texFireworkDiffuse 3.png
+- Assets/ImportModels/Textures/texAlienHeadDiffuse.png
+- Assets/ImportModels/Firework Daisy.prefab
+- Assets/ImportModels/Textures/texGlassJarLidNormal.png
+- Assets/ImportModels/Blender/Fungus.blend
+- Assets/Import/FireworkDagger.png
+- Assets/Import/BottledFireworks.png
+- Assets/Import/FireworkStuffedHead.prefab
+- Assets/Import/FireworkDagger.prefab
+- Assets/ImportModels/Blender/Will-o-the-Firework.blend
+- Assets/ImportModels/Blender/GrandFinale.blend
+- Assets/ImportModels/Textures/texHealingPotionCork_Normals.png
+- Assets/ImportModels/Textures/texAlienHeadNormal.png
+- Assets/Import/BottledFireworks.prefab
+- Assets/ImportModels/Power Works.prefab
+- Assets/ImportModels/Blender/Power Works.blend
+- Assets/Import/FireworkDaisy.png
+- Assets/Import/SpareFireworks.prefab
+- Assets/ImportModels/Textures/texHealingPotionCork_Emissive.png
+- Assets/ImportModels/Textures/texGlowFlowerNormal.png
+- Assets/ImportModels/Firework Dagger.prefab
+- Assets/ImportModels/Textures/texFireworkDiffuse 4.png
+- Assets/ImportModels/Textures/texMushroomEmission.png
+- Assets/ImportModels/Spare Fireworks.prefab
+- Assets/ImportModels/Textures/texHealingPotionCork_Diffuse.png
+- Assets/ImportModels/Textures/texMushroomDiffuse.png
+- Assets/ImportModels/Blender/Firework Daisy.blend
+- Assets/ImportModels/Textures/texGlowFlowerDiffuse.png
+- Assets/Import/Fungus.png
+- Assets/ImportModels/Blender/Spare Fireworks.blend
+- Assets/ImportModels/Textures/texGlowFlowerEmission.png
+- Assets/ImportModels/Blender/Firework Dagger.blend
+- Assets/ImportModels/Textures/texTrimSheetDroneWeaponsWoodDiffuse.png
+- Assets/ImportModels/Textures/texFireworkDiffuse 2.png
+- Assets/Import/Fungus.prefab
+- Assets/ImportModels/Textures/texFireworkDiffuse.png
+- Assets/Import/FireworkDaisy.prefab
+- Assets/ImportModels/Firework-Stuffed Head.prefab
+- Assets/ImportModels/Textures/texTrimSheetConstructionEmission.png
+- Assets/ImportModels/Textures/texMushroomNormal.png
+- Assets/ImportModels/Textures/texFireworkDiffuse 1.png
+- Assets/Import/SpareFireworks.png
+- Assets/ImportModels/Blender/Firework-Stuffed Head.blend
+- Assets/ImportModels/Textures/texTrimSheetMetalNormal.png
+- Assets/ImportModels/Textures/texFireworkDiffuse 5.png
+- Assets/ImportModels/Textures/texFireworkDiffuse 6.png
+- Assets/ImportModels/Textures/texTrimSheetDronesBlue.png
+- Assets/ImportModels/GrandFinale.prefab
+- Assets/Import/FireworkStuffedHead.png
+- Assets/ImportModels/Fungus.prefab
+Dependencies: []
