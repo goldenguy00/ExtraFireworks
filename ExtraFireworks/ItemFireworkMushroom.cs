@@ -35,6 +35,11 @@ public class ItemFireworkMushroom : FireworkItem
         return "Fungus.prefab";
     }
     
+    public override float GetModelScale()
+    {
+        return 0.75f;
+    }
+    
     public override string GetPickupIconName()
     {
         return "Fungus.png";

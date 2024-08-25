@@ -33,7 +33,7 @@ public class ItemFireworkDrones : FireworkItem
 
     public override float GetModelScale()
     {
-        return 1.5f;
+        return 1f;
     }
     
     public override string GetPickupIconName()

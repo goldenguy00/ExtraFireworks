@@ -24,7 +24,7 @@ public class ItemFireworkOnKill : FireworkItem
     
     public override float GetModelScale()
     {
-        return 1.3f;
+        return 1.1f;
     }
 
     public override string GetPickupIconName()

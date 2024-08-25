@@ -42,7 +42,7 @@ public class ItemFireworkVoid : FireworkItem
     
     public override float GetModelScale()
     {
-        return 0.75f;
+        return 0.4f;
     }
 
     public override string GetPickupIconName()

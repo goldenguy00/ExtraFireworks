@@ -39,7 +39,7 @@ public class ItemFireworkFinale : FireworkItem
     
     public override float GetModelScale()
     {
-        return 7.5f;
+        return 3f;
     }
 
     public override string GetPickupIconName()
