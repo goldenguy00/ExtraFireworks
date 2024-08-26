@@ -1,7 +1,7 @@
 ﻿{
 	"name": "ExtraFireworks",
 	"version_number": "2.0.0",
-	"website_url": "https://github.com/kluberge/ExtraFireworks",
+	"website_url": "https://github.com/rainbowphysics/ExtraFireworks",
 	"description": "[2.0 UPDATE!] Adds new firework themed items, for only the most hardcore firework fans,,,",
 	"dependencies": [
 		"bbepis-BepInExPack-5.4.9",
