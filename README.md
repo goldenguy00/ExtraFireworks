@@ -1,31 +1,23 @@
-# Extra Fireworks
-#### Created by PhysicsFox and Smxrez
+# Risk of Rain 2 Extra Fireworks
+#### Created by Physics System and Smxrez
 
-Adds 8 new (fully configurable) firework-related items, only for the most hardcore firework enthusiasts. 
+Adds 8 new fully-configurable firework-related items (*only for the most hardcore firework enthusiasts*)
 
-![](https://cdn.discordapp.com/attachments/980994338190426123/984597321339777024/fireworkdagger.PNG)
-![](https://cdn.discordapp.com/attachments/980994338190426123/984600501825982514/fungus.PNG)
-![](https://cdn.discordapp.com/attachments/980994338190426123/984597321851502632/fireworkdaisy.PNG)
-![](https://cdn.discordapp.com/attachments/980994338190426123/984597322195419176/fireworkhead.PNG)
-![](https://cdn.discordapp.com/attachments/980994338190426123/984597322430304276/fireworkbottle.PNG)
-![](https://cdn.discordapp.com/attachments/980994338190426123/984597322648412160/fireworkdrones.PNG)
-
-In no way I am responsible for any injuries sustained while playing with fireworks. 
-
-![](https://cdn.discordapp.com/attachments/882390720898551811/983971893189152788/unknown.png)
-^ consequences of excessive firework consumption
+The creators of this mod assume no responsibility for any injuries sustained while playing with fireworks
 
 ## Known Issues
 
-* None at the moment! 
+* Item rarity outlines appear broken on some of the models 
 
 ### Contact info
-Discord: physicsfox (can be pinged in the RoR2 mod server)
+Discord: rainbowphysics (can be pinged in Risk of Rain 2 Modding server)
 
 ## Changelog
 **2.0.0**
-* 3D models
-* 2 new items: the void item Power 'Works and legendary item Grand Finale
+* Addition of proper 3D models (created by Smxrez!)
+* New void item: Power 'Works 
+* New legendary item: Grand Finale
+* Various tweaks and fixes
 
 **1.2.6**
 * Fixed funny scaling issues with lunar/equipment items
