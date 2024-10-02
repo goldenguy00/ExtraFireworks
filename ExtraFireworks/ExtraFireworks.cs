@@ -17,7 +17,7 @@ namespace ExtraFireworks
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "PhysicsFox";
         public const string PluginName = "ExtraFireworks";
-        public const string PluginVersion = "2.0.0";
+        public const string PluginVersion = "1.3.0";
         
         private static List<FireworkItem> items;
 
