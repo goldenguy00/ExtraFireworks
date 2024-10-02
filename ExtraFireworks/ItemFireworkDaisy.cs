@@ -10,7 +10,6 @@ public class ItemFireworkDaisy : FireworkItem
 {
     private ConfigEntry<int> fireworksPerWave;
     private Dictionary<HoldoutZoneController, float> lastCharge;
-    private Random rand;
 
     public ItemFireworkDaisy(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
@@ -18,8 +17,6 @@ public class ItemFireworkDaisy : FireworkItem
             "Number of fireworks per firework daisy wave");
         
         lastCharge = new Dictionary<HoldoutZoneController, float>();
-        
-        rand = new Random();
     }
 
     public override string GetName()
@@ -80,7 +77,7 @@ public class ItemFireworkDaisy : FireworkItem
             orig(self);
         };
 
-        On.RoR2.HoldoutZoneController.FixedUpdate += (orig, self) =>
+        On.RoR2.HoldoutZoneController.Update += (orig, self) =>
         {
             lastCharge[self] = self.charge;
 

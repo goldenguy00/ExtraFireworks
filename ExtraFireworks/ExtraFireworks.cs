@@ -11,7 +11,6 @@ namespace ExtraFireworks
     [BepInDependency(R2API.R2API.PluginGUID)]
     [BepInDependency(VoidItemAPI.VoidItemAPI.MODGUID)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    [R2APISubmoduleDependency(nameof(ItemAPI), nameof(LanguageAPI))]
     public class ExtraFireworks : BaseUnityPlugin
     {
         public const string PluginGUID = PluginAuthor + "." + PluginName;
