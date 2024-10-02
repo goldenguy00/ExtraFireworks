@@ -49,9 +49,9 @@ namespace ExtraFireworks
             }
 
             // Bypass 3D model scaling
-            On.RoR2.PickupDisplay.RebuildModel += (orig, self) =>
+            On.RoR2.PickupDisplay.RebuildModel += (orig, self, modelObjectOverride) =>
             {
-                orig(self);
+                orig(self, modelObjectOverride);
 
                 if (self.pickupIndex == null || self.pickupIndex.pickupDef == null 
                     || self.modelObject && self.modelObject.name == "PickupMystery(Clone)" // edge case where item in trishop
