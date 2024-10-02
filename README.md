@@ -13,10 +13,9 @@ The creators of this mod assume no responsibility for any injuries sustained whi
 Discord: rainbowphysics (can be pinged in Risk of Rain 2 Modding server)
 
 ## Changelog
-**2.0.0**
+**1.3.0**
 * Addition of proper 3D models (created by Smxrez!)
-* New void item: Power 'Works 
-* New legendary item: Grand Finale
+* Update for SotS DLC
 * Various tweaks and fixes
 
 **1.2.6**
