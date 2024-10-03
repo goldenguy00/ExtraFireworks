@@ -40,6 +40,7 @@ namespace ExtraFireworks
 
             var fireworkVoidItem = new ItemFireworkVoid(this, Config);
             var fireworkVoidItemConsumed = new ItemFireworkVoidConsumed(this, Config, fireworkVoidItem);
+            fireworkVoidItem.ConsumedItem = fireworkVoidItemConsumed;
             items.Add(fireworkVoidItem);
             items.Add(fireworkVoidItemConsumed);
 

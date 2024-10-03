@@ -58,7 +58,7 @@ public abstract class FireworkItem
     
     public bool IsEnabled()
     {
-        return itemEnabled.Value;
+        return itemEnabled == null || itemEnabled.Value;
     }
     
     protected FireworkItem(ExtraFireworks plugin, ConfigFile config)
@@ -79,7 +79,7 @@ public abstract class FireworkItem
         Item.nameToken = $"ITEM_{subtoken}_NAME";
         Item.pickupToken = $"ITEM_{subtoken}_PICKUP";
         Item.descriptionToken = $"ITEM_{subtoken}_DESC";
-        
+                
         // No lore for consumed item
         if (GetTier() != ItemTier.NoTier)
             Item.loreToken = $"ITEM_{subtoken}_LORE";
@@ -93,13 +93,13 @@ public abstract class FireworkItem
         Item.canRemove = GetTier() != ItemTier.NoTier;
         Item.hidden = false;
         Item.tags = GetTags();
-
+        
         if (bundle != null)
         {
             Item.pickupModelPrefab = bundle.LoadAsset<GameObject>(GetPickupModel());
             Item.pickupIconSprite = bundle.LoadAsset<Sprite>(GetPickupIcon());
         }
-
+        
         if (IsEnabled())
         {
             LanguageAPI.Add(Item.nameToken, GetItemName());

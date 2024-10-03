@@ -13,7 +13,8 @@ public class ItemFireworkVoid : FireworkItem
 {
     public ConfigEntry<int> fireworksPerStack;
     public ConfigEntry<float> hpThreshold;
-    
+
+    public ItemFireworkVoidConsumed ConsumedItem;
     private bool voidInitialized = false;
 
     public ItemFireworkVoid(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
@@ -84,7 +85,7 @@ public class ItemFireworkVoid : FireworkItem
             orig(self, info);
             
             var body = self.body;
-            if (!body || !body.inventory || !NetworkServer.active)
+            if (!body || !body.inventory || !body.master || !NetworkServer.active)
                 return;
 
             // Check if HP threshold met
@@ -95,6 +96,11 @@ public class ItemFireworkVoid : FireworkItem
             var count = body.inventory.GetItemCount(Item.itemIndex);
             if (count <= 0) 
                 return;
+            
+            body.inventory.RemoveItem(Item, count);
+            body.inventory.GiveItem(ConsumedItem.Item, count);
+            CharacterMasterNotificationQueue.SendTransformNotification(body.master, Item.itemIndex, 
+                ConsumedItem.Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
             
             ExtraFireworks.FireFireworks(body, fireworksPerStack.Value * count);
         };

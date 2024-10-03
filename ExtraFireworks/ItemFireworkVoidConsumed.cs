@@ -21,7 +21,7 @@ public class ItemFireworkVoidConsumed : FireworkItem
 
     public override string GetName()
     {
-        return "PowerWorks (Consumed)";
+        return "PowerWorksConsumed";
     }
 
     public override string GetPickupModelName()
