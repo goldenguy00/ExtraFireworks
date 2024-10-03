@@ -115,5 +115,19 @@ public class ItemFireworkVoid : FireworkItem
                 voidInitialized = true;
             }
         };
+
+        On.RoR2.CharacterMaster.OnServerStageBegin += (orig, self, stage) =>
+        {
+            orig(self, stage);
+
+            var consumedCount = self.inventory.GetItemCount(ConsumedItem.Item);
+            if (!self.inventory || consumedCount <= 0)
+                return;
+
+            self.inventory.RemoveItem(ConsumedItem.Item, consumedCount);
+            self.inventory.GiveItem(Item, consumedCount);
+            CharacterMasterNotificationQueue.SendTransformNotification(self, ConsumedItem.Item.itemIndex, 
+                Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+        };
     }
 }
