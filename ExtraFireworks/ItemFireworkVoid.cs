@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BepInEx.Configuration;
 using HarmonyLib;
 using RoR2;
@@ -10,24 +11,17 @@ namespace ExtraFireworks;
 
 public class ItemFireworkVoid : FireworkItem
 {
-    private ConfigEntry<int> fireworksPerUse;
-    private ConfigEntry<float> hpThreshold;
-    private ConfigEntry<float> cooldown;
-    
-    private Dictionary<CharacterBody, float> cooldownTimers;
+    public ConfigEntry<int> fireworksPerStack;
+    public ConfigEntry<float> hpThreshold;
     
     private bool voidInitialized = false;
 
     public ItemFireworkVoid(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
-        fireworksPerUse = config.Bind(GetConfigSection(), "FireworksPerUse", 15,
+        fireworksPerStack = config.Bind(GetConfigSection(), "FireworksPerUse", 30,
             "Number of fireworks per consumption");
         hpThreshold = config.Bind(GetConfigSection(), "HpThreshold", 0.25f,
             "HP threshold before Power Works is consumed");
-        cooldown = config.Bind(GetConfigSection(), "Cooldown", 20f,
-            "Cooldown before item can be consumed again");
-
-        cooldownTimers = new Dictionary<CharacterBody, float>();
     }
 
     public override string GetName()
@@ -67,27 +61,20 @@ public class ItemFireworkVoid : FireworkItem
 
     public override string GetItemPickup()
     {
-        return "Release a barrage of fireworks at low health. Consumed on use.";
+        return "Release a barrage of fireworks at low health. Consumed on use. Refreshes every stage.";
     }
 
     public override string GetItemDescription()
     {
-        return $"Taking damage to below 25% health consumes this item (Refreshes next stage), releasing a barrage of fireworks dealing 15x300% (+15 Fireworks per stack) damage.";
+        var displayThreshold = (int)(Mathf.Round(hpThreshold.Value * 100) + Mathf.Epsilon);
+        return $"Taking damage to below {displayThreshold}% health consumes this item (Refreshes next stage), " +
+               $"releasing a barrage of fireworks dealing {fireworksPerStack.Value}x300% (+{fireworksPerStack.Value} " +
+               $"Fireworks per stack) damage.";
     }
 
     public override string GetItemLore()
     {
         return "MMMM YUM.";
-    }
-
-    // TODO double-check that !NetworkServer.active needed -- means host manages all this
-    public override void FixedUpdate()
-    {
-        if (!NetworkServer.active)
-            return;
-        
-        foreach (var body in cooldownTimers.Keys)
-            cooldownTimers[body] -= Time.fixedDeltaTime;
     }
 
     public override void AddHooks()
@@ -106,31 +93,19 @@ public class ItemFireworkVoid : FireworkItem
             
             
             var count = body.inventory.GetItemCount(Item.itemIndex);
-            if (count <= 0 || (cooldownTimers.ContainsKey(body) && cooldownTimers[body] > 0)) 
+            if (count <= 0) 
                 return;
             
-            ExtraFireworks.FireFireworks(body, fireworksPerUse.Value);
-            cooldownTimers[body] = cooldown.Value;
+            ExtraFireworks.FireFireworks(body, fireworksPerStack.Value * count);
         };
-
-        // Prevent cooldown timers from leaking memory by clearing dictionary every stage
-        On.RoR2.Stage.BeginServer += (orig, self) =>
-        {
-            orig(self);
-
-            if (!NetworkServer.active)
-                return;
-            
-            cooldownTimers.Clear();
-        };
-
+        
         On.RoR2.ItemCatalog.SetItemDefs += (orig, newItemDefs) =>
         {
             orig(newItemDefs);
             
             if (!voidInitialized)
             {
-                VoidItemAPI.VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
+                VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
                 voidInitialized = true;
             }
         };

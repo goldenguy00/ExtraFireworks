@@ -69,7 +69,8 @@ public abstract class FireworkItem
 
     public virtual void Init(AssetBundle bundle)
     {
-        itemEnabled = config.Bind(GetConfigSection(), "Enabled", true, "Item enabled?");
+        if (GetTier() != ItemTier.NoTier)
+            itemEnabled = config.Bind(GetConfigSection(), "Enabled", true, "Item enabled?");
         
         Item = ScriptableObject.CreateInstance<ItemDef>();
         
@@ -78,14 +79,18 @@ public abstract class FireworkItem
         Item.nameToken = $"ITEM_{subtoken}_NAME";
         Item.pickupToken = $"ITEM_{subtoken}_PICKUP";
         Item.descriptionToken = $"ITEM_{subtoken}_DESC";
-        Item.loreToken = $"ITEM_{subtoken}_LORE";
+        
+        // No lore for consumed item
+        if (GetTier() != ItemTier.NoTier)
+            Item.loreToken = $"ITEM_{subtoken}_LORE";
         
         Item.tier = GetTier();
         Item.deprecatedTier = GetTier();
         // STINKY!!!
         if (GetTier() == ItemTier.VoidTier1)
             Item.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(def => def.nameToken == "DLC1_NAME"); //Addressables.LoadAssetAsync<ExpansionDef>("RoR2/DLC1/Common/DLC1.asset").WaitForCompletion();
-        Item.canRemove = true;
+        
+        Item.canRemove = GetTier() != ItemTier.NoTier;
         Item.hidden = false;
         Item.tags = GetTags();
 
@@ -100,7 +105,9 @@ public abstract class FireworkItem
             LanguageAPI.Add(Item.nameToken, GetItemName());
             LanguageAPI.Add(Item.pickupToken, GetItemPickup());
             LanguageAPI.Add(Item.descriptionToken, GetItemDescription());
-            LanguageAPI.Add(Item.loreToken, GetItemLore());
+            // No lore for consumed item
+            if (GetTier() != ItemTier.NoTier)
+                LanguageAPI.Add(Item.loreToken, GetItemLore());
             
             ItemAPI.Add(new CustomItem(Item, GetDisplayRules()));
             

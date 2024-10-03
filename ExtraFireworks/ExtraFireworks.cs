@@ -38,6 +38,11 @@ namespace ExtraFireworks
                 //new ItemFireworkVoid(this, Config)
             };
 
+            var fireworkVoidItem = new ItemFireworkVoid(this, Config);
+            var fireworkVoidItemConsumed = new ItemFireworkVoidConsumed(this, Config, fireworkVoidItem);
+            items.Add(fireworkVoidItem);
+            items.Add(fireworkVoidItemConsumed);
+
             // Load assetpack and initialize
             using (var stream = Assembly.GetExecutingAssembly()
                        .GetManifestResourceStream("ExtraFireworks.extrafireworks"))
