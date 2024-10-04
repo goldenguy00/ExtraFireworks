@@ -16,7 +16,7 @@ namespace ExtraFireworks
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "PhysicsFox";
         public const string PluginName = "ExtraFireworks";
-        public const string PluginVersion = "1.3.0";
+        public const string PluginVersion = "1.4.0";
         
         private static List<FireworkItem> items;
 
@@ -35,7 +35,6 @@ namespace ExtraFireworks
                 new ItemFireworkOnHit(this, Config),
                 new ItemFireworkOnKill(this, Config),
                 //new ItemFireworkFinale(this, Config),
-                //new ItemFireworkVoid(this, Config)
             };
 
             var fireworkVoidItem = new ItemFireworkVoid(this, Config);

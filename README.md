@@ -1,7 +1,7 @@
 # Risk of Rain 2 Extra Fireworks
 #### Created by Physics System and Smxrez
 
-Adds 6 new fully-configurable firework-related items (*only for the most hardcore firework enthusiasts*)
+Adds 7 new fully-configurable firework-related items (*only for the most hardcore firework enthusiasts*)
 
 The creators of this mod assume no responsibility for any injuries sustained while playing with fireworks
 
@@ -13,6 +13,10 @@ The creators of this mod assume no responsibility for any injuries sustained whi
 Discord: rainbowphysics (can be pinged in Risk of Rain 2 Modding server)
 
 ## Changelog
+**1.4.0**
+* New void item: Power 'Works
+* Some very minor fixes
+
 **1.3.0**
 * Addition of proper 3D models (created by Smxrez!)
 * Update for SotS DLC
