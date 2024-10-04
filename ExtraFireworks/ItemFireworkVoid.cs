@@ -19,7 +19,7 @@ public class ItemFireworkVoid : FireworkItem
 
     public ItemFireworkVoid(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
-        fireworksPerStack = config.Bind(GetConfigSection(), "FireworksPerUse", 30,
+        fireworksPerStack = config.Bind(GetConfigSection(), "FireworksPerUse", 20,
             "Number of fireworks per consumption");
         hpThreshold = config.Bind(GetConfigSection(), "HpThreshold", 0.25f,
             "HP threshold before Power Works is consumed");
