@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1249715560
+CRC: 675984526
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 69e7914727490a96050d3f07d4870665
+    Hash: 24e15b826fef179a35a38eade77f55fa
   TypeTreeHash:
     serializedVersion: 2
     Hash: 1fe3abd029edb3522ae5dbbc711d0a74
@@ -52,6 +52,7 @@ Assets:
 - Assets/ImportModels/Textures/texHealingPotionCork_Emissive.png
 - Assets/ImportModels/Textures/texGlowFlowerNormal.png
 - Assets/ImportModels/Firework Dagger.prefab
+- Assets/Import/PowerWorksConsumed.png
 - Assets/ImportModels/Textures/texFireworkDiffuse 4.png
 - Assets/ImportModels/Textures/texMushroomEmission.png
 - Assets/ImportModels/Spare Fireworks.prefab
@@ -71,6 +72,7 @@ Assets:
 - Assets/ImportModels/Firework-Stuffed Head.prefab
 - Assets/ImportModels/Textures/texTrimSheetConstructionEmission.png
 - Assets/ImportModels/Textures/texMushroomNormal.png
+- Assets/Import/PowerWorks.png
 - Assets/ImportModels/Textures/texFireworkDiffuse 1.png
 - Assets/Import/SpareFireworks.png
 - Assets/ImportModels/Blender/Firework-Stuffed Head.blend
