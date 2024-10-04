@@ -66,7 +66,11 @@ public class ItemFireworkMushroom : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Whenever you <style=cIsUtility>stand still</style>, fire a stream of fireworks starting at about <style=cIsDamage>{scaler.GetValue(1) * 100:0}%</style> speed. <style=cStack>Fire speed increases hyperbolically</style> with number of stacks, starting with <style=cStack>+{(scaler.GetValue(2) - scaler.GetValue(1)) * 100:0}%</style> and going <style=cStack>up to {scaler.Base * 100:0}% speed</style>.";
+        return
+            $"After <style=cIsUtility>standing still for 1 second</style>, shoot fireworks at " +
+            $"<style=cIsDamage>{scaler.GetValue(1) * 100:0}%</style> " +
+            $"<style=cStack>(+{(scaler.GetValue(2) - scaler.GetValue(1)) * 100:0} per stack)</style> speed " +
+            $"(hyperbolic up to 100%) that deal <style=cIsDamage>300% base damage</style>.";
     }
 
     public override string GetItemLore()

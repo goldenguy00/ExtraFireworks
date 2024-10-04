@@ -67,10 +67,10 @@ public class ItemFireworkVoid : FireworkItem
 
     public override string GetItemDescription()
     {
-        var displayThreshold = (int)(Mathf.Round(hpThreshold.Value * 100) + Mathf.Epsilon);
-        return $"Taking damage to below {displayThreshold}% health consumes this item (Refreshes next stage), " +
-               $"releasing a barrage of fireworks dealing {fireworksPerStack.Value}x300% (+{fireworksPerStack.Value} " +
-               $"Fireworks per stack) damage.";
+        return $"Taking damage to below <style=cIsHealth>{hpThreshold.Value * 100:0}%</style> health consumes this item, " +
+               $"releasing a barrage of fireworks dealing <style=cIsDamage>{fireworksPerStack.Value}x300%</style> " +
+               $"<style=cStack>(+{fireworksPerStack.Value} per stack)</style> <style=cIsDamage>base damage</style>. " +
+               $"(Refreshes next stage)";
     }
 
     public override string GetItemLore()
