@@ -58,7 +58,8 @@ public class ItemFireworkAbility : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Whenever you use an <style=cIsUtility>ability with cooldown</style>, fire <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>.";
+        return $"Using a <style=cIsUtility>non-primary skill</style> fires <style=cIsDamage>{scaler.Base}</style> " +
+               $"<style=cStack>(+{scaler.Scaling} per stack)</style> for <style=cIsDamage>300% base damage</style>.";
     }
 
     public override string GetItemLore()
