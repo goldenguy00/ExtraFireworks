@@ -54,7 +54,7 @@ public class ItemFireworkFinale : FireworkItem
     
     public override ItemTag[] GetTags()
     {
-        return new[] { ItemTag.Damage, ItemTag.OnKillEffect };
+        return new[] { ItemTag.Damage, ItemTag.OnKillEffect, ItemTag.AIBlacklist };
     }
     
     public override string GetItemName()

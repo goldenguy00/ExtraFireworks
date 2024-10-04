@@ -48,7 +48,7 @@ public class ItemFireworkDrones : FireworkItem
     
     public override ItemTag[] GetTags()
     {
-        return new[] { ItemTag.Damage };
+        return new[] { ItemTag.Damage, ItemTag.AIBlacklist };
     }
 
     public override string GetItemName()
