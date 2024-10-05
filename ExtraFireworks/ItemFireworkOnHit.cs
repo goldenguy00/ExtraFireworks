@@ -61,12 +61,14 @@ public class ItemFireworkOnHit : FireworkItem
 
     public override string GetItemDescription()
     {
-        var desc = $"Gain a {scaler.Base:0}% chance <style=cStack>(+{scaler.Scaling:0}% per stack)</style> on hit to ";
+        var desc = $"Gain a <style=cIsDamage>{scaler.Base:0}%</style> chance " +
+                   $"<style=cStack>(+{scaler.Scaling:0}% per stack)</style> <style=cIsDamage>on hit</style> to ";
 
         if (numFireworks.Value == 1)
-            desc += "fire a firework for <style=cIsDamage>300% base damage</style>.";
+            desc += "<style=cIsDamage>fire a firework</style> for <style=cIsDamage>300%</style> base damage.";
         else
-            desc += $"fire {numFireworks.Value} fireworks for <style=cIsDamage>300% base damage</style> each.";
+            desc += $"<style=cIsDamage>fire {numFireworks.Value} fireworks</style> for <style=cIsDamage>300%</style> " +
+                    $"base damage each.";
         
         return desc;
     }

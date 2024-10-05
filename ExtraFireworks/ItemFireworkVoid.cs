@@ -67,10 +67,12 @@ public class ItemFireworkVoid : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Taking damage to below <style=cIsHealth>{hpThreshold.Value * 100:0}%</style> health consumes this item, " +
-               $"releasing a barrage of fireworks dealing <style=cIsDamage>{fireworksPerStack.Value}x300%</style> " +
-               $"<style=cStack>(+{fireworksPerStack.Value} per stack)</style> <style=cIsDamage>base damage</style>. " +
-               $"(Refreshes next stage)";
+        return $"Taking damage to below <style=cIsHealth>{hpThreshold.Value * 100:0}% health</style> " +
+               $"<style=cIsUtility>consumes</style> this item, releasing a " +
+               $"<style=cIsDamage>barrage of fireworks</style> dealing " +
+               $"<style=cIsDamage>{fireworksPerStack.Value}x300%</style> " +
+               $"<style=cStack>(+{fireworksPerStack.Value} per stack)</style> base damage. " +
+               $"<style=cIsUtility>(Refreshes next stage)</style>. <style=cIsVoid>Corrupts all Power Elixirs</style>.";
     }
 
     public override string GetItemLore()

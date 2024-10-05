@@ -54,9 +54,10 @@ public class ItemFireworkOnKill : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"On killing an enemy, release a barrage of <style=cIsDamage>{scaler.Base}</style> " +
-               $"<style=cStack>(+{scaler.Scaling} per stack)</style> fireworks for " +
-               $"<style=cIsDamage>300% base damage</style> each.";
+        return $"On <style=cIsDamage>killing an enemy</style>, release a " +
+               $"<style=cIsDamage>barrage of {scaler.Base}</style> " +
+               $"<style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style> for " +
+               $"<style=cIsDamage>300%</style> base damage each.";
     }
 
     public override string GetItemLore()

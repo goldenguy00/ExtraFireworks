@@ -63,9 +63,11 @@ public class ItemFireworkDrones : FireworkItem
 
     public override string GetItemDescription()
     {
-        return $"Non-player allies gain an automatic firework launcher that propels " +
+        return $"<style=cIsUtility>Non-player allies</style> gain an " +
+               $"<style=cIsDamage>automatic firework launcher</style> that propels " +
                $"<style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> " +
-               $"fireworks every {fireworkInterval.Value} seconds for <style=cIsDamage>300% base damage</style> each.";
+               $"<style=cIsDamage>fireworks every {fireworkInterval.Value} seconds</style> " +
+               $"for <style=cIsDamage>300%</style> base damage each.";
     }
 
     public override string GetItemLore()

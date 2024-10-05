@@ -6,18 +6,18 @@ Adds 7 new fully-configurable firework-related items (*only for the most hardcor
 The creators of this mod assume no responsibility for any injuries sustained while playing with fireworks
 
 ## Items
-| Icon | Item | Description | Tier |
-|:-|-|------|-|
-|<img src="https://i.postimg.cc/WzxBQXgc/Firework-Dagger.png" width="96"/> | **Firework Dagger** | Gain a 10% (+10% per stack) chance on hit to fire a firework for 300% base damage.| White |
-|<img src="https://i.postimg.cc/CxG3QCK9/Fungus.png" width="96"/> | **Fungus** | After standing still for 1 second, shoot fireworks at 9% (+8 per stack) speed (hyperbolic up to 100%) that deal 300% base damage. | White |
-| | | | |
-|<img src="https://i.postimg.cc/TYDMrvvd/Firework-Daisy.png" width="96"/> | **Firework Daisy** | Release a barrage of fireworks during the Teleporter event, dealing 40x300% base damage. Occurs 2 (+1 per stack) times. | Green |
-|<img src="https://i.postimg.cc/8zg84XTh/Firework-Stuffed-Head.png" width="96"/> | **Firework-Stuffed Head** | Using a non-primary skill fires 1 (+1 per stack) fireworks for 300% base damage. | Green |
-|<img src="https://i.postimg.cc/yxJqQwJT/Bottled-Fireworks.png" width="96"/> | **Will-o'-the-Firework** | On killing an enemy, release a barrage of 2 (+1 per stack) fireworks for 300% base damage each. | Green |
-| | | | |
-|<img src="https://i.postimg.cc/1RT1n5T7/Spare-Fireworks.png" width="96"/> | **Spare Fireworks** | Non-player allies gain an automatic firework launcher that propels 4 (+2 per stack) fireworks every 4 seconds for 300% base damage each. | Red |
-| | | | |
-|<img src="https://i.postimg.cc/C1rT4FK1/Power-Works.png" width="96"/> | **Power Works** | Taking damage to below 25% consumes this item, releasing a barrage of fireworks dealing 20x300% (+20 per stack) base damage. (Refreshes next stage) | Void |
+| Icon                                                                            | Item                      | Description                                                                                                                                                                      | Tier  |
+|:--------------------------------------------------------------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|
+| <img src="https://i.postimg.cc/WzxBQXgc/Firework-Dagger.png" width="96"/>       | **Firework Dagger**       | Gain a 10% (+10% per stack) chance on hit to fire a firework for 300% base damage.                                                                                               | White |
+| <img src="https://i.postimg.cc/CxG3QCK9/Fungus.png" width="96"/>                | **Fungus**                | After standing still for 1 second, shoot fireworks at 9% (+8 per stack) speed (hyperbolic up to 100%) that deal 300% base damage.                                                | White |
+|                                                                                 |                           |                                                                                                                                                                                  |       |
+| <img src="https://i.postimg.cc/TYDMrvvd/Firework-Daisy.png" width="96"/>        | **Firework Daisy**        | Releases a barrage of fireworks during the Teleporter event, dealing 40x300% base damage. Occurs 2 (+1 per stack) times.                                                         | Green |
+| <img src="https://i.postimg.cc/8zg84XTh/Firework-Stuffed-Head.png" width="96"/> | **Firework-Stuffed Head** | Using a non-primary skill fires 1 (+1 per stack) fireworks for 300% base damage.                                                                                                 | Green |
+| <img src="https://i.postimg.cc/yxJqQwJT/Bottled-Fireworks.png" width="96"/>     | **Will-o'-the-Firework**  | On killing an enemy, release a barrage of 2 (+1 per stack) fireworks for 300% base damage each.                                                                                  | Green |
+|                                                                                 |                           |                                                                                                                                                                                  |       |
+| <img src="https://i.postimg.cc/1RT1n5T7/Spare-Fireworks.png" width="96"/>       | **Spare Fireworks**       | Non-player allies gain an automatic firework launcher that propels 4 (+2 per stack) fireworks every 4 seconds for 300% base damage each.                                         | Red   |
+|                                                                                 |                           |                                                                                                                                                                                  |       |
+| <img src="https://i.postimg.cc/C1rT4FK1/Power-Works.png" width="96"/>           | **Power Works**           | Taking damage to below 25% consumes this item, releasing a barrage of fireworks dealing 20x300% (+20 per stack) base damage. (Refreshes next stage). Corrupts all Power Elixirs. | Void  |
 
 ## Known Issues
 
