@@ -64,7 +64,8 @@ public class ItemFireworkDaisy : FireworkItem
         return $"<style=cIsDamage>Releases a barrage of fireworks</style> during the " +
                $"<style=cIsUtility>Teleporter event</style>, dealing " +
                $"<style=cIsDamage>{fireworksPerWave.Value}x300%</style> base damage. " +
-               $"Occurs 2 <style=cStack>(+1 per stack)</style> times.";
+               $"Occurs <style=cIsDamage>2</style> <style=cStack>(+1 per stack)</style> " +
+               $"<style=cIsDamage>times</style>.";
     }
 
     public override string GetItemLore()

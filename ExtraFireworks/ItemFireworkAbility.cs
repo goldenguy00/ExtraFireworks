@@ -59,7 +59,7 @@ public class ItemFireworkAbility : FireworkItem
     public override string GetItemDescription()
     {
         return $"Using a <style=cIsUtility>non-primary skill</style> fires <style=cIsDamage>{scaler.Base}</style> " +
-               $"<style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style> for " +
+               $"<style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>firework</style> for " +
                $"<style=cIsDamage>300%</style> base damage.";
     }
 

@@ -62,7 +62,7 @@ public class ItemFireworkVoid : FireworkItem
 
     public override string GetItemPickup()
     {
-        return "Release a barrage of fireworks at low health. Consumed on use. Refreshes every stage.";
+        return "Release a barrage of fireworks at low health. Refreshes every stage. Corrupts all Power Elixirs.";
     }
 
     public override string GetItemDescription()
