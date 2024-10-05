@@ -1,4 +1,7 @@
-﻿namespace ExtraFireworks;
+﻿using R2API;
+using RoR2.Projectile;
+
+namespace ExtraFireworks;
 
 using System.Collections.Generic;
 using BepInEx.Configuration;
@@ -11,20 +14,17 @@ public class ItemFireworkFinale : FireworkItem
     private ConfigEntry<float> fireworkDamage;
     private ConfigEntry<float> fireworkExplosionSize;
     private ConfigEntry<int> fireworkEnemyKillcount;
-    private ConfigurableHyperbolicScaling cooldownScaler;
 
-    private Dictionary<CharacterBody, float> rechargeTimers;
+    private GameObject projectilePrefab;
     
     public ItemFireworkFinale(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
         fireworkDamage = config.Bind(GetConfigSection(), "DamageCoefficient", 30f,
             "Damage of Grand Finale firework as coefficient of base damage");
-        fireworkExplosionSize = config.Bind(GetConfigSection(), "ExplosionRadius", 1.0f,
+        fireworkExplosionSize = config.Bind(GetConfigSection(), "ExplosionRadius", 10f,
             "Explosion radius of Grand Finale firework");
         fireworkEnemyKillcount = config.Bind(GetConfigSection(), "KillThreshold", 15,
             "Number of enemies required to proc the Grand Finale firework");
-        cooldownScaler = new ConfigurableHyperbolicScaling(config, "", GetConfigSection(), 30, 0.25f);
-        rechargeTimers = new Dictionary<CharacterBody, float>();
     }
 
     public override string GetName()
@@ -76,6 +76,29 @@ public class ItemFireworkFinale : FireworkItem
     {
         return "Ayo what we do with all these fireworks?! *END TRANSMISSION*";
     }
+
+    public override void Init(AssetBundle bundle)
+    {
+        base.Init(bundle);
+
+        projectilePrefab = bundle.LoadAsset<GameObject>("Assets/ImportModels/GrandFinaleProjectile.prefab")
+            .InstantiateClone("GrandFinaleProjectile");
+        projectilePrefab.AddComponent<NetworkIdentity>();
+        projectilePrefab.AddComponent<ProjectileController>();
+        projectilePrefab.AddComponent<TeamFilter>();
+        projectilePrefab.AddComponent<ProjectileDamage>();
+        projectilePrefab.AddComponent<ProjectileExplosion>();
+        var missileController = projectilePrefab.AddComponent<MissileController>();
+        missileController.maxVelocity = 1f;
+        missileController.acceleration = 1f;
+        missileController.giveupTimer = 60f;
+        missileController.deathTimer = 60f;
+        missileController.turbulence = 1f;
+        var rb = projectilePrefab.GetComponent<Rigidbody>();
+        rb.useGravity = false;
+        projectilePrefab.AddComponent<QuaternionPID>();
+        projectilePrefab.AddComponent<ProjectileTargetComponent>();
+    }
     
     private void RefreshBuffCount(CharacterBody body)
     {
@@ -119,8 +142,9 @@ public class ItemFireworkFinale : FireworkItem
                 var count = attackerCharacterBody.inventory.GetItemCount(Item);
                 if (count > 0)
                 {
-                    var finaleLauncher = ExtraFireworks.SpawnFireworks(report.victim.body.coreTransform, attackerCharacterBody, 1, false);
-                    finaleLauncher.damageCoefficient = fireworkDamage.Value;
+                    ProjectileManager.instance.FireProjectile(projectilePrefab, attackerCharacterBody.corePosition, 
+                        Quaternion.LookRotation(Vector3.up), attackerCharacterBody.gameObject, 
+                        fireworkDamage.Value, 50f, attackerCharacterBody.RollCrit());
                 }
             }
         };

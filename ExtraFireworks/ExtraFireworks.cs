@@ -34,7 +34,7 @@ namespace ExtraFireworks
                 new ItemFireworkMushroom(this, Config),
                 new ItemFireworkOnHit(this, Config),
                 new ItemFireworkOnKill(this, Config),
-                //new ItemFireworkFinale(this, Config),
+                new ItemFireworkFinale(this, Config)
             };
 
             var fireworkVoidItem = new ItemFireworkVoid(this, Config);
