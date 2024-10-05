@@ -17,7 +17,7 @@ The creators of this mod assume no responsibility for any injuries sustained whi
 |                                                                                 |                           |                                                                                                                                                                                 |       |
 | <img src="https://i.postimg.cc/1RT1n5T7/Spare-Fireworks.png" width="96"/>       | **Spare Fireworks**       | Non-player allies gain an automatic firework launcher that propels 4 (+2 per stack) fireworks every 4 seconds for 300% base damage each.                                        | Red   |
 |                                                                                 |                           |                                                                                                                                                                                 |       |
-| <img src="https://i.postimg.cc/C1rT4FK1/Power-Works.png" width="96"/>           | **Power Works**           | Taking damage to below 25% consumes this item, releasing a barrage of fireworks dealing 20x300% (+20 per stack) base damage. (Refreshes next stage). Corrupts all Power Elixirs. | Void  |
+| <img src="https://i.postimg.cc/C1rT4FK1/Power-Works.png" width="96"/>           | **Power 'Works**          | Taking damage to below 25% consumes this item, releasing a barrage of fireworks dealing 20x300% (+20 per stack) base damage. (Refreshes next stage). Corrupts all Power Elixirs. | Void  |
 
 ## Known Issues
 
