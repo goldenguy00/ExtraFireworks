@@ -1,7 +1,7 @@
 # Risk of Rain 2 Extra Fireworks
 #### Created by Physics System and Smxrez
 
-Adds 7 new fully-configurable firework-related items (*only for the most hardcore firework enthusiasts*)
+Adds 7 new configurable firework-related items (*only for the most hardcore firework enthusiasts*)
 
 The creators of this mod assume no responsibility for any injuries sustained while playing with fireworks
 
