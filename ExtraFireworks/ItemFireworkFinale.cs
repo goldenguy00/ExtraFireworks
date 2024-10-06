@@ -121,12 +121,6 @@ public class ItemFireworkFinale : FireworkItem
         qpid.gain = 20;
         qpid.PID = new Vector3(5, 1, 0);
         projectilePrefab.AddComponent<ProjectileTargetComponent>();
-        var piec = projectilePrefab.AddComponent<ProjectileImpactEventCaller>();
-        piec.impactEvent = new ProjectileImpactEvent();
-        piec.impactEvent.AddListener(projectileImpactInfo =>
-        {
-            Debug.Log($"Big ass firework hit {projectileImpactInfo.collider.gameObject.name}!");
-        });
     }
     
     private void RefreshBuffCount(CharacterBody body)
