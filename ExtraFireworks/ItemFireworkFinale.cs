@@ -83,21 +83,50 @@ public class ItemFireworkFinale : FireworkItem
 
         projectilePrefab = bundle.LoadAsset<GameObject>("Assets/ImportModels/GrandFinaleProjectile.prefab")
             .InstantiateClone("GrandFinaleProjectile");
+        projectilePrefab.layer = LayerMask.NameToLayer("Projectile");
         projectilePrefab.AddComponent<NetworkIdentity>();
-        projectilePrefab.AddComponent<ProjectileController>();
-        projectilePrefab.AddComponent<TeamFilter>();
+        var tf = projectilePrefab.AddComponent<TeamFilter>();
+        tf.teamIndex = TeamIndex.Monster;
+        var pc = projectilePrefab.AddComponent<ProjectileController>();
+        pc.procCoefficient = 1f;
+        pc.allowPrediction = true;
         projectilePrefab.AddComponent<ProjectileDamage>();
-        projectilePrefab.AddComponent<ProjectileExplosion>();
+        var pie = projectilePrefab.AddComponent<ProjectileImpactExplosion>();
+        pie.lifetime = 99f;
+        pie.destroyOnEnemy = true;
+        pie.destroyOnWorld = true;
+        pie.impactOnWorld = true;
+        pie.alive = true;
+        pie.explodeOnLifeTimeExpiration = true;
+        pie.blastDamageCoefficient = 1f;
+        pie.blastProcCoefficient = 1f;
+        pie.blastRadius = fireworkExplosionSize.Value;
+        pie.transformSpace = ProjectileImpactExplosion.TransformSpace.World;
+        pie.dotDamageMultiplier = 1f;
+        pie.canRejectForce = true;
+        pie.dotIndex = DotController.DotIndex.None;
+        pie.falloffModel = BlastAttack.FalloffModel.None;
+        //pie.impactEffect = "FireworkExplosion2";
         var missileController = projectilePrefab.AddComponent<MissileController>();
-        missileController.maxVelocity = 1f;
-        missileController.acceleration = 1f;
-        missileController.giveupTimer = 60f;
-        missileController.deathTimer = 60f;
-        missileController.turbulence = 1f;
+        missileController.maxVelocity = 25f;
+        missileController.maxSeekDistance = 100f;
+        missileController.acceleration = 2f;
+        missileController.rollVelocity = 3f;
+        missileController.giveupTimer = 8f;
+        missileController.deathTimer = 16f;
+        missileController.turbulence = 8f;
         var rb = projectilePrefab.GetComponent<Rigidbody>();
         rb.useGravity = false;
-        projectilePrefab.AddComponent<QuaternionPID>();
+        var qpid = projectilePrefab.AddComponent<QuaternionPID>();
+        qpid.gain = 20;
+        qpid.PID = new Vector3(5, 1, 0);
         projectilePrefab.AddComponent<ProjectileTargetComponent>();
+        var piec = projectilePrefab.AddComponent<ProjectileImpactEventCaller>();
+        piec.impactEvent = new ProjectileImpactEvent();
+        piec.impactEvent.AddListener(projectileImpactInfo =>
+        {
+            Debug.Log($"Big ass firework hit {projectileImpactInfo.collider.gameObject.name}!");
+        });
     }
     
     private void RefreshBuffCount(CharacterBody body)
@@ -142,9 +171,11 @@ public class ItemFireworkFinale : FireworkItem
                 var count = attackerCharacterBody.inventory.GetItemCount(Item);
                 if (count > 0)
                 {
-                    ProjectileManager.instance.FireProjectile(projectilePrefab, attackerCharacterBody.corePosition, 
+                    ProjectileManager.instance.FireProjectile(projectilePrefab, 
+                        attackerCharacterBody.corePosition + Vector3.up * attackerCharacterBody.radius, 
                         Quaternion.LookRotation(Vector3.up), attackerCharacterBody.gameObject, 
-                        fireworkDamage.Value, 50f, attackerCharacterBody.RollCrit());
+                        fireworkDamage.Value * attackerCharacterBody.baseDamage, 50f, 
+                        attackerCharacterBody.RollCrit());
                 }
             }
         };
