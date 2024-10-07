@@ -19,6 +19,8 @@ namespace ExtraFireworks
         public const string PluginVersion = "1.4.1";
         
         private static List<FireworkItem> items;
+        public static GameObject fireworkLauncherPrefab;
+        public static GameObject fireworkPrefab;
 
         public void Awake()
         {
@@ -51,6 +53,9 @@ namespace ExtraFireworks
                 foreach (var item in items)
                     item.Init(bundle);
             }
+
+            fireworkLauncherPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/FireworkLauncher");
+            fireworkPrefab = fireworkLauncherPrefab.GetComponent<FireworkLauncher>().projectilePrefab;
 
             // Bypass 3D model scaling
             On.RoR2.PickupDisplay.RebuildModel += (orig, self, modelObjectOverride) =>
@@ -123,7 +128,7 @@ namespace ExtraFireworks
 
         public static FireworkLauncher CreateLauncher(CharacterBody owner, Vector3 position, int count)
         {
-            FireworkLauncher fireworkLauncher = Instantiate(LegacyResourcesAPI.Load<GameObject>("Prefabs/FireworkLauncher"), position, Quaternion.identity).GetComponent<FireworkLauncher>();
+            FireworkLauncher fireworkLauncher = Instantiate(fireworkLauncherPrefab, position, Quaternion.identity).GetComponent<FireworkLauncher>();
             fireworkLauncher.owner = owner?.gameObject;
             if (owner)
             {
