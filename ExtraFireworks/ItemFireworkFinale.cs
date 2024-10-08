@@ -15,7 +15,10 @@ public class ItemFireworkFinale : FireworkItem
     private ConfigEntry<float> fireworkExplosionSize;
     private ConfigEntry<int> fireworkEnemyKillcount;
 
+    private BuffDef buff;
+    
     private GameObject projectilePrefab;
+    private Dictionary<CharacterBody, int> killCountdowns;
     
     public ItemFireworkFinale(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
@@ -23,8 +26,10 @@ public class ItemFireworkFinale : FireworkItem
             "Damage of Grand Finale firework as coefficient of base damage");
         fireworkExplosionSize = config.Bind(GetConfigSection(), "ExplosionRadius", 10f,
             "Explosion radius of Grand Finale firework");
-        fireworkEnemyKillcount = config.Bind(GetConfigSection(), "KillThreshold", 15,
+        fireworkEnemyKillcount = config.Bind(GetConfigSection(), "KillThreshold", 3,
             "Number of enemies required to proc the Grand Finale firework");
+
+        killCountdowns = new Dictionary<CharacterBody, int>();
     }
 
     public override string GetName()
@@ -81,58 +86,78 @@ public class ItemFireworkFinale : FireworkItem
     {
         base.Init(bundle);
 
-        projectilePrefab = bundle.LoadAsset<GameObject>("Assets/ImportModels/GrandFinaleProjectile.prefab")
-            .InstantiateClone("GrandFinaleProjectile");
+        buff = ScriptableObject.CreateInstance<BuffDef>();
+        buff.name = "GrandFinaleCountdown";
+        buff.canStack = true;
+        buff.isCooldown = false;
+        buff.isDebuff = false;
+        buff.buffColor = Color.red;
+        ContentAddition.AddBuffDef(buff);
+
+        projectilePrefab = ExtraFireworks.fireworkPrefab.InstantiateClone("GrandFinaleProjectile");
+        //projectilePrefab.transform.localScale *= 5;
         projectilePrefab.layer = LayerMask.NameToLayer("Projectile");
-        projectilePrefab.AddComponent<NetworkIdentity>();
-        var tf = projectilePrefab.AddComponent<TeamFilter>();
-        tf.teamIndex = TeamIndex.Monster;
-        var pc = projectilePrefab.AddComponent<ProjectileController>();
-        pc.procCoefficient = 1f;
-        pc.allowPrediction = true;
-        projectilePrefab.AddComponent<ProjectileDamage>();
-        var pie = projectilePrefab.AddComponent<ProjectileImpactExplosion>();
+        var pie = projectilePrefab.GetComponent<ProjectileImpactExplosion>();
         pie.lifetime = 99f;
-        pie.destroyOnEnemy = true;
-        pie.destroyOnWorld = true;
-        pie.impactOnWorld = true;
-        pie.alive = true;
         pie.explodeOnLifeTimeExpiration = true;
         pie.blastDamageCoefficient = 1f;
         pie.blastProcCoefficient = 1f;
+
+        var originalBlastRadius = pie.blastRadius;
         pie.blastRadius = fireworkExplosionSize.Value;
-        pie.transformSpace = ProjectileImpactExplosion.TransformSpace.World;
+        
         pie.dotDamageMultiplier = 1f;
         pie.canRejectForce = true;
-        pie.dotIndex = DotController.DotIndex.None;
         pie.falloffModel = BlastAttack.FalloffModel.None;
+
+        /*if (pie.impactEffect)
+        {
+            var newImpactEffect = pie.impactEffect.InstantiateClone("GrandFinaleImpact");
+            newImpactEffect.transform.localScale *= fireworkExplosionSize.Value / originalBlastRadius;
+            newImpactEffect.AddComponent<NetworkIdentity>();
+            newImpactEffect.SetActive(false);
+            pie.impactEffect = newImpactEffect;
+        }
+
+        if (pie.explosionEffect)
+        {
+            var newExplosionEffect = pie.explosionEffect.InstantiateClone("GrandFinaleExplosion");
+            newExplosionEffect.transform.localScale *= fireworkExplosionSize.Value / originalBlastRadius;
+            newExplosionEffect.SetActive(false);
+            pie.explosionEffect = newExplosionEffect;
+        }*/
+        
         //pie.impactEffect = "FireworkExplosion2";
-        var missileController = projectilePrefab.AddComponent<MissileController>();
-        missileController.maxVelocity = 25f;
-        missileController.maxSeekDistance = 100f;
+        var missileController = projectilePrefab.GetComponent<MissileController>();
+        missileController.maxVelocity = 40f;
+        missileController.maxSeekDistance = 150f;
         missileController.acceleration = 2f;
         missileController.rollVelocity = 3f;
-        missileController.giveupTimer = 8f;
-        missileController.deathTimer = 16f;
-        missileController.turbulence = 8f;
-        var rb = projectilePrefab.GetComponent<Rigidbody>();
-        rb.useGravity = false;
-        var qpid = projectilePrefab.AddComponent<QuaternionPID>();
-        qpid.gain = 20;
-        qpid.PID = new Vector3(5, 1, 0);
-        projectilePrefab.AddComponent<ProjectileTargetComponent>();
+        missileController.giveupTimer = 99f;
+        missileController.deathTimer = 99f;
+        missileController.turbulence = 0.5f;
+
+        var boxCollider = projectilePrefab.GetComponent<BoxCollider>();
+        boxCollider.size *= 5f;
     }
     
     private void RefreshBuffCount(CharacterBody body)
     {
-        /*var coatCount = body.inventory.GetItemCount(RoR2.Items.ImmuneToDebuffBehavior.GetItemDef());
-        body.SetBuffCount(DLC1Content.Buffs.ImmuneToDebuffReady.buffIndex, coatCount);*/
-        // TODO custom debuff to indicate time until
+        var finaleCount = body.inventory.GetItemCount(Item);
+        if (finaleCount <= 0)
+        {
+            body.SetBuffCount(buff.buffIndex, 0);
+            return;
+        }
+
+        if (!killCountdowns.ContainsKey(body))
+            return;
+        
+        body.SetBuffCount(buff.buffIndex, killCountdowns[body]);
     }
         
     public void FixCounts()
     {
-        // Fix Ben's Raincoat stack not updating in the buff bar
         var instances = PlayerCharacterMasterController.instances;
         if (instances == null)
             return;
@@ -150,6 +175,11 @@ public class ItemFireworkFinale : FireworkItem
     {
         FixCounts();
     }
+
+    protected void ResetKillcount(CharacterBody body, int itemCount)
+    {
+        killCountdowns[body] = Mathf.CeilToInt(fireworkEnemyKillcount.Value * 1.0f / itemCount);
+    }
     
     public override void AddHooks()
     {
@@ -165,13 +195,72 @@ public class ItemFireworkFinale : FireworkItem
                 var count = attackerCharacterBody.inventory.GetItemCount(Item);
                 if (count > 0)
                 {
-                    ProjectileManager.instance.FireProjectile(projectilePrefab, 
-                        attackerCharacterBody.corePosition + Vector3.up * attackerCharacterBody.radius, 
-                        Quaternion.LookRotation(Vector3.up), attackerCharacterBody.gameObject, 
-                        fireworkDamage.Value * attackerCharacterBody.baseDamage, 50f, 
-                        attackerCharacterBody.RollCrit());
+                    if (!killCountdowns.ContainsKey(attackerCharacterBody))
+                        ResetKillcount(attackerCharacterBody, count);
+                    
+                    var newKillcount = killCountdowns[attackerCharacterBody] - 1;
+                    if (newKillcount > 0)
+                    {
+                        killCountdowns[attackerCharacterBody] = newKillcount;
+                    }
+                    
+                    if (newKillcount <= 0)
+                    {
+                        ProjectileManager.instance.FireProjectile(projectilePrefab, 
+                            attackerCharacterBody.corePosition + Vector3.up * attackerCharacterBody.radius, 
+                            Quaternion.LookRotation(Vector3.up), attackerCharacterBody.gameObject, 
+                            fireworkDamage.Value * attackerCharacterBody.baseDamage, 50f, 
+                            attackerCharacterBody.RollCrit());
+                        ResetKillcount(attackerCharacterBody, count);
+                    }
                 }
             }
+        };
+
+        On.RoR2.Projectile.ProjectileGhostController.Start += (orig, self) =>
+        {
+            orig(self);
+
+            if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("GrandFinaleProjectile"))
+            {
+                self.transform.GetChild(0).localScale = Vector3.one * 5f;
+                self.transform.GetChild(1).localPosition = new Vector3(0, 0, -2.5f);
+                self.transform.GetChild(2).localPosition = new Vector3(0, 0, -2.5f);
+            }
+        };
+
+        On.RoR2.CharacterMaster.OnServerStageBegin += (orig, self, stage) =>
+        {
+            orig(self, stage);
+
+            var body = self.playerCharacterMasterController.body;
+            var itemCount = self.inventory.GetItemCount(Item);
+            
+            if (!killCountdowns.ContainsKey(body))
+                return;
+            
+            if (killCountdowns.ContainsKey(body) && itemCount <= 0)
+            {
+                killCountdowns.Remove(body);
+                return;
+            }
+
+            ResetKillcount(body, itemCount);
+        };
+
+        On.RoR2.CharacterBody.OnInventoryChanged += (orig, self) =>
+        {
+            orig(self);
+
+            var itemCount = self.inventory.GetItemCount(Item);
+            if (itemCount <= 0 && killCountdowns.ContainsKey(self))
+            {
+                killCountdowns.Remove(self);
+                return;
+            }
+                
+            if (itemCount > 0 && !killCountdowns.ContainsKey(self))
+                ResetKillcount(self, itemCount);
         };
     }
 }
