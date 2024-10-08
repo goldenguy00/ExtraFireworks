@@ -17,15 +17,18 @@ namespace ExtraFireworks
         public const string PluginAuthor = "PhysicsFox";
         public const string PluginName = "ExtraFireworks";
         public const string PluginVersion = "1.4.1";
-        
-        private static List<FireworkItem> items;
+
         public static GameObject fireworkLauncherPrefab;
         public static GameObject fireworkPrefab;
+        private static List<FireworkItem> items;
 
         public void Awake()
         {
             //Init our logging class so that we can properly log for debugging
             Log.Init(Logger);
+            
+            fireworkLauncherPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/FireworkLauncher");
+            fireworkPrefab = fireworkLauncherPrefab.GetComponent<FireworkLauncher>().projectilePrefab;
 
             //Define all the items
             items = new List<FireworkItem>
@@ -53,9 +56,6 @@ namespace ExtraFireworks
                 foreach (var item in items)
                     item.Init(bundle);
             }
-
-            fireworkLauncherPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/FireworkLauncher");
-            fireworkPrefab = fireworkLauncherPrefab.GetComponent<FireworkLauncher>().projectilePrefab;
 
             // Bypass 3D model scaling
             On.RoR2.PickupDisplay.RebuildModel += (orig, self, modelObjectOverride) =>
