@@ -18,6 +18,8 @@ public class ItemFireworkFinale : FireworkItem
     private BuffDef buff;
     
     private GameObject projectilePrefab;
+    private GameObject grandFinaleModel;
+    private GameObject projectileMdlClone;
     private Dictionary<CharacterBody, int> killCountdowns;
     
     public ItemFireworkFinale(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
@@ -85,6 +87,8 @@ public class ItemFireworkFinale : FireworkItem
     public override void Init(AssetBundle bundle)
     {
         base.Init(bundle);
+
+        grandFinaleModel = bundle.LoadAsset<GameObject>("Assets/ImportModels/GrandFinaleProjectile.prefab");
 
         buff = ScriptableObject.CreateInstance<BuffDef>();
         buff.name = "GrandFinaleCountdown";
@@ -223,9 +227,35 @@ public class ItemFireworkFinale : FireworkItem
 
             if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("GrandFinaleProjectile"))
             {
-                self.transform.GetChild(0).localScale = Vector3.one * 5f;
                 self.transform.GetChild(1).localPosition = new Vector3(0, 0, -2.5f);
                 self.transform.GetChild(2).localPosition = new Vector3(0, 0, -2.5f);
+
+                var fireworkMdl = self.transform.GetChild(0);
+                if (fireworkMdl.childCount == 0)
+                {
+                    var go = grandFinaleModel.InstantiateClone("GrandFinaleModel");
+                    go.transform.parent = fireworkMdl.transform;
+                    go.transform.localPosition = Vector3.zero;
+                }
+                else
+                {
+                    fireworkMdl.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = true;
+                }
+                fireworkMdl.GetComponent<MeshRenderer>().enabled = false;
+            }
+            
+            // Reverts above changes, since firework prefab gets pooled
+            if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("FireworkProjectile"))
+            {
+                self.transform.GetChild(1).localPosition = new Vector3(0, 0, -0.729f);
+                self.transform.GetChild(2).localPosition = new Vector3(0, 0, -0.764f);
+
+                var fireworkMdl = self.transform.GetChild(0);
+                if (fireworkMdl.childCount > 0)
+                {
+                    fireworkMdl.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = false;
+                    fireworkMdl.GetComponent<MeshRenderer>().enabled = true;
+                }
             }
         };
 
