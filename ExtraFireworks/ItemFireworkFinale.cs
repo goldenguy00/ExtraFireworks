@@ -69,7 +69,7 @@ public class ItemFireworkFinale : FireworkItem
 
     public override string GetItemPickup()
     {
-        return "Launch a grand finale firework after killing 15 enemies.";
+        return $"Launch a grand finale firework after killing {fireworkEnemyKillcount.Value} enemies.";
     }
 
     public override string GetItemDescription()
