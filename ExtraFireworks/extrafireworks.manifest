@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 454542187
+CRC: 3172958701
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 544821ab8266e729efde7a1982b9b048
+    Hash: 82649865d69608a1a8fb0361f09e1c9c
   TypeTreeHash:
     serializedVersion: 2
     Hash: ba4f8edd3d639fda600417ed0da59101
@@ -60,6 +60,7 @@ Assets:
 - Assets/ImportModels/Textures/texGlassJarLidNormal.png
 - Assets/Import/BottledFireworks.prefab
 - Assets/Import/Fungus.png
+- Assets/Import/GrandFinale.png
 - Assets/Import/FireworkDaisy.png
 - Assets/ImportModels/Textures/texFireworkDiffuse.png
 - Assets/Import/BottledFireworks.png
