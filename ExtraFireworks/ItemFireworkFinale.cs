@@ -92,6 +92,7 @@ public class ItemFireworkFinale : FireworkItem
         buff.isCooldown = false;
         buff.isDebuff = false;
         buff.buffColor = Color.red;
+        buff.iconSprite = bundle.LoadAsset<Sprite>("Assets/Import/GrandFinaleBuff.png");;
         ContentAddition.AddBuffDef(buff);
 
         projectilePrefab = ExtraFireworks.fireworkPrefab.InstantiateClone("GrandFinaleProjectile");
@@ -203,8 +204,7 @@ public class ItemFireworkFinale : FireworkItem
                     {
                         killCountdowns[attackerCharacterBody] = newKillcount;
                     }
-                    
-                    if (newKillcount <= 0)
+                    else
                     {
                         ProjectileManager.instance.FireProjectile(projectilePrefab, 
                             attackerCharacterBody.corePosition + Vector3.up * attackerCharacterBody.radius, 
@@ -233,7 +233,13 @@ public class ItemFireworkFinale : FireworkItem
         {
             orig(self, stage);
 
+            if (!self.playerCharacterMasterController)
+                return;
+            
             var body = self.playerCharacterMasterController.body;
+            if (!body || !self.inventory)
+                return;
+            
             var itemCount = self.inventory.GetItemCount(Item);
             
             if (!killCountdowns.ContainsKey(body))
@@ -252,6 +258,9 @@ public class ItemFireworkFinale : FireworkItem
         {
             orig(self);
 
+            if (!self.inventory)
+                return;
+            
             var itemCount = self.inventory.GetItemCount(Item);
             if (itemCount <= 0 && killCountdowns.ContainsKey(self))
             {

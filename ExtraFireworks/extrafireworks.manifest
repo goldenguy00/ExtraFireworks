@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2775127578
+CRC: 454542187
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c7498318d2b26ed805a812ca77515488
+    Hash: 544821ab8266e729efde7a1982b9b048
   TypeTreeHash:
     serializedVersion: 2
     Hash: ba4f8edd3d639fda600417ed0da59101
@@ -72,6 +72,7 @@ Assets:
 - Assets/ImportModels/Textures/texAlienHeadDiffuse.png
 - Assets/ImportModels/Power Works.prefab
 - Assets/ImportModels/Textures/texHealingPotionCork_Diffuse.png
+- Assets/Import/GrandFinaleBuff.png
 - Assets/ImportModels/Textures/texGlowFlowerDiffuse.png
 - Assets/ImportModels/Textures/texMushroomDiffuse.png
 - Assets/ImportModels/GrandFinale.prefab
