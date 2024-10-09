@@ -22,7 +22,7 @@ public class ItemFireworkFinale : FireworkItem
     
     public ItemFireworkFinale(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
     {
-        fireworkDamage = config.Bind(GetConfigSection(), "DamageCoefficient", 30f,
+        fireworkDamage = config.Bind(GetConfigSection(), "DamageCoefficient", 100f,
             "Damage of Grand Finale firework as coefficient of base damage");
         fireworkExplosionSize = config.Bind(GetConfigSection(), "ExplosionRadius", 10f,
             "Explosion radius of Grand Finale firework");
