@@ -76,12 +76,14 @@ public class ItemFireworkFinale : FireworkItem
 
     public override string GetItemDescription()
     {
-        return "";  //$"Every <style=cIsDamage>{fireworkInterval.Value} seconds</style>, all non-player allies fire <style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style>";
+        return $"<style=cIsDamage>Killing {fireworkEnemyKillcount.Value}</style> " +
+               $"<style=cStack>(-50% per stack)</style> <style=cIsDamage>enemies</style> fires out a " +
+               $"<style=cIsDamage>massive firework</style> that deals <style=cIsDamage>5000%</style> base damage.";
     }
 
     public override string GetItemLore()
     {
-        return "Ayo what we do with all these fireworks?! *END TRANSMISSION*";
+        return "Ayo what we do this one big ass firework?! *END TRANSMISSION*";
     }
 
     public override void Init(AssetBundle bundle)
