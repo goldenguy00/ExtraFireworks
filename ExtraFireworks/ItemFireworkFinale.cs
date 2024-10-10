@@ -28,7 +28,7 @@ public class ItemFireworkFinale : FireworkItem
             "Damage of Grand Finale firework as coefficient of base damage");
         fireworkExplosionSize = config.Bind(GetConfigSection(), "ExplosionRadius", 10f,
             "Explosion radius of Grand Finale firework");
-        fireworkEnemyKillcount = config.Bind(GetConfigSection(), "KillThreshold", 3,
+        fireworkEnemyKillcount = config.Bind(GetConfigSection(), "KillThreshold", 10,
             "Number of enemies required to proc the Grand Finale firework");
 
         killCountdowns = new Dictionary<CharacterBody, int>();
