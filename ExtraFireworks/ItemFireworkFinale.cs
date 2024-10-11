@@ -136,7 +136,7 @@ public class ItemFireworkFinale : FireworkItem
         
         //pie.impactEffect = "FireworkExplosion2";
         var missileController = projectilePrefab.GetComponent<MissileController>();
-        missileController.maxVelocity = 40f;
+        missileController.maxVelocity = 7.5f;
         missileController.maxSeekDistance = 150f;
         missileController.acceleration = 2f;
         missileController.rollVelocity = 3f;
