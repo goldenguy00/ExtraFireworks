@@ -185,7 +185,7 @@ public class ItemFireworkFinale : FireworkItem
 
     protected void ResetKillcount(CharacterBody body, int itemCount)
     {
-        killCountdowns[body] = Mathf.CeilToInt(fireworkEnemyKillcount.Value * 1.0f / Mathf.Pow(2.0f, itemCount));
+        killCountdowns[body] = Mathf.CeilToInt(fireworkEnemyKillcount.Value * 1.0f / Mathf.Pow(2.0f, itemCount - 1));
     }
     
     public override void AddHooks()
