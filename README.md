@@ -31,6 +31,8 @@ Discord: rainbowphysics (can be pinged in Risk of Rain 2 Modding server)
 **1.5.0**
 * New red item: Grand Finale 
 * Power 'Works now gives void bubble when consumed 
+* Fix Mithrix blowing himself up with fireworks 
+* Other miscellaneous fixes
 
 **1.4.1**
 * Updated some item descriptions to be more in-line with vanilla
