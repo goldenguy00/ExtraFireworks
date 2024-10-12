@@ -187,6 +187,42 @@ public class ItemFireworkFinale : FireworkItem
     {
         killCountdowns[body] = Mathf.CeilToInt(fireworkEnemyKillcount.Value * 1.0f / Mathf.Pow(2.0f, itemCount - 1));
     }
+
+    private void RefreshModel(ProjectileGhostController self)
+    {
+        if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("GrandFinaleProjectile"))
+        {
+            self.transform.GetChild(1).localPosition = new Vector3(0, 0, -2.5f);
+            self.transform.GetChild(2).localPosition = new Vector3(0, 0, -2.5f);
+
+            var fireworkMdl = self.transform.GetChild(0);
+            if (fireworkMdl.childCount == 0)
+            {
+                var go = grandFinaleModel.InstantiateClone("GrandFinaleModel");
+                go.transform.parent = fireworkMdl.transform;
+                go.transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                fireworkMdl.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = true;
+            }
+            fireworkMdl.GetComponent<MeshRenderer>().enabled = false;
+        }
+            
+        // Reverts above changes, since firework prefab gets pooled
+        if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("FireworkProjectile"))
+        {
+            self.transform.GetChild(1).localPosition = new Vector3(0, 0, -0.729f);
+            self.transform.GetChild(2).localPosition = new Vector3(0, 0, -0.764f);
+
+            var fireworkMdl = self.transform.GetChild(0);
+            if (fireworkMdl.childCount > 0)
+            {
+                fireworkMdl.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = false;
+                fireworkMdl.GetComponent<MeshRenderer>().enabled = true;
+            }
+        }
+    }
     
     public override void AddHooks()
     {
@@ -209,56 +245,24 @@ public class ItemFireworkFinale : FireworkItem
                     if (newKillcount > 0)
                     {
                         killCountdowns[attackerCharacterBody] = newKillcount;
+                        return;
                     }
-                    else
-                    {
-                        ProjectileManager.instance.FireProjectile(projectilePrefab, 
-                            attackerCharacterBody.corePosition + Vector3.up * attackerCharacterBody.radius, 
-                            Quaternion.LookRotation(Vector3.up), attackerCharacterBody.gameObject, 
-                            fireworkDamage.Value * attackerCharacterBody.baseDamage, 50f, 
-                            attackerCharacterBody.RollCrit());
-                        ResetKillcount(attackerCharacterBody, count);
-                    }
+                    
+                    ProjectileManager.instance.FireProjectile(projectilePrefab, 
+                        attackerCharacterBody.corePosition + Vector3.up * attackerCharacterBody.radius, 
+                        Quaternion.LookRotation(Vector3.up), attackerCharacterBody.gameObject, 
+                        fireworkDamage.Value * attackerCharacterBody.baseDamage, 50f, 
+                        attackerCharacterBody.RollCrit());
+                    ResetKillcount(attackerCharacterBody, count);
                 }
             }
         };
 
-        On.RoR2.Projectile.ProjectileGhostController.Start += (orig, self) =>
+        On.RoR2.Projectile.ProjectileGhostController.FixedUpdate += (orig, self) =>
         {
             orig(self);
 
-            if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("GrandFinaleProjectile"))
-            {
-                self.transform.GetChild(1).localPosition = new Vector3(0, 0, -2.5f);
-                self.transform.GetChild(2).localPosition = new Vector3(0, 0, -2.5f);
-
-                var fireworkMdl = self.transform.GetChild(0);
-                if (fireworkMdl.childCount == 0)
-                {
-                    var go = grandFinaleModel.InstantiateClone("GrandFinaleModel");
-                    go.transform.parent = fireworkMdl.transform;
-                    go.transform.localPosition = Vector3.zero;
-                }
-                else
-                {
-                    fireworkMdl.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = true;
-                }
-                fireworkMdl.GetComponent<MeshRenderer>().enabled = false;
-            }
-            
-            // Reverts above changes, since firework prefab gets pooled
-            if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("FireworkProjectile"))
-            {
-                self.transform.GetChild(1).localPosition = new Vector3(0, 0, -0.729f);
-                self.transform.GetChild(2).localPosition = new Vector3(0, 0, -0.764f);
-
-                var fireworkMdl = self.transform.GetChild(0);
-                if (fireworkMdl.childCount > 0)
-                {
-                    fireworkMdl.GetChild(0).GetComponentInChildren<MeshRenderer>().enabled = false;
-                    fireworkMdl.GetComponent<MeshRenderer>().enabled = true;
-                }
-            }
+            RefreshModel(self);
         };
 
         On.RoR2.CharacterMaster.OnServerStageBegin += (orig, self, stage) =>
