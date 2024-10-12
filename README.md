@@ -28,6 +28,10 @@ The creators of this mod assume no responsibility for any injuries sustained whi
 Discord: rainbowphysics (can be pinged in Risk of Rain 2 Modding server)
 
 ## Changelog
+**1.5.0**
+* New red item: Grand Finale 
+* Power 'Works now gives void bubble when consumed 
+
 **1.4.1**
 * Updated some item descriptions to be more in-line with vanilla
 * Updated readme to include images and descriptions for all items
