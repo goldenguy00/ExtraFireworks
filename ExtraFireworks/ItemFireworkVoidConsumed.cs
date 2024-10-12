@@ -47,7 +47,7 @@ public class ItemFireworkVoidConsumed : FireworkItem
     public override ItemTag[] GetTags()
     {
         return new[] { ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotCopy, 
-            ItemTag.CannotDuplicate };
+            ItemTag.CannotDuplicate, ItemTag.CannotSteal};
     }
 
     public override string GetItemName()
