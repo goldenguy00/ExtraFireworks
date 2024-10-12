@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 89824864
+CRC: 479518280
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: fb089d9513ee49b59cf17b1dd1f622d3
+    Hash: 7bff4112907197325dd8d52d6f3f0858
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ba4f8edd3d639fda600417ed0da59101
+    Hash: a7a21288fe2bd6ae3724c7054e7a1302
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -25,12 +25,11 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 48
   Script: {instanceID: 0}
-- Class: 136
-  Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/ImportModels/Blender/GrandFinaleProjectile.blend
 - Assets/ImportModels/Textures/texGlowFlowerEmission.png
 - Assets/Import/FireworkDagger.prefab
 - Assets/ImportModels/Textures/texMushroomNormal.png

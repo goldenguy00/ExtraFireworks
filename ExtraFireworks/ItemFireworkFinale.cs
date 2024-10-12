@@ -19,7 +19,6 @@ public class ItemFireworkFinale : FireworkItem
     
     private GameObject projectilePrefab;
     private GameObject grandFinaleModel;
-    private GameObject projectileMdlClone;
     private Dictionary<CharacterBody, int> killCountdowns;
     
     public ItemFireworkFinale(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
@@ -192,8 +191,8 @@ public class ItemFireworkFinale : FireworkItem
     {
         if (self.authorityTransform && self.authorityTransform.gameObject.name.StartsWith("GrandFinaleProjectile"))
         {
-            self.transform.GetChild(1).localPosition = new Vector3(0, 0, -2.5f);
-            self.transform.GetChild(2).localPosition = new Vector3(0, 0, -2.5f);
+            self.transform.GetChild(1).localPosition = new Vector3(0, 0, -1.75f);
+            self.transform.GetChild(2).localPosition = new Vector3(0, 0, -1.75f);
 
             var fireworkMdl = self.transform.GetChild(0);
             if (fireworkMdl.childCount == 0)
