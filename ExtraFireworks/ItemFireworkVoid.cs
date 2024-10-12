@@ -105,6 +105,10 @@ public class ItemFireworkVoid : FireworkItem
                 ConsumedItem.Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
             
             ExtraFireworks.FireFireworks(body, fireworksPerStack.Value * count);
+            
+            // Also give void bubble
+            body.SetBuffCount(DLC1Content.Buffs.BearVoidCooldown.buffIndex, 0);
+            body.SetBuffCount(DLC1Content.Buffs.BearVoidReady.buffIndex, 1);
         };
         
         On.RoR2.ItemCatalog.SetItemDefs += (orig, newItemDefs) =>
