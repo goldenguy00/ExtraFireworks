@@ -78,7 +78,7 @@ public class ItemFireworkOnKill : FireworkItem
             {
                 var count = attackerCharacterBody.inventory.GetItemCount(Item);
                 if (count > 0)
-                    ExtraFireworks.SpawnFireworks(report.victim.body.coreTransform, attackerCharacterBody, scaler.GetValueInt(count), false);
+                    ExtraFireworks.SpawnFireworks(report.victim?.body?.coreTransform, attackerCharacterBody, scaler.GetValueInt(count), false);
             }
         };
     }
