@@ -28,6 +28,9 @@ The creators of this mod assume no responsibility for any injuries sustained whi
 Discord: rainbowphysics (can be pinged in Risk of Rain 2 Modding server)
 
 ## Changelog
+**1.5.1**
+* Fix Forgive Me Please and other on-kill interactions with Will-o'-the-Firework 
+
 **1.5.0**
 * New red item: Grand Finale 
 * Power 'Works now gives void bubble when consumed 
