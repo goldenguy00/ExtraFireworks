@@ -16,7 +16,7 @@ namespace ExtraFireworks
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "PhysicsFox";
         public const string PluginName = "ExtraFireworks";
-        public const string PluginVersion = "1.5.1";
+        public const string PluginVersion = "1.5.2";
 
         public static GameObject fireworkLauncherPrefab;
         public static GameObject fireworkPrefab;
