@@ -232,7 +232,7 @@ public class ItemFireworkFinale : FireworkItem
                 return;
 
             var attackerCharacterBody = report.attackerBody;
-            if (attackerCharacterBody.inventory && attackerCharacterBody.teamComponent.teamIndex != report.victim.body.teamComponent.teamIndex)
+            if (attackerCharacterBody.inventory)
             {
                 var count = attackerCharacterBody.inventory.GetItemCount(Item);
                 if (count > 0)
