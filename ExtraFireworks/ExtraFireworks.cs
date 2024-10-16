@@ -111,8 +111,14 @@ namespace ExtraFireworks
         // Firework item formula: 4 + 4 * stack
         public static FireworkLauncher SpawnFireworks(Transform target, CharacterBody owner, int count, bool attach = true)
         {
-            ModelLocator locator = target?.GetComponent<ModelLocator>();
-            Transform located = locator?.modelTransform?.GetComponent<ChildLocator>()?.FindChild("FireworkOrigin");
+            ModelLocator locator = target.GetComponent<ModelLocator>();
+            Transform located = null;
+            if (locator && locator.modelTransform)
+            {
+                var chLoc = locator.modelTransform.GetComponent<ChildLocator>();
+                if (chLoc)
+                    located = chLoc.FindChild("FireworkOrigin");
+            }
             Vector3 position = located ? located.position : (target.position + Vector3.up * 2f);
             
             var body = target.GetComponent<CharacterBody>();

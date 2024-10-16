@@ -77,8 +77,19 @@ public class ItemFireworkOnKill : FireworkItem
             if (attackerCharacterBody.inventory && attackerCharacterBody.teamComponent.teamIndex != report.victim.body.teamComponent.teamIndex)
             {
                 var count = attackerCharacterBody.inventory.GetItemCount(Item);
-                if (count > 0)
-                    ExtraFireworks.SpawnFireworks(report.victim?.body?.coreTransform, attackerCharacterBody, scaler.GetValueInt(count), false);
+
+                if (count <= 0)
+                    return;
+
+                if (!report.victim)
+                    return;
+
+                var victimBody = report.victim.body;
+                if (!victimBody)
+                    return;
+
+                var trans = victimBody.coreTransform ? victimBody.coreTransform : victimBody.transform;
+                ExtraFireworks.SpawnFireworks(trans, attackerCharacterBody, scaler.GetValueInt(count), false);
             }
         };
     }
