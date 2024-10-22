@@ -28,6 +28,9 @@ The creators of this mod assume no responsibility for any injuries sustained whi
 Discord: rainbowphysics (can be pinged in Risk of Rain 2 Modding server)
 
 ## Changelog
+**1.5.3**
+* Fix interaction between Fungus and RiskyMod's capped fireworks
+
 **1.5.2**
 * Fix another Will-o'-the-Firework edge case
 
