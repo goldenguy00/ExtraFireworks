@@ -12,7 +12,7 @@ public class ItemFireworkMushroom : FireworkItem
     private ConfigurableHyperbolicScaling scaler;
     
     private Dictionary<CharacterBody, GameObject> mushroomFireworkGameObject;
-    private Dictionary<CharacterBody, FireworkLauncher> mushroomLauncher;
+    private Dictionary<CharacterBody, float> fungusTimers;
     private GameObject mushroomFireworkPrefab;
     
     public ItemFireworkMushroom(ExtraFireworks plugin, ConfigFile config) : base(plugin, config)
@@ -21,7 +21,7 @@ public class ItemFireworkMushroom : FireworkItem
         
         // Loading fungus shit in
         mushroomFireworkGameObject = new Dictionary<CharacterBody, GameObject>();
-        mushroomLauncher = new Dictionary<CharacterBody, FireworkLauncher>();
+        fungusTimers = new Dictionary<CharacterBody, float>();
         mushroomFireworkPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/MushroomWard");    
     }
 
@@ -100,55 +100,58 @@ public class ItemFireworkMushroom : FireworkItem
         {
             return;
         }
-
-        for (TeamIndex idx = 0; idx < TeamIndex.Count; idx++)
+        
+        var team = TeamComponent.GetTeamMembers(TeamIndex.Player);
+        foreach (var member in team)
         {
-            var team = TeamComponent.GetTeamMembers(idx);
-            foreach (var member in team)
+            if (!member.body)
+                continue;
+
+            var body = member.body;
+            if (!body.inventory)
+                continue;
+            
+            var stack = body.inventory.GetItemCount(Item);
+            bool flag = stack > 0 && body.GetNotMoving();
+            
+            // Handle creating the fungus effect
+            if (mushroomFireworkGameObject.ContainsKey(body) != flag)
             {
-                if (!member.body)
-                    continue;
-
-                var body = member.body;
-                if (!body.inventory)
-                    continue;
-                
-                var stack = body.inventory.GetItemCount(Item);
-                bool flag = stack > 0 && body.GetNotMoving();
-                if (mushroomFireworkGameObject.ContainsKey(body) != flag)
+                if (flag)
                 {
-                    if (flag)
+                    var go = ExtraFireworks.Instantiate(mushroomFireworkPrefab, body.footPosition, Quaternion.identity);
+                    var healingWard = go.GetComponent<HealingWard>();
+                    NetworkServer.Spawn(go);
+
+                    if (healingWard)
                     {
-                        var go = ExtraFireworks.Instantiate(mushroomFireworkPrefab, body.footPosition, Quaternion.identity);
-                        var healingWard = go.GetComponent<HealingWard>();
-                        NetworkServer.Spawn(go);
-
-                        if (healingWard)
-                        {
-                            healingWard.healFraction = 0f;
-                            healingWard.healPoints = 0f;
-                            // 1/2 of bungus size
-                            healingWard.Networkradius = (body.radius + 1.5f * 2) / 3f;
-                        }
-
-                        var launcher = ExtraFireworks.FireFireworks(body, Int32.MaxValue);
-                        launcher.launchInterval /= (1 - 1 / (1f + 0.05f * stack));
-
-                        go.transform.parent = body.gameObject?.transform;
-                        
-                        mushroomFireworkGameObject[body] = go;
-                        mushroomLauncher[body] = launcher;
+                        healingWard.healFraction = 0f;
+                        healingWard.healPoints = 0f;
+                        // 1/2 of bungus size
+                        healingWard.Networkradius = (body.radius + 1.5f * 2) / 3f;
                     }
-                    else
-                    {
-                        var go = mushroomFireworkGameObject[body];
-                        var launcher = mushroomLauncher[body];
-                        ExtraFireworks.Destroy(go);
-                        ExtraFireworks.Destroy(launcher);
-                        mushroomFireworkGameObject.Remove(body);
-                        mushroomLauncher.Remove(body);
-                    }
+                    
+                    go.transform.parent = body.gameObject?.transform;
+                    mushroomFireworkGameObject[body] = go;
                 }
+                else
+                {
+                    var go = mushroomFireworkGameObject[body];
+                    ExtraFireworks.Destroy(go);
+                    mushroomFireworkGameObject.Remove(body);
+                }
+            }
+            
+            // Handle spawning in fireworks
+            if (fungusTimers.ContainsKey(body))
+                fungusTimers[body] -= Time.fixedDeltaTime;
+            
+            if (flag && (!fungusTimers.ContainsKey(body) || fungusTimers[body] <= 0))
+            {
+                var launcher = ExtraFireworks.FireFireworks(body, 1);
+                launcher.launchInterval /= (1 - 1 / (1f + 0.05f * stack));
+                
+                fungusTimers[body] = launcher.launchInterval;
             }
         }
     }
