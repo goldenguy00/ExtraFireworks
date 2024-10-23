@@ -11,7 +11,7 @@ using UnityEngine.Networking;
 namespace ExtraFireworks.Items
 {
 
-    public class ItemFireworkFinale : FireworkItem<ItemFireworkFinale>
+    public class FireworkGrandFinale : BaseFireworkItem<FireworkGrandFinale>
     {
         internal readonly ConfigEntry<float> fireworkDamage;
         internal readonly ConfigEntry<float> fireworkExplosionSize;
@@ -22,7 +22,7 @@ namespace ExtraFireworks.Items
         internal GameObject projectilePrefab;
         internal GameObject grandFinaleModel, ghost;
 
-        public ItemFireworkFinale() : base()
+        public FireworkGrandFinale() : base()
         {
             fireworkDamage = PluginConfig.config.Bind(GetConfigSection(), "DamageCoefficient", 50f,
                 "Damage of Grand Finale firework as coefficient of base damage");

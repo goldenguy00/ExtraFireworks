@@ -8,11 +8,11 @@ using R2API;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkMushroom : FireworkItem<ItemFireworkMushroom>
+    public class FireworkMushroom : BaseFireworkItem<FireworkMushroom>
     {
         internal readonly ConfigurableHyperbolicScaling scaler;
 
-        public ItemFireworkMushroom() : base()
+        public FireworkMushroom() : base()
         {
             scaler = new ConfigurableHyperbolicScaling("", GetConfigSection(), 1, 0.1f);
         }
@@ -101,7 +101,7 @@ namespace ExtraFireworks.Items
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
         private static ItemDef GetItemDef()
         {
-            return ItemFireworkMushroom.Instance.Item;
+            return FireworkMushroom.Instance.Item;
         }
 
         [InitDuringStartup]
@@ -141,7 +141,7 @@ namespace ExtraFireworks.Items
                 this.fireworkWard.radius = networkradius;
                 this.fireworkWard.body = this.body;
                 this.fireworkWard.stack = base.stack;
-                this.fireworkWard.interval = 1f - ItemFireworkMushroom.Instance.scaler.GetValue(base.stack);
+                this.fireworkWard.interval = 1f - FireworkMushroom.Instance.scaler.GetValue(base.stack);
             }
         }
 

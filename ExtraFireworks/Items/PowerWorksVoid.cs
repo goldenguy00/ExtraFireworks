@@ -1,22 +1,23 @@
 ﻿using BepInEx.Configuration;
 using ExtraFireworks.Config;
+using R2API;
 using RoR2;
 using UnityEngine.Networking;
 using VoidItemAPI;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkVoid : FireworkItem<ItemFireworkVoid>
+    public class PowerWorksVoid : BaseFireworkItem<PowerWorksVoid>
     {
         public ConfigEntry<int> fireworksPerStack;
         public ConfigEntry<float> hpThreshold;
 
-        public ItemFireworkVoidConsumed ConsumedItem;
+        public PowerWorksVoidConsumed ConsumedItem;
         private bool voidInitialized = false;
 
-        public ItemFireworkVoid() : base()
+        public PowerWorksVoid() : base()
         {
-            ConsumedItem = new ItemFireworkVoidConsumed(this);
+            ConsumedItem = new PowerWorksVoidConsumed(this);
             fireworksPerStack = PluginConfig.config.Bind(GetConfigSection(), "FireworksPerUse", 20,
                 "Number of fireworks per consumption");
             hpThreshold = PluginConfig.config.Bind(GetConfigSection(), "HpThreshold", 0.25f,
@@ -63,15 +64,16 @@ namespace ExtraFireworks.Items
         private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
         {
             orig(self, info);
-
-            var body = self.body;
-            if (!body || !body.inventory || !body.master || !NetworkServer.active)
+            if (!NetworkServer.active)
                 return;
 
             // Check if HP threshold met
-            if (!(self.health / self.fullHealth <= hpThreshold.Value))
+            if (self.health / self.fullHealth > hpThreshold.Value)
                 return;
 
+            var body = self.body;
+            if (!body || !body.inventory || !body.master)
+                return;
 
             var count = body.inventory.GetItemCount(Item.itemIndex);
             if (count <= 0)
@@ -80,7 +82,7 @@ namespace ExtraFireworks.Items
             body.inventory.RemoveItem(Item, count);
             body.inventory.GiveItem(ConsumedItem.Item, count);
             CharacterMasterNotificationQueue.SendTransformNotification(body.master, Item.itemIndex,
-                ConsumedItem.Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+                ConsumedItem.Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Suppressed);
 
             ExtraFireworks.FireFireworks(body, fireworksPerStack.Value * count);
 
@@ -93,8 +95,11 @@ namespace ExtraFireworks.Items
         {
             orig(self, stage);
 
+            if (!self.inventory)
+                return;
+
             var consumedCount = self.inventory.GetItemCount(ConsumedItem.Item);
-            if (!self.inventory || consumedCount <= 0)
+            if (consumedCount <= 0)
                 return;
 
             self.inventory.RemoveItem(ConsumedItem.Item, consumedCount);
@@ -109,6 +114,7 @@ namespace ExtraFireworks.Items
 
             if (!voidInitialized)
             {
+                ItemCatalog
                 VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
                 voidInitialized = true;
             }

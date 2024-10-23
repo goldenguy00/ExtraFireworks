@@ -6,12 +6,12 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkAbility : FireworkItem<ItemFireworkAbility>
+    public class FireworkAbility : BaseFireworkItem<FireworkAbility>
     {
         internal static ConfigurableLinearScaling scaler;
         internal static ConfigEntry<bool> noSkillRestriction;
 
-        public ItemFireworkAbility() : base()
+        public FireworkAbility() : base()
         {
             scaler = new ConfigurableLinearScaling("", GetConfigSection(), 1, 1);
             noSkillRestriction = PluginConfig.config.Bind(GetConfigSection(), "PrimaryAbilityFireworks", false,
@@ -78,8 +78,8 @@ namespace ExtraFireworks.Items
         {
             if (this.stack > 0 && skill && skill.skillDef)
             {
-                if (ItemFireworkAbility.noSkillRestriction.Value || (skill.baseRechargeInterval >= 1f - Mathf.Epsilon && skill.skillDef.stockToConsume > 0))
-                    ExtraFireworks.FireFireworks(body, ItemFireworkAbility.scaler.GetValueInt(stack));
+                if (FireworkAbility.noSkillRestriction.Value || (skill.baseRechargeInterval >= 1f - Mathf.Epsilon && skill.skillDef.stockToConsume > 0))
+                    ExtraFireworks.FireFireworks(body, FireworkAbility.scaler.GetValueInt(stack));
             }
         }
     }

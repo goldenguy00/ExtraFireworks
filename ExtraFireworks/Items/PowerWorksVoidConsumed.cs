@@ -3,9 +3,9 @@ using VoidItemAPI;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkVoidConsumed(ItemFireworkVoid parent) : FireworkItem<ItemFireworkVoidConsumed>()
+    public class PowerWorksVoidConsumed(PowerWorksVoid parent) : BaseFireworkItem<PowerWorksVoidConsumed>()
     {
-        private readonly ItemFireworkVoid parent = parent;
+        private readonly PowerWorksVoid parent = parent;
         private bool voidInitialized = false;
 
         public override string GetName() => "PowerWorksConsumed";
@@ -18,11 +18,7 @@ namespace ExtraFireworks.Items
 
         public override ItemTier GetTier() => ItemTier.NoTier;
 
-        public override ItemTag[] GetTags()
-        {
-            return [ ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotCopy,
-                ItemTag.CannotDuplicate, ItemTag.CannotSteal];
-        }
+        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
 
         public override string GetItemName() => "Power 'Works (Consumed)";
 

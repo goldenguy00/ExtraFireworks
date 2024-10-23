@@ -37,14 +37,14 @@ namespace ExtraFireworks
             fireworkPrefab = fireworkLauncherPrefab.GetComponent<FireworkLauncher>().projectilePrefab;
             
             //Define all the items
-            new ItemFireworkAbility();
-            new ItemFireworkDaisy();
-            new ItemFireworkDrones();
-            new ItemFireworkMushroom();
-            new ItemFireworkOnHit();
-            new ItemFireworkOnKill();
-            new ItemFireworkFinale();
-            new ItemFireworkVoid();
+            new FireworkAbility();
+            new FireworkDaisy();
+            new FireworkDrones();
+            new FireworkMushroom();
+            new FireworkOnHit();
+            new FireworkOnKill();
+            new FireworkGrandFinale();
+            new PowerWorksVoid();
 
             // Load assetpack and initialize
             var bundle = AssetBundle.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "extrafireworks"));

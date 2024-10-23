@@ -3,11 +3,11 @@ using RoR2;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkOnKill : FireworkItem<ItemFireworkOnKill>
+    public class FireworkOnKill : BaseFireworkItem<FireworkOnKill>
     {
         private readonly ConfigurableLinearScaling scaler;
 
-        public ItemFireworkOnKill() : base()
+        public FireworkOnKill() : base()
         {
             scaler = new ConfigurableLinearScaling("", GetConfigSection(), 2, 1);
         }

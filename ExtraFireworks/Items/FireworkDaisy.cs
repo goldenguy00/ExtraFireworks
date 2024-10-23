@@ -7,11 +7,11 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkDaisy : FireworkItem<ItemFireworkDaisy>
+    public class FireworkDaisy : BaseFireworkItem<FireworkDaisy>
     {
         internal static ConfigEntry<int> fireworksPerWave;
 
-        public ItemFireworkDaisy() : base()
+        public FireworkDaisy() : base()
         {
             fireworksPerWave = PluginConfig.config.Bind(GetConfigSection(), "FireworksPerWave", 40,
                 "Number of fireworks per firework daisy wave");
@@ -94,7 +94,7 @@ namespace ExtraFireworks.Items
                 return;
             }
 
-            this.pulseCount = Util.GetItemCountForTeam(TeamIndex.Player, ItemFireworkDaisy.Instance.Item.itemIndex, false);
+            this.pulseCount = Util.GetItemCountForTeam(TeamIndex.Player, FireworkDaisy.Instance.Item.itemIndex, false);
             float nextFraction = CalculateNextPulseFraction();
 
             if (nextFraction < this.holdoutZone.charge)
@@ -121,10 +121,10 @@ namespace ExtraFireworks.Items
 
         private void Pulse()
         {
-            var bodies = TeamComponent.GetTeamMembers(TeamIndex.Player).Select(tc => tc.body).Where(body => body && body.inventory && body.inventory.GetItemCount(ItemFireworkDaisy.Instance.Item) > 0);
+            var bodies = TeamComponent.GetTeamMembers(TeamIndex.Player).Select(tc => tc.body).Where(body => body && body.inventory && body.inventory.GetItemCount(FireworkDaisy.Instance.Item) > 0);
             if (bodies.Any())
             {
-                ExtraFireworks.SpawnFireworks(this.transform, bodies.ElementAt(Random.Range(0, bodies.Count())), ItemFireworkDaisy.fireworksPerWave.Value);
+                ExtraFireworks.SpawnFireworks(this.transform, bodies.ElementAt(Random.Range(0, bodies.Count())), FireworkDaisy.fireworksPerWave.Value);
             }
         }
     }

@@ -5,14 +5,14 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkDrones : FireworkItem<ItemFireworkDrones>
+    public class FireworkDrones : BaseFireworkItem<FireworkDrones>
     {
         internal static ConfigEntry<float> fireworkInterval;
         internal static ConfigurableLinearScaling scaler;
 
-        public ItemFireworkDrones() : base()
+        public FireworkDrones() : base()
         {
-            new ItemFireworkDroneWeapon(this);
+            new FireworkDroneWeapon(this);
             fireworkInterval = PluginConfig.config.Bind(GetConfigSection(), "FireworksInterval", 4f,
                 "Number of seconds between bursts of fireworks");
             scaler = new ConfigurableLinearScaling("", GetConfigSection(), 4, 2);
@@ -70,7 +70,7 @@ namespace ExtraFireworks.Items
 
         private void OnEnable()
         {
-            this.UpdateAllMinions(this.body.inventory.GetItemCount(ItemFireworkDrones.Instance.Item));
+            this.UpdateAllMinions(this.body.inventory.GetItemCount(FireworkDrones.Instance.Item));
             MasterSummon.onServerMasterSummonGlobal += OnServerMasterSummonGlobal;
         }
 
@@ -120,19 +120,19 @@ namespace ExtraFireworks.Items
 
             if (newStack > 0)
             {
-                int itemCount = inventory.GetItemCount(ItemFireworkDroneWeapon.Instance.Item);
+                int itemCount = inventory.GetItemCount(FireworkDroneWeapon.Instance.Item);
                 if (itemCount < base.stack)
                 {
-                    inventory.GiveItem(ItemFireworkDroneWeapon.Instance.Item, base.stack - itemCount);
+                    inventory.GiveItem(FireworkDroneWeapon.Instance.Item, base.stack - itemCount);
                 }
                 else if (itemCount > base.stack)
                 {
-                    inventory.RemoveItem(ItemFireworkDroneWeapon.Instance.Item, itemCount - base.stack);
+                    inventory.RemoveItem(FireworkDroneWeapon.Instance.Item, itemCount - base.stack);
                 }
             }
             else
             {
-                inventory.ResetItem(ItemFireworkDroneWeapon.Instance.Item);
+                inventory.ResetItem(FireworkDroneWeapon.Instance.Item);
             }
         }
     }

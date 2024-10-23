@@ -4,17 +4,18 @@ using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UIElements;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkOnHit : FireworkItem<ItemFireworkOnHit>
+    public class FireworkOnHit : BaseFireworkItem<FireworkOnHit>
     {
         private readonly ConfigurableLinearScaling scaler;
         private readonly ConfigEntry<int> numFireworks;
 
         private const float MAX_FIREWORK_HEIGHT = 50f;
 
-        public ItemFireworkOnHit() : base()
+        public FireworkOnHit() : base()
         {
             numFireworks = PluginConfig.config.Bind(GetConfigSection(), "FireworksPerHit", 1, "Number of fireworks per hit");
             scaler = new ConfigurableLinearScaling("", GetConfigSection(), 10, 10);
@@ -71,7 +72,9 @@ namespace ExtraFireworks.Items
                     return;
 
                 var count = body.inventory.GetItemCount(Item);
-                if (count > 0 && Util.CheckRoll(scaler.GetValue(count) * damageInfo.procCoefficient, body.master))
+                var basePercent = 9f;
+                var scalingPercent = 9f;
+                if (count > 0 && Util.CheckRoll((basePercent + (scalingPercent * (count - 1))) * damageInfo.procCoefficient, body.master))
                 {
                     //var fireworkPos = victim.transform;
                     var victimBody = victim.GetComponent<CharacterBody>();

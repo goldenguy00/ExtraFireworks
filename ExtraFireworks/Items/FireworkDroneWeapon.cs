@@ -4,11 +4,11 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class ItemFireworkDroneWeapon(FireworkItem parent) : FireworkItem<ItemFireworkDroneWeapon>()
+    public class FireworkDroneWeapon(FireworkItem parent) : BaseFireworkItem<FireworkDroneWeapon>()
     {
         private readonly FireworkItem parent = parent;
 
-        public override string GetName() => "DroneFireworkWeapon";
+        public override string GetName() => "FireworkDroneWeapon";
 
         public override string GetPickupModelName() => parent.GetPickupModelName();
 
@@ -53,16 +53,16 @@ namespace ExtraFireworks.Items
 
         private void OnEnable()
         {
-            timer = Random.Range(0, ItemFireworkDrones.fireworkInterval.Value);
+            timer = Random.Range(0, FireworkDrones.fireworkInterval.Value);
         }
 
         private void FixedUpdate()
         {
             timer += Time.fixedDeltaTime;
-            if (this.body && this.stack > 0 && timer > ItemFireworkDrones.fireworkInterval.Value)
+            if (this.body && this.stack > 0 && timer > FireworkDrones.fireworkInterval.Value)
             {
                 timer = 0;
-                ExtraFireworks.FireFireworks(this.body, ItemFireworkDrones.scaler.GetValueInt(stack));
+                ExtraFireworks.FireFireworks(this.body, FireworkDrones.scaler.GetValueInt(stack));
             }
         }
     }

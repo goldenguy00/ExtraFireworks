@@ -1,6 +1,7 @@
 ﻿{
-	"name": "ExtraFireworks",
-	"version_number": "1.5.3",
+  "name": "ExtraFireworks",
+  "author": "PhysicsFox",
+	"version_number": "1.5.4",
 	"website_url": "https://github.com/rainbowphysics/ExtraFireworks",
 	"description": "Adds new firework themed items, for only the most hardcore firework fans,,,",
 	"dependencies": [

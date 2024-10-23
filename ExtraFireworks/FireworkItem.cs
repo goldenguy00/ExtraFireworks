@@ -7,13 +7,13 @@ using RoR2;
 using RoR2.ExpansionManagement;
 using UnityEngine;
 
-namespace ExtraFireworks.Items
+namespace ExtraFireworks
 {
-    public abstract class FireworkItem<T> : FireworkItem where T : FireworkItem<T>
+    public abstract class BaseFireworkItem<T> : FireworkItem where T : BaseFireworkItem<T>
     {
         public static T Instance { get; private set; }
 
-        public FireworkItem()
+        public BaseFireworkItem()
         {
             if (Instance != null)
                 throw new InvalidOperationException("Singleton class \"" + typeof(T).Name + "\" inheriting ItemBase was instantiated twice");
@@ -23,6 +23,9 @@ namespace ExtraFireworks.Items
         }
     }
 
+    /// <summary>
+    /// Dont inherit this class directly, use FireworkItem<T> instead!!
+    /// </summary>
     public abstract class FireworkItem
     {
         public ItemDef Item { get; protected set; }
