@@ -36,11 +36,11 @@
   
   <ItemGroup>
     <None Update="extrafireworks">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="./postbuild.bat $(ConfigurationName)" />
+    <Exec Command="./postbuild.bat $(TargetDir)" />
   </Target>
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace ExtraFireworks.Config
 {
-    public class ConfigurableLinearScaling(string prefix, string configSection, float defaultStart, float defaultScale) : ConfigurableScaling(prefix, configSection, defaultStart, defaultScale)
+    public class ConfigurableLinearScaling(string configSection, float defaultStart, float defaultScale) : ConfigurableScaling(configSection, defaultStart, defaultScale)
     {
         public override string GetBaseDescription() => "Base scaling value";
 

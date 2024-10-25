@@ -3,40 +3,38 @@ using RoR2;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkOnKill : BaseFireworkItem<FireworkOnKill>
+    public class FireworkOnKill : ItemBase<FireworkOnKill>
     {
         private readonly ConfigurableLinearScaling scaler;
 
         public FireworkOnKill() : base()
         {
-            scaler = new ConfigurableLinearScaling("", GetConfigSection(), 2, 1);
+            scaler = new ConfigurableLinearScaling(ConfigSection, 2, 1);
         }
 
-        public override string GetName() => "FireworkOnKill";
+        public override string UniqueName => "FireworkOnKill";
 
-        public override string GetPickupModelName() => "Will-o-the-Firework.prefab";
+        public override string PickupModelName => "Will-o-the-Firework.prefab";
 
-        public override float GetModelScale() => 1.1f;
+        public override float ModelScale => 1.1f;
 
-        public override string GetPickupIconName() => "BottledFireworks.png";
+        public override string PickupIconName => "BottledFireworks.png";
 
-        public override ItemTier GetTier() => ItemTier.Tier2;
+        public override ItemTier Tier => ItemTier.Tier2;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.OnKillEffect, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.OnKillEffect, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
-        public override string GetItemName() => "Will-o'-the-Firework";
+        public override string ItemName => "Will-o'-the-Firework";
 
-        public override string GetItemPickup() => "Spawn fireworks on kill";
+        public override string ItemPickupDescription => "Spawn fireworks on kill";
 
-        public override string GetItemDescription()
-        {
-            return $"On <style=cIsDamage>killing an enemy</style>, release a " +
-                   $"<style=cIsDamage>barrage of {scaler.Base}</style> " +
-                   $"<style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style> for " +
-                   $"<style=cIsDamage>300%</style> base damage each.";
-        }
+        public override string ItemDescription =>
+            $"On <style=cIsDamage>killing an enemy</style>, release a " +
+            $"<style=cIsDamage>barrage of {scaler.Base}</style> " +
+            $"<style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>fireworks</style> for " +
+            $"<style=cIsDamage>300%</style> base damage each.";
 
-        public override string GetItemLore() => "Revolutionary design.";
+        public override string ItemLore => "Revolutionary design.";
 
         public override void AddHooks()
         {

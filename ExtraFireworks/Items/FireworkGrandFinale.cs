@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BepInEx.Configuration;
+﻿using BepInEx.Configuration;
 using ExtraFireworks.Config;
 using R2API;
 using RoR2;
@@ -11,7 +10,7 @@ using UnityEngine.Networking;
 namespace ExtraFireworks.Items
 {
 
-    public class FireworkGrandFinale : BaseFireworkItem<FireworkGrandFinale>
+    public class FireworkGrandFinale : ItemBase<FireworkGrandFinale>
     {
         internal readonly ConfigEntry<float> fireworkDamage;
         internal readonly ConfigEntry<float> fireworkExplosionSize;
@@ -24,38 +23,35 @@ namespace ExtraFireworks.Items
 
         public FireworkGrandFinale() : base()
         {
-            fireworkDamage = PluginConfig.config.Bind(GetConfigSection(), "DamageCoefficient", 50f,
+            fireworkDamage = PluginConfig.config.Bind(ConfigSection, "DamageCoefficient", 50f,
                 "Damage of Grand Finale firework as coefficient of base damage");
-            fireworkExplosionSize = PluginConfig.config.Bind(GetConfigSection(), "ExplosionRadius", 10f,
+            fireworkExplosionSize = PluginConfig.config.Bind(ConfigSection, "ExplosionRadius", 10f,
                 "Explosion radius of Grand Finale firework");
-            fireworkEnemyKillcount = PluginConfig.config.Bind(GetConfigSection(), "KillThreshold", 10,
+            fireworkEnemyKillcount = PluginConfig.config.Bind(ConfigSection, "KillThreshold", 10,
                 "Number of enemies required to proc the Grand Finale firework");
         }
 
-        public override string GetName() => "FireworkGrandFinale";
+        public override string UniqueName => "FireworkGrandFinale";
 
-        public override string GetPickupModelName() => "GrandFinale.prefab";
+        public override string PickupModelName => "GrandFinale.prefab";
 
-        public override float GetModelScale() => 3f;
+        public override float ModelScale => 3f;
 
-        public override string GetPickupIconName() => "GrandFinale.png";
+        public override string PickupIconName => "GrandFinale.png";
 
-        public override ItemTier GetTier() => ItemTier.Tier3;
+        public override ItemTier Tier => ItemTier.Tier3;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.OnKillEffect, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.OnKillEffect, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
-        public override string GetItemName() => "Grand Finale";
+        public override string ItemName => "Grand Finale";
 
-        public override string GetItemPickup() => $"Launch a grand finale firework after killing {fireworkEnemyKillcount.Value} enemies.";
+        public override string ItemPickupDescription => $"Launch a grand finale firework after killing {fireworkEnemyKillcount.Value} enemies.";
 
-        public override string GetItemDescription()
-        {
-            return $"<style=cIsDamage>Killing {fireworkEnemyKillcount.Value}</style> " +
+        public override string ItemDescription => $"<style=cIsDamage>Killing {fireworkEnemyKillcount.Value}</style> " +
                    $"<style=cStack>(-50% per stack)</style> <style=cIsDamage>enemies</style> fires out a " +
                    $"<style=cIsDamage>massive firework</style> that deals <style=cIsDamage>5000%</style> base damage.";
-        }
 
-        public override string GetItemLore() => "Ayo what we do this one big ass firework?! *END TRANSMISSION*";
+        public override string ItemLore => "Ayo what we do this one big ass firework?! *END TRANSMISSION*";
 
         public override void Init(AssetBundle bundle)
         {

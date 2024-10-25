@@ -6,42 +6,44 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkAbility : BaseFireworkItem<FireworkAbility>
+    public class FireworkAbility : ItemBase<FireworkAbility>
     {
         internal static ConfigurableLinearScaling scaler;
         internal static ConfigEntry<bool> noSkillRestriction;
 
         public FireworkAbility() : base()
         {
-            scaler = new ConfigurableLinearScaling("", GetConfigSection(), 1, 1);
-            noSkillRestriction = PluginConfig.config.Bind(GetConfigSection(), "PrimaryAbilityFireworks", false,
+            scaler = new ConfigurableLinearScaling(ConfigSection, 1, 1);
+
+            noSkillRestriction = PluginConfig.config.BindOption(
+                ConfigSection,
+                "PrimaryAbilityFireworks", 
+                false,
                 "Whether abilities without a cooldown should spawn fireworks... be wary of brokenness, especially on Commando and Railgunner");
         }
 
-        public override string GetName() => "FireworkAbility";
+        public override string UniqueName => "FireworkAbility";
 
-        public override string GetPickupModelName() => "Firework-Stuffed Head.prefab";
+        public override string PickupModelName => "Firework-Stuffed Head.prefab";
 
-        public override float GetModelScale() => 1.1f;
+        public override float ModelScale => 1.1f;
 
-        public override string GetPickupIconName() => "FireworkStuffedHead.png";
+        public override string PickupIconName => "FireworkStuffedHead.png";
 
-        public override ItemTier GetTier() => ItemTier.Tier2;
+        public override ItemTier Tier => ItemTier.Tier2;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
-        public override string GetItemName() => "Firework-Stuffed Head";
+        public override string ItemName => "Firework-Stuffed Head";
 
-        public override string GetItemPickup() => "Using abilities now spawns fireworks";
+        public override string ItemPickupDescription => "Using abilities now spawns fireworks";
 
-        public override string GetItemDescription()
-        {
-            return $"Using a <style=cIsUtility>non-primary skill</style> fires <style=cIsDamage>{scaler.Base}</style> " +
-                   $"<style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>firework</style> for " +
-                   $"<style=cIsDamage>300%</style> base damage.";
-        }
+        public override string ItemDescription =>
+            $"Using a <style=cIsUtility>non-primary skill</style> fires <style=cIsDamage>{scaler.Base}</style> " +
+            $"<style=cStack>(+{scaler.Scaling} per stack)</style> <style=cIsDamage>firework</style> for " +
+            $"<style=cIsDamage>300%</style> base damage.";
 
-        public override string GetItemLore() => "Holy shit it's a head with fireworks sticking out of it";
+        public override string ItemLore => "Holy shit it's a head with fireworks sticking out of it";
 
         public override void AddHooks()
         {

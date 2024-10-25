@@ -1,13 +1,12 @@
 ﻿using BepInEx.Configuration;
 using ExtraFireworks.Config;
-using R2API;
 using RoR2;
 using UnityEngine.Networking;
 using VoidItemAPI;
 
 namespace ExtraFireworks.Items
 {
-    public class PowerWorksVoid : BaseFireworkItem<PowerWorksVoid>
+    public class PowerWorksVoid : ItemBase<PowerWorksVoid>
     {
         public ConfigEntry<int> fireworksPerStack;
         public ConfigEntry<float> hpThreshold;
@@ -18,39 +17,37 @@ namespace ExtraFireworks.Items
         public PowerWorksVoid() : base()
         {
             ConsumedItem = new PowerWorksVoidConsumed(this);
-            fireworksPerStack = PluginConfig.config.Bind(GetConfigSection(), "FireworksPerUse", 20,
+            fireworksPerStack = PluginConfig.config.Bind(ConfigSection, "FireworksPerUse", 20,
                 "Number of fireworks per consumption");
-            hpThreshold = PluginConfig.config.Bind(GetConfigSection(), "HpThreshold", 0.25f,
+            hpThreshold = PluginConfig.config.Bind(ConfigSection, "HpThreshold", 0.25f,
                 "HP threshold before Power Works is consumed");
         }
 
-        public override string GetName() => "PowerWorks";
+        public override string UniqueName => "PowerWorks";
 
-        public override string GetPickupModelName() => "Power Works.prefab";
+        public override string PickupModelName => "Power Works.prefab";
 
-        public override float GetModelScale() => 0.4f;
+        public override float ModelScale => 0.4f;
 
-        public override string GetPickupIconName() => "PowerWorks.png";
+        public override string PickupIconName => "PowerWorks.png";
 
-        public override ItemTier GetTier() => ItemTier.VoidTier1;
+        public override ItemTier Tier => ItemTier.VoidTier1;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
-        public override string GetItemName() => "Power 'Works";
+        public override string ItemName => "Power 'Works";
 
-        public override string GetItemPickup() => "Release a barrage of fireworks at low health. Refreshes every stage. Corrupts all Power Elixirs.";
+        public override string ItemPickupDescription => "Release a barrage of fireworks at low health. Refreshes every stage. Corrupts all Power Elixirs.";
 
-        public override string GetItemDescription()
-        {
-            return $"Taking damage to below <style=cIsHealth>{hpThreshold.Value * 100:0}% health</style> " +
+        public override string ItemDescription =>
+                    $"Taking damage to below <style=cIsHealth>{hpThreshold.Value * 100:0}% health</style> " +
                    $"<style=cIsUtility>consumes</style> this item, releasing a " +
                    $"<style=cIsDamage>barrage of fireworks</style> dealing " +
                    $"<style=cIsDamage>{fireworksPerStack.Value}x300%</style> " +
                    $"<style=cStack>(+{fireworksPerStack.Value} per stack)</style> base damage. " +
                    $"<style=cIsUtility>(Refreshes next stage)</style>. <style=cIsVoid>Corrupts all Power Elixirs</style>.";
-        }
 
-        public override string GetItemLore() => "MMMM YUM.";
+        public override string ItemLore => "MMMM YUM.";
 
         public override void AddHooks()
         {
@@ -114,7 +111,6 @@ namespace ExtraFireworks.Items
 
             if (!voidInitialized)
             {
-                ItemCatalog
                 VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
                 voidInitialized = true;
             }

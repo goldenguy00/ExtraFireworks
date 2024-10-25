@@ -4,11 +4,10 @@ using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UIElements;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkOnHit : BaseFireworkItem<FireworkOnHit>
+    public class FireworkOnHit : ItemBase<FireworkOnHit>
     {
         private readonly ConfigurableLinearScaling scaler;
         private readonly ConfigEntry<int> numFireworks;
@@ -17,41 +16,44 @@ namespace ExtraFireworks.Items
 
         public FireworkOnHit() : base()
         {
-            numFireworks = PluginConfig.config.Bind(GetConfigSection(), "FireworksPerHit", 1, "Number of fireworks per hit");
-            scaler = new ConfigurableLinearScaling("", GetConfigSection(), 10, 10);
+            numFireworks = PluginConfig.config.Bind(ConfigSection, "FireworksPerHit", 1, "Number of fireworks per hit");
+            scaler = new ConfigurableLinearScaling(ConfigSection, 10, 10);
         }
 
-        public override string GetName() => "FireworkOnHit";
+        public override string UniqueName => "FireworkOnHit";
 
-        public override string GetPickupModelName() => "Firework Dagger.prefab";
+        public override string PickupModelName => "Firework Dagger.prefab";
 
-        public override float GetModelScale() => 0.15f;
+        public override float ModelScale => 0.15f;
 
-        public override string GetPickupIconName() => "FireworkDagger.png";
+        public override string PickupIconName => "FireworkDagger.png";
 
-        public override ItemTier GetTier() => ItemTier.Tier1;
+        public override ItemTier Tier => ItemTier.Tier1;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
-        public override string GetItemName() => "Firework Dagger";
+        public override string ItemName => "Firework Dagger";
 
-        public override string GetItemPickup() => "Chance to fire fireworks on hit";
+        public override string ItemPickupDescription => "Chance to fire fireworks on hit";
 
-        public override string GetItemDescription()
+        public override string ItemDescription
         {
-            var desc = $"Gain a <style=cIsDamage>{scaler.Base:0}%</style> chance " +
+            get
+            {
+                var desc = $"Gain a <style=cIsDamage>{scaler.Base:0}%</style> chance " +
                        $"<style=cStack>(+{scaler.Scaling:0}% per stack)</style> <style=cIsDamage>on hit</style> to ";
 
-            if (numFireworks.Value == 1)
-                desc += "<style=cIsDamage>fire a firework</style> for <style=cIsDamage>300%</style> base damage.";
-            else
-                desc += $"<style=cIsDamage>fire {numFireworks.Value} fireworks</style> for <style=cIsDamage>300%</style> " +
-                        $"base damage each.";
+                if (numFireworks.Value == 1)
+                    desc += "<style=cIsDamage>fire a firework</style> for <style=cIsDamage>300%</style> base damage.";
+                else
+                    desc += $"<style=cIsDamage>fire {numFireworks.Value} fireworks</style> for <style=cIsDamage>300%</style> " +
+                            $"base damage each.";
 
-            return desc;
+                return desc;
+            }
         }
 
-        public override string GetItemLore() => "You got stabbed by a firework and is kill.";
+        public override string ItemLore => "You got stabbed by a firework and is kill.";
 
         public override void AddHooks()
         {

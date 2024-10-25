@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ExtraFireworks.Config;
+﻿using ExtraFireworks.Config;
 using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,40 +7,37 @@ using R2API;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkMushroom : BaseFireworkItem<FireworkMushroom>
+    public class FireworkMushroom : ItemBase<FireworkMushroom>
     {
         internal readonly ConfigurableHyperbolicScaling scaler;
 
         public FireworkMushroom() : base()
         {
-            scaler = new ConfigurableHyperbolicScaling("", GetConfigSection(), 1, 0.1f);
+            scaler = new ConfigurableHyperbolicScaling(ConfigSection, 1, 0.1f);
         }
 
-        public override string GetName() => "FireworkMushroom";
+        public override string UniqueName => "FireworkMushroom";
 
-        public override string GetPickupModelName() => "Fungus.prefab";
+        public override string PickupModelName => "Fungus.prefab";
 
-        public override float GetModelScale() => 0.75f;
+        public override float ModelScale => 0.75f;
 
-        public override string GetPickupIconName() => "Fungus.png";
+        public override string PickupIconName => "Fungus.png";
 
-        public override ItemTier GetTier() => ItemTier.Tier1;
+        public override ItemTier Tier => ItemTier.Tier1;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
-        public override string GetItemName() => "Fungus";
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override string ItemName => "Fungus";
 
-        public override string GetItemPickup() => "Become a firework launcher when you stand still.";
+        public override string ItemPickupDescription => "Become a firework launcher when you stand still.";
 
-        public override string GetItemDescription()
-        {
-            return
+        public override string ItemDescription =>
                 $"After <style=cIsUtility>standing still</style> for <style=cIsUtility>1 second</style>, shoot fireworks " +
                 $"at <style=cIsDamage>{scaler.GetValue(1) * 100:0}%</style> " +
                 $"<style=cStack>(+{(scaler.GetValue(2) - scaler.GetValue(1)) * 100:0} per stack)</style> speed " +
                 $"<style=cStack>(hyperbolic up to 100%)</style> that deal <style=cIsDamage>300%</style> base damage.";
-        }
 
-        public override string GetItemLore() => "A fun arts and crafts project.";
+        public override string ItemLore => "A fun arts and crafts project.";
 
         public override void AddHooks()
         {
@@ -105,7 +101,7 @@ namespace ExtraFireworks.Items
         }
 
         [InitDuringStartup]
-        private static void Init()
+        private static new void Init()
         {
             fireworkWardPrefab = LegacyResourcesAPI.LoadAsync<GameObject>("Prefabs/NetworkedObjects/MushroomWard").WaitForCompletion().InstantiateClone("FireworkWard");
             var oldWard = fireworkWardPrefab.GetComponent<HealingWard>();

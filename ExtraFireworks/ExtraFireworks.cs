@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Reflection;
 using BepInEx;
 using BepInEx.Bootstrap;
 using ExtraFireworks.Config;
@@ -24,7 +23,7 @@ namespace ExtraFireworks
 
         public static GameObject fireworkLauncherPrefab;
         public static GameObject fireworkPrefab;
-        internal static List<FireworkItem> items = [];
+        internal static List<ItemBase> items = [];
 
         public static bool RooInstalled => Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions");
 
@@ -52,36 +51,9 @@ namespace ExtraFireworks
             {
                 item.Init(bundle);
             }
-
-            // Bypass 3D model scaling
-            On.RoR2.PickupDisplay.RebuildModel += PickupDisplay_RebuildModel;
             
             // This line of log will appear in the bepinex console when the Awake method is done.
             Log.LogInfo(nameof(Awake) + " done.");
-        }
-
-        private static void PickupDisplay_RebuildModel(On.RoR2.PickupDisplay.orig_RebuildModel orig, PickupDisplay self, GameObject modelObjectOverride)
-        {
-            orig(self, modelObjectOverride);
-            if (self.pickupIndex == PickupIndex.none || self.pickupIndex.pickupDef == null)
-                return;
-
-            // fix later
-            if ((self.modelObject && self.modelObject.name == "PickupMystery(Clone)") || // edge case where item in trishop
-                (self.highlight && self.highlight.name == "CommandCube(Clone)")) // edge case where item turns into command essence
-            {
-                return;
-            }
-
-            foreach (var item in items)
-            {
-                if (item.IsEnabled() && self.pickupIndex.pickupDef.itemTier == item.Item.tier
-                    && self.pickupIndex.pickupDef.itemIndex == item.Item.itemIndex)
-                {
-                    self.modelObject.transform.localScale *= item.GetModelScale();
-                    break;
-                }
-            }
         }
 
         public static FireworkLauncher FireFireworks(CharacterBody owner, int count)

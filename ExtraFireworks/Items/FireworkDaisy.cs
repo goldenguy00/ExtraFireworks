@@ -7,49 +7,50 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkDaisy : BaseFireworkItem<FireworkDaisy>
+    public class FireworkDaisy : ItemBase<FireworkDaisy>
     {
         internal static ConfigEntry<int> fireworksPerWave;
 
         public FireworkDaisy() : base()
         {
-            fireworksPerWave = PluginConfig.config.Bind(GetConfigSection(), "FireworksPerWave", 40,
+            fireworksPerWave = PluginConfig.config.BindOption(
+                ConfigSection,
+                "FireworksPerWave",
+                40,
                 "Number of fireworks per firework daisy wave");
         }
 
-        public override string GetName() => "FireworkDaisy";
+        public override string UniqueName => "FireworkDaisy";
 
-        public override string GetPickupModelName() => "Firework Daisy.prefab";
+        public override string PickupModelName => "Firework Daisy.prefab";
 
-        public override float GetModelScale() => 1.5f;
+        public override float ModelScale => 1.5f;
 
-        public override string GetPickupIconName() => "FireworkDaisy.png";
+        public override string PickupIconName => "FireworkDaisy.png";
 
-        public override ItemTier GetTier() => ItemTier.Tier2;
+        public override ItemTier Tier => ItemTier.Tier2;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.HoldoutZoneRelated, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.HoldoutZoneRelated, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
-        public override string GetItemName() => "Firework Daisy";
+        public override string ItemName => "Firework Daisy";
 
-        public override string GetItemPickup() => "Periodically releases waves of fireworks during the teleporter event";
+        public override string ItemPickupDescription => "Periodically releases waves of fireworks during the teleporter event";
 
-        public override string GetItemDescription()
-        {
-            return $"<style=cIsDamage>Releases a barrage of fireworks</style> during the " +
-                   $"<style=cIsUtility>Teleporter event</style>, dealing " +
-                   $"<style=cIsDamage>{fireworksPerWave.Value}x300%</style> base damage. " +
-                   $"Occurs <style=cIsDamage>2</style> <style=cStack>(+1 per stack)</style> " +
-                   $"<style=cIsDamage>times</style>.";
-        }
+        public override string ItemDescription => 
+            $"<style=cIsDamage>Releases a barrage of fireworks</style> during the " +
+            $"<style=cIsUtility>Teleporter event</style>, dealing " +
+            $"<style=cIsDamage>{fireworksPerWave.Value}x300%</style> base damage. " +
+            $"Occurs <style=cIsDamage>2</style> <style=cStack>(+1 per stack)</style> " +
+            $"<style=cIsDamage>times</style>.";
 
-        public override string GetItemLore() => "A lepton daisy with a firework jammed in it.";
+        public override string ItemLore => "A lepton daisy with a firework jammed in it.";
 
         public override void AddHooks()
         {
-            On.RoR2.HoldoutZoneController.Awake += this.HoldoutZoneController_Awake;
+            On.RoR2.HoldoutZoneController.Awake += HoldoutZoneController_Awake;
         }
 
-        private void HoldoutZoneController_Awake(On.RoR2.HoldoutZoneController.orig_Awake orig, HoldoutZoneController self)
+        private static void HoldoutZoneController_Awake(On.RoR2.HoldoutZoneController.orig_Awake orig, HoldoutZoneController self)
         {
             orig(self);
 

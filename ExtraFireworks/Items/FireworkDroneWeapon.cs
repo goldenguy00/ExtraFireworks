@@ -4,29 +4,29 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkDroneWeapon(FireworkItem parent) : BaseFireworkItem<FireworkDroneWeapon>()
+    public class FireworkDroneWeapon(ItemBase parent) : ItemBase<FireworkDroneWeapon>()
     {
-        private readonly FireworkItem parent = parent;
+        private readonly ItemBase parent = parent;
 
-        public override string GetName() => "FireworkDroneWeapon";
+        public override string UniqueName => "FireworkDroneWeapon";
 
-        public override string GetPickupModelName() => parent.GetPickupModelName();
+        public override string PickupModelName => parent.PickupModelName;
 
-        public override float GetModelScale() => parent.GetModelScale();
+        public override float ModelScale => parent.ModelScale;
 
-        public override string GetPickupIconName() => parent.GetPickupIconName();
+        public override string PickupIconName => parent.PickupIconName;
 
-        public override ItemTier GetTier() => ItemTier.NoTier;
+        public override ItemTier Tier => ItemTier.NoTier;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
+        public override ItemTag[] Tags => [ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
 
-        public override string GetItemName() => "Drone Firework Weapon";
+        public override string ItemName => "Drone Firework Weapon";
 
-        public override string GetItemPickup() => parent.GetItemPickup();
+        public override string ItemPickupDescription => parent.ItemPickupDescription;
 
-        public override string GetItemDescription() => parent.GetItemDescription();
+        public override string ItemDescription => parent.ItemDescription;
 
-        public override string GetItemLore() => parent.GetItemLore();
+        public override string ItemLore => parent.ItemLore;
 
         public override void AddHooks()
         {

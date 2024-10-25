@@ -3,30 +3,30 @@ using VoidItemAPI;
 
 namespace ExtraFireworks.Items
 {
-    public class PowerWorksVoidConsumed(PowerWorksVoid parent) : BaseFireworkItem<PowerWorksVoidConsumed>()
+    public class PowerWorksVoidConsumed(PowerWorksVoid parent) : ItemBase<PowerWorksVoidConsumed>()
     {
         private readonly PowerWorksVoid parent = parent;
         private bool voidInitialized = false;
 
-        public override string GetName() => "PowerWorksConsumed";
+        public override string UniqueName => "PowerWorksConsumed";
 
-        public override string GetPickupModelName() => "Power Works.prefab";
+        public override string PickupModelName => "Power Works.prefab";
 
-        public override float GetModelScale() => 0.4f;
+        public override float ModelScale => 0.4f;
 
-        public override string GetPickupIconName() => "PowerWorksConsumed.png";
+        public override string PickupIconName => "PowerWorksConsumed.png";
 
-        public override ItemTier GetTier() => ItemTier.NoTier;
+        public override ItemTier Tier => ItemTier.NoTier;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
+        public override ItemTag[] Tags => [ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
 
-        public override string GetItemName() => "Power 'Works (Consumed)";
+        public override string ItemName => "Power 'Works (Consumed)";
 
-        public override string GetItemPickup() => parent.GetItemPickup();
+        public override string ItemPickupDescription => parent.ItemPickupDescription;
 
-        public override string GetItemDescription() => parent.GetItemDescription();
+        public override string ItemDescription => parent.ItemDescription;
 
-        public override string GetItemLore() => parent.GetItemLore();
+        public override string ItemLore => parent.ItemLore;
 
         public override void AddHooks()
         {

@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkDrones : BaseFireworkItem<FireworkDrones>
+    public class FireworkDrones : ItemBase<FireworkDrones>
     {
         internal static ConfigEntry<float> fireworkInterval;
         internal static ConfigurableLinearScaling scaler;
@@ -13,37 +13,35 @@ namespace ExtraFireworks.Items
         public FireworkDrones() : base()
         {
             new FireworkDroneWeapon(this);
-            fireworkInterval = PluginConfig.config.Bind(GetConfigSection(), "FireworksInterval", 4f,
+
+            fireworkInterval = PluginConfig.config.Bind(ConfigSection, "FireworksInterval", 4f,
                 "Number of seconds between bursts of fireworks");
-            scaler = new ConfigurableLinearScaling("", GetConfigSection(), 4, 2);
+            scaler = new ConfigurableLinearScaling(ConfigSection, 4, 2);
         }
 
-        public override string GetName() => "FireworkDrones";
+        public override string UniqueName => "FireworkDrones";
 
-        public override string GetPickupModelName() => "Spare Fireworks.prefab";
+        public override string PickupModelName => "Spare Fireworks.prefab";
 
-        public override float GetModelScale() => 1f;
+        public override float ModelScale => 1f;
 
-        public override string GetPickupIconName() => "SpareFireworks.png";
+        public override string PickupIconName => "SpareFireworks.png";
 
-        public override ItemTier GetTier() => ItemTier.Tier3;
+        public override ItemTier Tier => ItemTier.Tier3;
 
-        public override ItemTag[] GetTags() => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
-        public override string GetItemName() => "Spare Fireworks";
+        public override string ItemName => "Spare Fireworks";
 
-        public override string GetItemPickup() => "All drones now shoot fireworks";
+        public override string ItemPickupDescription => "All drones now shoot fireworks";
 
-        public override string GetItemDescription()
-        {
-            return $"<style=cIsUtility>Non-player allies</style> gain an " +
+        public override string ItemDescription => $"<style=cIsUtility>Non-player allies</style> gain an " +
                    $"<style=cIsDamage>automatic firework launcher</style> that propels " +
                    $"<style=cIsDamage>{scaler.Base}</style> <style=cStack>(+{scaler.Scaling} per stack)</style> " +
                    $"<style=cIsDamage>fireworks every {fireworkInterval.Value} seconds</style> " +
                    $"for <style=cIsDamage>300%</style> base damage each.";
-        }
 
-        public override string GetItemLore() => "Ayo what we do with all these fireworks?! *END TRANSMISSION*";
+        public override string ItemLore => "Ayo what we do with all these fireworks?! *END TRANSMISSION*";
 
         public override void AddHooks()
         {
@@ -90,7 +88,14 @@ namespace ExtraFireworks.Items
 
         private void OnServerMasterSummonGlobal(MasterSummon.MasterSummonReport summonReport)
         {
-            this.UpdateAllMinions(base.stack);
+            if (!base.body || !base.body.master || !(base.body.master == summonReport.leaderMasterInstance))
+                return;
+
+            var minionMaster = summonReport.summonMasterInstance;
+            if (minionMaster)
+            {
+                this.UpdateMinionInventory(minionMaster.inventory, base.stack);
+            }
         }
 
         private void UpdateAllMinions(int newStack = 0)
