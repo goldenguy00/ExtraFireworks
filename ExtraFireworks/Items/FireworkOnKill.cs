@@ -1,5 +1,8 @@
 ﻿using ExtraFireworks.Config;
 using RoR2;
+using UnityEngine.AddressableAssets;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
@@ -9,14 +12,12 @@ namespace ExtraFireworks.Items
 
         public FireworkOnKill() : base()
         {
-            scaler = new ConfigurableLinearScaling(ConfigSection, 2, 1);
+            scaler = new ConfigurableLinearScaling(ConfigSection, 2, 2);
         }
 
         public override string UniqueName => "FireworkOnKill";
 
         public override string PickupModelName => "Will-o-the-Firework.prefab";
-
-        public override float ModelScale => 1.1f;
 
         public override string PickupIconName => "BottledFireworks.png";
 
@@ -44,26 +45,18 @@ namespace ExtraFireworks.Items
 
         private void GlobalEventManager_onCharacterDeathGlobal(DamageReport report)
         {
-            if (!report.attacker || !report.attackerBody)
+            if (!NetworkServer.active)
                 return;
 
-            var attackerCharacterBody = report.attackerBody;
-            if (attackerCharacterBody.inventory)
+            if (report.victimBody && report.attackerBody && report.attackerBody.inventory)
             {
-                var count = attackerCharacterBody.inventory.GetItemCount(Item);
+                var count = report.attackerBody.inventory.GetItemCount(Item);
 
-                if (count <= 0)
+                if (!(count > 0))
                     return;
-
-                if (!report.victim)
-                    return;
-
-                var victimBody = report.victim.body;
-                if (!victimBody)
-                    return;
-
-                var trans = victimBody.coreTransform ? victimBody.coreTransform : victimBody.transform;
-                ExtraFireworks.SpawnFireworks(trans, attackerCharacterBody, scaler.GetValueInt(count), false);
+                
+                var transform = report.victimBody.coreTransform ? report.victimBody.coreTransform : report.victimBody.transform;
+                ExtraFireworks.SpawnFireworks(transform, report.attackerBody, scaler.GetValueInt(count), false);
             }
         }
     }

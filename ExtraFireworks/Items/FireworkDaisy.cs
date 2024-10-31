@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using ExtraFireworks.Config;
 using RoR2;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
@@ -13,18 +14,17 @@ namespace ExtraFireworks.Items
 
         public FireworkDaisy() : base()
         {
-            fireworksPerWave = PluginConfig.config.BindOption(
+            fireworksPerWave = PluginConfig.BindOptionSlider(
                 ConfigSection,
                 "FireworksPerWave",
                 40,
-                "Number of fireworks per firework daisy wave");
+                "Number of fireworks per firework daisy wave",
+                10, 100);
         }
 
         public override string UniqueName => "FireworkDaisy";
 
         public override string PickupModelName => "Firework Daisy.prefab";
-
-        public override float ModelScale => 1.5f;
 
         public override string PickupIconName => "FireworkDaisy.png";
 

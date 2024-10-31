@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using RoR2.Items;
 using R2API;
+using UnityEngine.AddressableAssets;
 
 namespace ExtraFireworks.Items
 {
@@ -20,13 +21,12 @@ namespace ExtraFireworks.Items
 
         public override string PickupModelName => "Fungus.prefab";
 
-        public override float ModelScale => 0.75f;
-
         public override string PickupIconName => "Fungus.png";
 
         public override ItemTier Tier => ItemTier.Tier1;
 
         public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+
         public override string ItemName => "Fungus";
 
         public override string ItemPickupDescription => "Become a firework launcher when you stand still.";
@@ -48,7 +48,7 @@ namespace ExtraFireworks.Items
     {
         public Transform rangeIndicator;
         public bool floorWard;
-
+        
         public CharacterBody body;
         public int stack;
         public float radius;
@@ -56,13 +56,17 @@ namespace ExtraFireworks.Items
 
         private float fireTimer;
         private float rangeIndicatorScaleVelocity;
+        private FireworkLauncher launcher;
 
         private void Awake()
         {
-            if (NetworkServer.active && this.floorWard && Physics.Raycast(base.transform.position, Vector3.down, out var hitInfo, 500f, LayerIndex.world.mask))
+            if (NetworkServer.active)
             {
-                base.transform.position = hitInfo.point;
-                base.transform.up = hitInfo.normal;
+                if (this.floorWard && Physics.Raycast(base.transform.position, Vector3.down, out var hitInfo, 500f, LayerIndex.world.mask))
+                {
+                    base.transform.position = hitInfo.point;
+                    base.transform.up = hitInfo.normal;
+                }
             }
         }
 
@@ -78,10 +82,13 @@ namespace ExtraFireworks.Items
         private void FixedUpdate()
         {
             this.fireTimer -= Time.fixedDeltaTime;
-            if (this.fireTimer <= 0f && NetworkServer.active)
+            if (this.fireTimer <= 0f)
             {
                 this.fireTimer = this.interval;
-                ExtraFireworks.FireFireworks(body, stack).launchInterval = interval;
+                if (NetworkServer.active && body)
+                {
+                    ExtraFireworks.FireFireworks(body, stack);
+                }
             }
         }
     }

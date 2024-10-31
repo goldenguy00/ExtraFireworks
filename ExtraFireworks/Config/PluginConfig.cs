@@ -5,15 +5,15 @@ namespace ExtraFireworks.Config
 {
     public static class PluginConfig
     {
-        public static ConfigFile config;
+        private static ConfigFile myConfig;
 
         public static void Init(ConfigFile cfg)
         {
-            config = cfg;
+            myConfig = cfg;
         }
 
         #region Config Binding
-        public static ConfigEntry<T> BindOption<T>(this ConfigFile myConfig, string section, string name, T defaultValue, string description = "", bool restartRequired = false)
+        public static ConfigEntry<T> BindOption<T>(string section, string name, T defaultValue, string description = "", bool restartRequired = false)
         {
             if (defaultValue is int or float && !typeof(T).IsEnum)
             {
@@ -22,7 +22,7 @@ namespace ExtraFireworks.Config
                     $"but has been registered without using {nameof(BindOptionSlider)}. " +
                     $"Lower and upper bounds will be set to the defaults [0, 20]. Was this intentional?");
 #endif
-                return BindOptionSlider(myConfig, section, name, defaultValue, description, 0, 20, restartRequired);
+                return BindOptionSlider(section, name, defaultValue, description, 0, 20, restartRequired);
             }
             if (string.IsNullOrEmpty(description))
                 description = name;
@@ -40,7 +40,7 @@ namespace ExtraFireworks.Config
             return configEntry;
         }
 
-        public static ConfigEntry<T> BindOptionSlider<T>(this ConfigFile myConfig, string section, string name, T defaultValue, string description = "", float min = 0, float max = 20, bool restartRequired = false)
+        public static ConfigEntry<T> BindOptionSlider<T>(string section, string name, T defaultValue, string description = "", float min = 0, float max = 20, bool restartRequired = false)
         {
             if (!(defaultValue is int or float && !typeof(T).IsEnum))
             {
@@ -48,7 +48,7 @@ namespace ExtraFireworks.Config
                 Log.LogWarning($"Config entry {name} in section {section} is a not a numeric {typeof(T).Name} type, " +
                     $"but has been registered as a slider option using {nameof(BindOptionSlider)}. Was this intentional?");
 #endif
-                return BindOption(myConfig, section, name, defaultValue, description, restartRequired);
+                return BindOption(section, name, defaultValue, description, restartRequired);
             }
 
             if (string.IsNullOrEmpty(description))
@@ -69,7 +69,7 @@ namespace ExtraFireworks.Config
 
             return configEntry;
         }
-        public static ConfigEntry<T> BindOptionSteppedSlider<T>(this ConfigFile myConfig, string section, string name, T defaultValue, float increment = 1f, string description = "", float min = 0, float max = 20, bool restartRequired = false)
+        public static ConfigEntry<T> BindOptionSteppedSlider<T>(string section, string name, T defaultValue, float increment = 1f, string description = "", float min = 0, float max = 20, bool restartRequired = false)
         {
             if (string.IsNullOrEmpty(description))
                 description = name;

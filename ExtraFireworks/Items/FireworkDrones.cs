@@ -1,6 +1,8 @@
 ﻿using BepInEx.Configuration;
 using ExtraFireworks.Config;
 using RoR2;
+using UnityEngine.AddressableAssets;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
@@ -14,16 +16,17 @@ namespace ExtraFireworks.Items
         {
             new FireworkDroneWeapon(this);
 
-            fireworkInterval = PluginConfig.config.Bind(ConfigSection, "FireworksInterval", 4f,
-                "Number of seconds between bursts of fireworks");
+            fireworkInterval = PluginConfig.BindOptionSlider(ConfigSection,
+                "FireworksInterval",
+                4f,
+                "Number of seconds between bursts of fireworks",
+                1, 10);
             scaler = new ConfigurableLinearScaling(ConfigSection, 4, 2);
         }
 
         public override string UniqueName => "FireworkDrones";
 
         public override string PickupModelName => "Spare Fireworks.prefab";
-
-        public override float ModelScale => 1f;
 
         public override string PickupIconName => "SpareFireworks.png";
 

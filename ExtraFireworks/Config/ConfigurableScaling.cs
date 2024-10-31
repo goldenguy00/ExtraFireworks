@@ -17,8 +17,19 @@ namespace ExtraFireworks.Config
 
         public ConfigurableScaling(string configSection, float defaultStart, float defaultScale)
         {
-            starting = PluginConfig.config.Bind(configSection, "BaseValue", defaultStart, GetBaseDescription());
-            scale = PluginConfig.config.Bind(configSection, "ScaleAdditionalStacks", defaultScale, GetScalingDescription());
+            starting = PluginConfig.BindOptionSlider(
+                configSection,
+                "BaseValue",
+                defaultStart,
+                GetBaseDescription(),
+                0, 100);
+
+            scale = PluginConfig.BindOptionSlider(
+                configSection,
+                "ScaleAdditionalStacks",
+                defaultScale,
+                GetScalingDescription(),
+                0, 100);
         }
 
         public float GetValue(int stacks) => stacks <= 0 ? 0 : RawValue(stacks);

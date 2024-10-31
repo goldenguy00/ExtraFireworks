@@ -2,6 +2,7 @@
 using ExtraFireworks.Config;
 using RoR2;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
@@ -15,7 +16,7 @@ namespace ExtraFireworks.Items
         {
             scaler = new ConfigurableLinearScaling(ConfigSection, 1, 1);
 
-            noSkillRestriction = PluginConfig.config.BindOption(
+            noSkillRestriction = PluginConfig.BindOption(
                 ConfigSection,
                 "PrimaryAbilityFireworks", 
                 false,
@@ -25,8 +26,6 @@ namespace ExtraFireworks.Items
         public override string UniqueName => "FireworkAbility";
 
         public override string PickupModelName => "Firework-Stuffed Head.prefab";
-
-        public override float ModelScale => 1.1f;
 
         public override string PickupIconName => "FireworkStuffedHead.png";
 

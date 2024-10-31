@@ -23,19 +23,30 @@ namespace ExtraFireworks.Items
 
         public FireworkGrandFinale() : base()
         {
-            fireworkDamage = PluginConfig.config.Bind(ConfigSection, "DamageCoefficient", 50f,
-                "Damage of Grand Finale firework as coefficient of base damage");
-            fireworkExplosionSize = PluginConfig.config.Bind(ConfigSection, "ExplosionRadius", 10f,
-                "Explosion radius of Grand Finale firework");
-            fireworkEnemyKillcount = PluginConfig.config.Bind(ConfigSection, "KillThreshold", 10,
-                "Number of enemies required to proc the Grand Finale firework");
+            fireworkDamage = PluginConfig.BindOptionSteppedSlider(ConfigSection,
+                "DamageCoefficient",
+                50f,
+                1,
+                "Damage of Grand Finale firework as coefficient of base damage",
+                1, 100);
+
+            fireworkExplosionSize = PluginConfig.BindOptionSteppedSlider(ConfigSection,
+                "ExplosionRadius",
+                10f,
+                1,
+                "Explosion radius of Grand Finale firework",
+                1, 20);
+
+            fireworkEnemyKillcount = PluginConfig.BindOptionSlider(ConfigSection,
+                "KillThreshold",
+                10,
+                "Number of enemies required to proc the Grand Finale firework",
+                1, 20);
         }
 
         public override string UniqueName => "FireworkGrandFinale";
 
         public override string PickupModelName => "GrandFinale.prefab";
-
-        public override float ModelScale => 3f;
 
         public override string PickupIconName => "GrandFinale.png";
 

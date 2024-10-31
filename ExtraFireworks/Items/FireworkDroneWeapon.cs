@@ -1,5 +1,6 @@
 ﻿using RoR2;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
@@ -8,11 +9,11 @@ namespace ExtraFireworks.Items
     {
         private readonly ItemBase parent = parent;
 
+        public override string ItemName => "Drone Firework Weapon";
+
         public override string UniqueName => "FireworkDroneWeapon";
 
-        public override string PickupModelName => parent.PickupModelName;
-
-        public override float ModelScale => parent.ModelScale;
+        public override string PickupModelName => string.Empty;
 
         public override string PickupIconName => parent.PickupIconName;
 
@@ -20,13 +21,11 @@ namespace ExtraFireworks.Items
 
         public override ItemTag[] Tags => [ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
 
-        public override string ItemName => "Drone Firework Weapon";
+        public override string ItemPickupDescription => string.Empty;
 
-        public override string ItemPickupDescription => parent.ItemPickupDescription;
+        public override string ItemDescription => string.Empty;
 
-        public override string ItemDescription => parent.ItemDescription;
-
-        public override string ItemLore => parent.ItemLore;
+        public override string ItemLore => string.Empty;
 
         public override void AddHooks()
         {

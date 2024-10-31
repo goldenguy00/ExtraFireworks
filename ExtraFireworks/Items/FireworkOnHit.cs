@@ -3,6 +3,7 @@ using ExtraFireworks.Config;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
@@ -16,7 +17,12 @@ namespace ExtraFireworks.Items
 
         public FireworkOnHit() : base()
         {
-            numFireworks = PluginConfig.config.Bind(ConfigSection, "FireworksPerHit", 1, "Number of fireworks per hit");
+            numFireworks = PluginConfig.BindOptionSlider(ConfigSection,
+                "FireworksPerHit",
+                2,
+                "Number of fireworks per hit",
+                1, 10);
+
             scaler = new ConfigurableLinearScaling(ConfigSection, 10, 10);
         }
 
@@ -24,9 +30,9 @@ namespace ExtraFireworks.Items
 
         public override string PickupModelName => "Firework Dagger.prefab";
 
-        public override float ModelScale => 0.15f;
-
         public override string PickupIconName => "FireworkDagger.png";
+
+        public override Vector3? ModelScale => Vector3.one;
 
         public override ItemTier Tier => ItemTier.Tier1;
 
@@ -74,9 +80,7 @@ namespace ExtraFireworks.Items
                     return;
 
                 var count = body.inventory.GetItemCount(Item);
-                var basePercent = 9f;
-                var scalingPercent = 9f;
-                if (count > 0 && Util.CheckRoll((basePercent + (scalingPercent * (count - 1))) * damageInfo.procCoefficient, body.master))
+                if (Util.CheckRoll(scaler.GetValue(count) * damageInfo.procCoefficient, body.master))
                 {
                     //var fireworkPos = victim.transform;
                     var victimBody = victim.GetComponent<CharacterBody>();

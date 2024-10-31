@@ -58,24 +58,30 @@ namespace ExtraFireworks
 
         public static FireworkLauncher FireFireworks(CharacterBody owner, int count)
         {
-            var fireworkLauncher = SpawnFireworks(owner.coreTransform, owner, count);
-            fireworkLauncher.transform.parent = owner.coreTransform;
+            if (!owner)
+                return null;
+
+            var transform = owner.coreTransform ? owner.coreTransform : owner.transform;
+            var fireworkLauncher = SpawnFireworks(transform, owner, count);
+            fireworkLauncher.transform.parent = transform;
+
             return fireworkLauncher;
         }
 
         // Firework item formula: 4 + 4 * stack
         public static FireworkLauncher SpawnFireworks(Transform target, CharacterBody owner, int count, bool attach = true)
         {
-            Transform located = null;
-            if (target.TryGetComponent<ModelLocator>(out var locator) && locator.modelTransform)
+            if (!owner || !target)
+                return null;
+
+            var position = target.position + (Vector3.up * 2f);
+            if (target.TryGetComponent<ModelLocator>(out var locator) && locator.modelTransform && locator.modelTransform.TryGetComponent<ChildLocator>(out var loc))
             {
-                var chLoc = locator.modelTransform.GetComponent<ChildLocator>();
-                if (chLoc)
-                    located = chLoc.FindChild("FireworkOrigin");
+                var located = loc.FindChild("FireworkOrigin");
+                if (located)
+                    position = located.position;
             }
 
-            var position = located ? located.position : (target.position + Vector3.up * 2f);
-            
             if (target.TryGetComponent<CharacterBody>(out var body))
                 position += Vector3.up * body.radius;
             
@@ -88,17 +94,16 @@ namespace ExtraFireworks
 
         public static FireworkLauncher CreateLauncher(CharacterBody owner, Vector3 position, int count)
         {
+            if (!owner)
+                return null;
+
             var fireworkLauncher = Instantiate(fireworkLauncherPrefab, position, Quaternion.identity).GetComponent<FireworkLauncher>();
 
-            fireworkLauncher.owner = owner?.gameObject;
-            if (owner)
-            {
-                var tc = owner.teamComponent;
-                fireworkLauncher.team = tc ? tc.teamIndex : TeamIndex.None;
-                fireworkLauncher.crit = Util.CheckRoll(owner.crit, owner.master);
-            }
-
+            fireworkLauncher.owner = owner.gameObject;
+            fireworkLauncher.team = owner.teamComponent.teamIndex;
+            fireworkLauncher.crit = Util.CheckRoll(owner.crit, owner.master);
             fireworkLauncher.remaining = count;
+
             return fireworkLauncher;
         }
     }

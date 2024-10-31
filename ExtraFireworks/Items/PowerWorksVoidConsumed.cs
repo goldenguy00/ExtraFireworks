@@ -1,4 +1,6 @@
 ﻿using RoR2;
+using UnityEngine.AddressableAssets;
+using UnityEngine;
 using VoidItemAPI;
 
 namespace ExtraFireworks.Items
@@ -8,11 +10,11 @@ namespace ExtraFireworks.Items
         private readonly PowerWorksVoid parent = parent;
         private bool voidInitialized = false;
 
+        public override string ItemName => "Power 'Works (Consumed)";
+
         public override string UniqueName => "PowerWorksConsumed";
 
-        public override string PickupModelName => "Power Works.prefab";
-
-        public override float ModelScale => 0.4f;
+        public override string PickupModelName => string.Empty;
 
         public override string PickupIconName => "PowerWorksConsumed.png";
 
@@ -20,28 +22,19 @@ namespace ExtraFireworks.Items
 
         public override ItemTag[] Tags => [ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
 
-        public override string ItemName => "Power 'Works (Consumed)";
+        public override string ItemPickupDescription => string.Empty;
 
-        public override string ItemPickupDescription => parent.ItemPickupDescription;
+        public override string ItemDescription => string.Empty;
 
-        public override string ItemDescription => parent.ItemDescription;
+        public override string ItemLore => string.Empty;
 
-        public override string ItemLore => parent.ItemLore;
-
-        public override void AddHooks()
+        public override void AddHooks() { }
+        public override void AdjustPickupModel() { }
+        public override void Init(AssetBundle bundle)
         {
-            On.RoR2.ItemCatalog.SetItemDefs += this.ItemCatalog_SetItemDefs;
-        }
+            base.Init(bundle);
 
-        private void ItemCatalog_SetItemDefs(On.RoR2.ItemCatalog.orig_SetItemDefs orig, ItemDef[] newItemDefs)
-        {
-            orig(newItemDefs);
-
-            if (!voidInitialized)
-            {
-                VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotionConsumed);
-                voidInitialized = true;
-            }
+            VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
         }
     }
 }

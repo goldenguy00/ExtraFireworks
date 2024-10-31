@@ -1,8 +1,12 @@
 ﻿using BepInEx.Configuration;
 using ExtraFireworks.Config;
 using RoR2;
+using UnityEngine.AddressableAssets;
+using UnityEngine;
 using UnityEngine.Networking;
 using VoidItemAPI;
+using HarmonyLib;
+using System;
 
 namespace ExtraFireworks.Items
 {
@@ -17,17 +21,24 @@ namespace ExtraFireworks.Items
         public PowerWorksVoid() : base()
         {
             ConsumedItem = new PowerWorksVoidConsumed(this);
-            fireworksPerStack = PluginConfig.config.Bind(ConfigSection, "FireworksPerUse", 20,
-                "Number of fireworks per consumption");
-            hpThreshold = PluginConfig.config.Bind(ConfigSection, "HpThreshold", 0.25f,
-                "HP threshold before Power Works is consumed");
+            fireworksPerStack = PluginConfig.BindOptionSlider(ConfigSection, 
+                "FireworksPerUse",
+                20,
+                "Number of fireworks per consumption",
+                1, 100);
+
+            hpThreshold = PluginConfig.BindOptionSlider(ConfigSection,
+                "HpThreshold",
+                0.25f,
+                "HP threshold before Power Works is consumed",
+                0, 1);
         }
 
         public override string UniqueName => "PowerWorks";
 
         public override string PickupModelName => "Power Works.prefab";
 
-        public override float ModelScale => 0.4f;
+        public override Vector3? ModelScale => Vector3.one;
 
         public override string PickupIconName => "PowerWorks.png";
 
@@ -49,13 +60,38 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => "MMMM YUM.";
 
+        public override void Init(AssetBundle bundle)
+        {
+            base.Init(bundle);
+
+            VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
+        }
+
+        public override void AdjustPickupModel()
+        {
+            base.AdjustPickupModel();
+
+            var prefab = this.Item?.pickupModelPrefab;
+            if (prefab)
+            {
+                var mdlFireworks = prefab.transform.Find("mdlFireworks");
+                var mdlPotion = prefab.transform.Find("mdlHealingPotion");
+                var mdlLiquid = mdlPotion.Find("mdlHealingPotionCorkLiquid");
+
+                mdlPotion.localScale = Vector3.one;
+                mdlLiquid.localScale = Vector3.one;
+
+                mdlFireworks.SetParent(mdlPotion);
+                mdlFireworks.localScale = Vector3.one * 0.4f;
+                mdlFireworks.localPosition = new Vector3(-0.2f, 0.05f, 3.5f);
+
+            }
+        }
+
         public override void AddHooks()
         {
             On.RoR2.HealthComponent.TakeDamage += this.HealthComponent_TakeDamage;
-
-            On.RoR2.ItemCatalog.SetItemDefs += this.ItemCatalog_SetItemDefs;
-
-            On.RoR2.CharacterMaster.OnServerStageBegin += this.CharacterMaster_OnServerStageBegin; ;
+            On.RoR2.CharacterMaster.OnServerStageBegin += this.CharacterMaster_OnServerStageBegin;
         }
 
         private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
@@ -103,17 +139,6 @@ namespace ExtraFireworks.Items
             self.inventory.GiveItem(Item, consumedCount);
             CharacterMasterNotificationQueue.SendTransformNotification(self, ConsumedItem.Item.itemIndex,
                 Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
-        }
-
-        private void ItemCatalog_SetItemDefs(On.RoR2.ItemCatalog.orig_SetItemDefs orig, ItemDef[] newItemDefs)
-        {
-            orig(newItemDefs);
-
-            if (!voidInitialized)
-            {
-                VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
-                voidInitialized = true;
-            }
         }
     }
 }

@@ -6,6 +6,7 @@ using R2API;
 using RoR2;
 using RoR2.ExpansionManagement;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace ExtraFireworks.Items
 {
@@ -33,27 +34,51 @@ namespace ExtraFireworks.Items
         protected ConfigEntry<bool> itemEnabled;
         public bool IsEnabled => itemEnabled?.Value ?? true;
 
+        public abstract string ItemName { get; }
         public abstract string UniqueName { get; }
         public abstract string PickupModelName { get; }
         public abstract string PickupIconName { get; }
         public abstract ItemTier Tier { get; }
         public abstract ItemTag[] Tags { get; }
-        public abstract string ItemName { get; }
         public abstract string ItemPickupDescription { get; }
         public abstract string ItemDescription { get; }
         public abstract string ItemLore { get; }
 
         public virtual ItemDisplayRuleDict DisplayRules { get; }
-        public virtual float ModelScale { get; } = 1.0f;
+        public virtual Vector3? ModelScale { get; }
         public virtual string ConfigSection => UniqueName;
         public virtual bool RequireSotV => false;
 
         public abstract void AddHooks();
+        
+        public virtual void AdjustPickupModel()
+        {
+            var prefab = this.Item?.pickupModelPrefab;
+            if (prefab)
+            {
+                if (this.ModelScale.HasValue)
+                    prefab.transform.localScale = this.ModelScale.Value;
+
+                if (!prefab.TryGetComponent<ModelPanelParameters>(out var mdlParams))
+                    mdlParams = prefab.AddComponent<ModelPanelParameters>();
+
+                if (!mdlParams.focusPointTransform)
+                {
+                    mdlParams.focusPointTransform = new GameObject("FocusPoint").transform;
+                    mdlParams.focusPointTransform.SetParent(this.Item.pickupModelPrefab.transform);
+                }
+                if (!mdlParams.cameraPositionTransform)
+                {
+                    mdlParams.cameraPositionTransform = new GameObject("CameraPosition").transform;
+                    mdlParams.cameraPositionTransform.SetParent(this.Item.pickupModelPrefab.transform);
+                }
+            }
+        }
 
         public virtual void Init(AssetBundle bundle)
         {
             if (Tier != ItemTier.NoTier)
-                itemEnabled = PluginConfig.config.BindOption(ConfigSection, "Enabled", true, "Item enabled?", restartRequired: true);
+                itemEnabled = PluginConfig.BindOption(ConfigSection, "Enabled", true, "Item enabled?", restartRequired: true);
 
             if (IsEnabled)
             {
@@ -74,11 +99,13 @@ namespace ExtraFireworks.Items
                     unlockableDef: null,
                     itemDisplayRules: DisplayRules);
 
-                if (RequireSotV)
-                    item.ItemDef.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(def => def.nameToken == "DLC1_NAME");
                 this.Item = item.ItemDef;
-                if (this.Item.pickupModelPrefab)
-                    this.Item.pickupModelPrefab.transform.localScale *= this.ModelScale;
+                this.Item.deprecatedTier = Tier;
+
+                if (RequireSotV)
+                    this.Item.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(def => def.nameToken == "DLC1_NAME");
+
+                AdjustPickupModel();
 
                 LanguageAPI.Add(Item.nameToken, ItemName);
                 LanguageAPI.Add(Item.pickupToken, ItemPickupDescription);
