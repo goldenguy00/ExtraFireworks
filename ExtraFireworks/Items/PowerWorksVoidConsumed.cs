@@ -34,7 +34,7 @@ namespace ExtraFireworks.Items
         {
             base.Init(bundle);
 
-            VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
+            VoidTransformation.CreateTransformation(Item, "HealingPotionConsumed");
         }
     }
 }

@@ -64,7 +64,7 @@ namespace ExtraFireworks.Items
         {
             base.Init(bundle);
 
-            VoidTransformation.CreateTransformation(Item, DLC1Content.Items.HealingPotion);
+            VoidTransformation.CreateTransformation(Item, "HealingPotion");
         }
 
         public override void AdjustPickupModel()
@@ -84,7 +84,6 @@ namespace ExtraFireworks.Items
                 mdlFireworks.SetParent(mdlPotion);
                 mdlFireworks.localScale = Vector3.one * 0.4f;
                 mdlFireworks.localPosition = new Vector3(-0.2f, 0.05f, 3.5f);
-
             }
         }
 

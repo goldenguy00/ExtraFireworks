@@ -14,7 +14,7 @@ namespace ExtraFireworks.Items
 
         public FireworkMushroom() : base()
         {
-            scaler = new ConfigurableHyperbolicScaling(ConfigSection, 1, 0.1f);
+            scaler = new ConfigurableHyperbolicScaling(ConfigSection, 2, 0.1f);
         }
 
         public override string UniqueName => "FireworkMushroom";
@@ -56,7 +56,6 @@ namespace ExtraFireworks.Items
 
         private float fireTimer;
         private float rangeIndicatorScaleVelocity;
-        private FireworkLauncher launcher;
 
         private void Awake()
         {
@@ -75,7 +74,7 @@ namespace ExtraFireworks.Items
             if (this.rangeIndicator)
             {
                 float num = Mathf.SmoothDamp(this.rangeIndicator.localScale.x, this.radius, ref this.rangeIndicatorScaleVelocity, 0.2f);
-                this.rangeIndicator.localScale = new Vector3(num, num, num);
+                this.rangeIndicator.localScale = num * Vector3.one;
             }
         }
 
