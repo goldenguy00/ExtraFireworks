@@ -1,15 +1,10 @@
 ﻿using RoR2;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
-using VoidItemAPI;
 
 namespace ExtraFireworks.Items
 {
-    public class PowerWorksVoidConsumed(PowerWorksVoid parent) : ItemBase<PowerWorksVoidConsumed>()
+    public class PowerWorksVoidConsumed : ItemBase<PowerWorksVoidConsumed>
     {
-        private readonly PowerWorksVoid parent = parent;
-        private bool voidInitialized = false;
-
         public override string ItemName => "Power 'Works (Consumed)";
 
         public override string UniqueName => "PowerWorksConsumed";
@@ -20,7 +15,7 @@ namespace ExtraFireworks.Items
 
         public override ItemTier Tier => ItemTier.NoTier;
 
-        public override ItemTag[] Tags => [ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
+        public override ItemTag[] Tags => [ItemTag.Damage];
 
         public override string ItemPickupDescription => string.Empty;
 
@@ -28,13 +23,13 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => string.Empty;
 
+        public override bool RequireSotV => true;
+
         public override void AddHooks() { }
         public override void AdjustPickupModel() { }
         public override void Init(AssetBundle bundle)
         {
             base.Init(bundle);
-
-            VoidTransformation.CreateTransformation(Item, "HealingPotionConsumed");
         }
     }
 }

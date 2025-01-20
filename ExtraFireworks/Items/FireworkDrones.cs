@@ -1,7 +1,6 @@
 ﻿using BepInEx.Configuration;
 using ExtraFireworks.Config;
 using RoR2;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -14,8 +13,6 @@ namespace ExtraFireworks.Items
 
         public FireworkDrones() : base()
         {
-            new FireworkDroneWeapon(this);
-
             fireworkInterval = PluginConfig.BindOptionSlider(ConfigSection,
                 "FireworksInterval",
                 4f,
@@ -45,6 +42,13 @@ namespace ExtraFireworks.Items
                    $"for <style=cIsDamage>300%</style> base damage each.";
 
         public override string ItemLore => "Ayo what we do with all these fireworks?! *END TRANSMISSION*";
+
+        public override void Init(AssetBundle bundle)
+        {
+            base.Init(bundle);
+
+            new FireworkDroneWeapon().Init(bundle);
+        }
 
         public override void AddHooks()
         {
@@ -91,7 +95,7 @@ namespace ExtraFireworks.Items
 
         private void OnServerMasterSummonGlobal(MasterSummon.MasterSummonReport summonReport)
         {
-            if (!base.body || !base.body.master || !(base.body.master == summonReport.leaderMasterInstance))
+            if (!base.body || !base.body.master || base.body.master != summonReport.leaderMasterInstance)
                 return;
 
             var minionMaster = summonReport.summonMasterInstance;

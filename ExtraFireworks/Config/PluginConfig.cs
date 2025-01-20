@@ -35,7 +35,9 @@ namespace ExtraFireworks.Config
                 range = new AcceptableValueList<string>(Enum.GetNames(typeof(T)));
 
             var configEntry = myConfig.Bind(section, name, defaultValue, new ConfigDescription(description, range));
-            TryRegisterOption(configEntry, restartRequired);
+
+            if (ExtraFireworks.RooInstalled)
+                TryRegisterOption(configEntry, restartRequired);
 
             return configEntry;
         }
@@ -65,7 +67,8 @@ namespace ExtraFireworks.Config
 
             var configEntry = myConfig.Bind(section, name, defaultValue, new ConfigDescription(description, range));
 
-            TryRegisterOptionSlider(configEntry, min, max, restartRequired);
+            if (ExtraFireworks.RooInstalled)
+                TryRegisterOptionSlider(configEntry, min, max, restartRequired);
 
             return configEntry;
         }
@@ -81,7 +84,8 @@ namespace ExtraFireworks.Config
 
             var configEntry = myConfig.Bind(section, name, defaultValue, new ConfigDescription(description, new AcceptableValueRange<float>(min, max)));
 
-            TryRegisterOptionSteppedSlider(configEntry, increment, min, max, restartRequired);
+            if (ExtraFireworks.RooInstalled)
+                TryRegisterOptionSteppedSlider(configEntry, increment, min, max, restartRequired);
 
             return configEntry;
         }

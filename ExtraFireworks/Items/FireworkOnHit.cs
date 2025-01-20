@@ -3,7 +3,6 @@ using ExtraFireworks.Config;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
@@ -60,6 +59,18 @@ namespace ExtraFireworks.Items
         }
 
         public override string ItemLore => "You got stabbed by a firework and is kill.";
+
+        public override void AdjustPickupModel()
+        {
+            base.AdjustPickupModel();
+
+            var prefab = this.Item?.pickupModelPrefab;
+            if (prefab)
+            {
+                var mdl = prefab.transform.Find("Firework Dagger");
+                mdl.localPosition = new Vector3(0f, 2f, 0f);
+            }
+        }
 
         public override void AddHooks()
         {

@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using RoR2.Items;
 using R2API;
-using UnityEngine.AddressableAssets;
 
 namespace ExtraFireworks.Items
 {
@@ -23,6 +22,8 @@ namespace ExtraFireworks.Items
 
         public override string PickupIconName => "Fungus.png";
 
+        public override Vector3? ModelScale => Vector3.one * 1.5f;
+
         public override ItemTier Tier => ItemTier.Tier1;
 
         public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
@@ -38,6 +39,17 @@ namespace ExtraFireworks.Items
                 $"<style=cStack>(hyperbolic up to 100%)</style> that deal <style=cIsDamage>300%</style> base damage.";
 
         public override string ItemLore => "A fun arts and crafts project.";
+
+        public override void AdjustPickupModel()
+        {
+            base.AdjustPickupModel();
+
+            var prefab = this.Item?.pickupModelPrefab;
+            if (prefab)
+            {
+                prefab.transform.Find("MushroomMesh").SetAsFirstSibling();
+            }
+        }
 
         public override void AddHooks()
         {
@@ -86,7 +98,7 @@ namespace ExtraFireworks.Items
                 this.fireTimer = this.interval;
                 if (NetworkServer.active && body)
                 {
-                    ExtraFireworks.FireFireworks(body, stack);
+                    ExtraFireworks.FireFireworks(body, 1);
                 }
             }
         }

@@ -1,13 +1,15 @@
 ﻿{
   "name": "ExtraFireworks",
   "author": "PhysicsFox",
-	"version_number": "1.5.4",
+	"version_number": "1.6.0",
 	"website_url": "https://github.com/rainbowphysics/ExtraFireworks",
 	"description": "Adds new firework themed items, for only the most hardcore firework fans,,,",
-	"dependencies": [
-		"bbepis-BepInExPack-5.4.9",
-		"RiskofThunder-HookGenPatcher-1.2.5",
-		"tristanmcpherson-R2API-5.0.5",
-		"RumblingJOSEPH-VoidItemAPI-1.1.0"
-	]
+    "dependencies": [
+        "bbepis-BepInExPack-5.4.2117",
+        "RiskofThunder-HookGenPatcher-1.2.5",
+        "RiskofThunder-R2API_Core-5.1.5",
+        "RiskofThunder-R2API_Items-1.0.4",
+        "RiskofThunder-R2API_Language-1.0.1",
+        "RiskofThunder-R2API_Prefab-1.0.4"
+    ]
 }

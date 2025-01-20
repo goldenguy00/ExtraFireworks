@@ -1,25 +1,22 @@
 ﻿using RoR2;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-    public class FireworkDroneWeapon(ItemBase parent) : ItemBase<FireworkDroneWeapon>()
+    public class FireworkDroneWeapon : ItemBase<FireworkDroneWeapon>
     {
-        private readonly ItemBase parent = parent;
-
         public override string ItemName => "Drone Firework Weapon";
 
         public override string UniqueName => "FireworkDroneWeapon";
 
         public override string PickupModelName => string.Empty;
 
-        public override string PickupIconName => parent.PickupIconName;
+        public override string PickupIconName => string.Empty;
 
         public override ItemTier Tier => ItemTier.NoTier;
 
-        public override ItemTag[] Tags => [ItemTag.BrotherBlacklist, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.CannotSteal];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.BrotherBlacklist];
 
         public override string ItemPickupDescription => string.Empty;
 
@@ -44,11 +41,6 @@ namespace ExtraFireworks.Items
     public class FireworkDroneWeaponBehaviour : CharacterBody.ItemBehavior
     {
         private float timer;
-
-        private void Awake()
-        {
-            this.enabled = false;
-        }
 
         private void OnEnable()
         {

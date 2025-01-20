@@ -3,27 +3,33 @@ using BepInEx;
 using BepInEx.Bootstrap;
 using ExtraFireworks.Config;
 using ExtraFireworks.Items;
+using R2API.ContentManagement;
 using RoR2;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 [assembly: HG.Reflection.SearchableAttribute.OptIn]
 
 namespace ExtraFireworks
 {
     [BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.bepis.r2api.content_management", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.bepis.r2api.items", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.bepis.r2api.language", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.bepis.r2api.prefab", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("com.RumblingJOSEPH.VoidItemAPI", BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class ExtraFireworks : BaseUnityPlugin
     {
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "PhysicsFox";
         public const string PluginName = "ExtraFireworks";
-        public const string PluginVersion = "1.5.4";
+        public const string PluginVersion = "1.6.0";
 
         public static GameObject fireworkLauncherPrefab;
         public static GameObject fireworkPrefab;
         internal static List<ItemBase> items = [];
+        private static Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/HGStandard");
 
         public static bool RooInstalled => Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions");
 
@@ -49,6 +55,7 @@ namespace ExtraFireworks
             var bundle = AssetBundle.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "extrafireworks"));
             foreach (var item in items)
             {
+                // only enabled items are in this list
                 item.Init(bundle);
             }
             
@@ -105,6 +112,46 @@ namespace ExtraFireworks
             fireworkLauncher.remaining = count;
 
             return fireworkLauncher;
+        }
+
+        internal static void ConvertAllRenderersToHopooShader(GameObject objectToConvert, bool onlyMeshes = true)
+        {
+            Renderer[] componentsInChildren = objectToConvert.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in componentsInChildren)
+            {
+                if (!renderer || !renderer.material)
+                {
+                    continue;
+                }
+
+                if (onlyMeshes)
+                {
+                    if (!renderer.GetComponent<LineRenderer>() && !renderer.GetComponent<TrailRenderer>() && !renderer.GetComponent<ParticleSystemRenderer>())
+                    {
+                        ConvertMaterial(renderer.material);
+                    }
+                }
+                else
+                {
+                    ConvertMaterial(renderer.material);
+                }
+            }
+        }
+
+        internal static void ConvertMaterial(Material material)
+        {
+            Texture texture = null;
+            if (material.HasProperty("_BumpMap"))
+            {
+                texture = material.GetTexture("_BumpMap");
+            }
+
+            material.shader = hotpoo;
+            if (texture != null)
+            {
+                material.SetTexture("_NormalTex", texture);
+                material.SetFloat("_NormalStrength", 1f);
+            }
         }
     }
 }

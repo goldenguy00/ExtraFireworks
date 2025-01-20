@@ -1,12 +1,10 @@
 ﻿using BepInEx.Configuration;
 using ExtraFireworks.Config;
+using R2API;
 using RoR2;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
-using VoidItemAPI;
-using HarmonyLib;
-using System;
 
 namespace ExtraFireworks.Items
 {
@@ -15,12 +13,8 @@ namespace ExtraFireworks.Items
         public ConfigEntry<int> fireworksPerStack;
         public ConfigEntry<float> hpThreshold;
 
-        public PowerWorksVoidConsumed ConsumedItem;
-        private bool voidInitialized = false;
-
         public PowerWorksVoid() : base()
         {
-            ConsumedItem = new PowerWorksVoidConsumed(this);
             fireworksPerStack = PluginConfig.BindOptionSlider(ConfigSection, 
                 "FireworksPerUse",
                 20,
@@ -44,7 +38,7 @@ namespace ExtraFireworks.Items
 
         public override ItemTier Tier => ItemTier.VoidTier1;
 
-        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
+        public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.LowHealth, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
 
         public override string ItemName => "Power 'Works";
 
@@ -60,11 +54,35 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => "MMMM YUM.";
 
+        public override bool RequireSotV => true;
+
         public override void Init(AssetBundle bundle)
         {
             base.Init(bundle);
 
-            VoidTransformation.CreateTransformation(Item, "HealingPotion");
+            new PowerWorksVoidConsumed().Init(bundle);
+
+            var healingPotion = Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/HealingPotion/HealingPotion.asset").WaitForCompletion();
+            var healingPotionConsumed = Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/HealingPotion/HealingPotionConsumed.asset").WaitForCompletion();
+
+            var provider = ScriptableObject.CreateInstance<ItemRelationshipProvider>();
+            provider.name = "ExtraFireworksContagiousItemProvider";
+            provider.relationshipType = Addressables.LoadAssetAsync<ItemRelationshipType>("RoR2/DLC1/Common/ContagiousItem.asset").WaitForCompletion();
+            provider.relationships =
+            [
+                new ItemDef.Pair
+                {
+                    itemDef1 = healingPotion,
+                    itemDef2 = this.Item
+                },
+                new ItemDef.Pair
+                {
+                    itemDef1 = healingPotionConsumed,
+                    itemDef2 = PowerWorksVoidConsumed.Instance.Item
+                }
+            ];
+
+            ContentAddition.AddItemRelationshipProvider(provider);
         }
 
         public override void AdjustPickupModel()
@@ -96,6 +114,7 @@ namespace ExtraFireworks.Items
         private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
         {
             orig(self, info);
+
             if (!NetworkServer.active)
                 return;
 
@@ -112,9 +131,9 @@ namespace ExtraFireworks.Items
                 return;
 
             body.inventory.RemoveItem(Item, count);
-            body.inventory.GiveItem(ConsumedItem.Item, count);
+            body.inventory.GiveItem(PowerWorksVoidConsumed.Instance.Item, count);
             CharacterMasterNotificationQueue.SendTransformNotification(body.master, Item.itemIndex,
-                ConsumedItem.Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Suppressed);
+                PowerWorksVoidConsumed.Instance.Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Suppressed);
 
             ExtraFireworks.FireFireworks(body, fireworksPerStack.Value * count);
 
@@ -130,13 +149,13 @@ namespace ExtraFireworks.Items
             if (!self.inventory)
                 return;
 
-            var consumedCount = self.inventory.GetItemCount(ConsumedItem.Item);
+            var consumedCount = self.inventory.GetItemCount(PowerWorksVoidConsumed.Instance.Item);
             if (consumedCount <= 0)
                 return;
 
-            self.inventory.RemoveItem(ConsumedItem.Item, consumedCount);
+            self.inventory.RemoveItem(PowerWorksVoidConsumed.Instance.Item, consumedCount);
             self.inventory.GiveItem(Item, consumedCount);
-            CharacterMasterNotificationQueue.SendTransformNotification(self, ConsumedItem.Item.itemIndex,
+            CharacterMasterNotificationQueue.SendTransformNotification(self, PowerWorksVoidConsumed.Instance.Item.itemIndex,
                 Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
         }
     }

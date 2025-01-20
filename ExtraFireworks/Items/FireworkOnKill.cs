@@ -1,7 +1,7 @@
 ﻿using ExtraFireworks.Config;
 using RoR2;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
@@ -21,6 +21,8 @@ namespace ExtraFireworks.Items
 
         public override string PickupIconName => "BottledFireworks.png";
 
+        public override Vector3? ModelScale => Vector3.one * 1.2f;
+
         public override ItemTier Tier => ItemTier.Tier2;
 
         public override ItemTag[] Tags => [ItemTag.Damage, ItemTag.OnKillEffect, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist];
@@ -36,6 +38,39 @@ namespace ExtraFireworks.Items
             $"<style=cIsDamage>300%</style> base damage each.";
 
         public override string ItemLore => "Revolutionary design.";
+
+        public override void AdjustPickupModel()
+        {
+            var prefab = this.Item?.pickupModelPrefab;
+            if (prefab)
+            {
+                prefab.transform.Find("GlassJarLid").SetAsFirstSibling();
+
+                var jarPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ExplodeOnDeath/PickupWilloWisp.prefab").WaitForCompletion();
+                var glass = jarPrefab.transform.Find("mdlGlassJar").Find("GlassJar").GetComponent<Renderer>();
+                var fireGlass = prefab.transform.Find("GlassJar").GetComponent<Renderer>();
+
+                fireGlass.material = glass.material;
+                fireGlass.materials = glass.materials;
+
+                if (this.ModelScale.HasValue)
+                    prefab.transform.localScale = this.ModelScale.Value;
+
+                if (!prefab.TryGetComponent<ModelPanelParameters>(out var mdlParams))
+                    mdlParams = prefab.AddComponent<ModelPanelParameters>();
+
+                if (!mdlParams.focusPointTransform)
+                {
+                    mdlParams.focusPointTransform = new GameObject("FocusPoint").transform;
+                    mdlParams.focusPointTransform.SetParent(this.Item.pickupModelPrefab.transform);
+                }
+                if (!mdlParams.cameraPositionTransform)
+                {
+                    mdlParams.cameraPositionTransform = new GameObject("CameraPosition").transform;
+                    mdlParams.cameraPositionTransform.SetParent(this.Item.pickupModelPrefab.transform);
+                }
+            }
+        }
 
         public override void AddHooks()
         {

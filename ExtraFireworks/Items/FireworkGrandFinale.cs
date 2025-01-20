@@ -138,7 +138,17 @@ namespace ExtraFireworks.Items
         {
             // Implement fireworks on kill
             RoR2.GlobalEventManager.onCharacterDeathGlobal += this.GlobalEventManager_OnCharacterDeath;
+            RoR2.CharacterBody.onBodyInventoryChangedGlobal += this.CharacterBody_onBodyInventoryChangedGlobal;
 
+        }
+
+        private void CharacterBody_onBodyInventoryChangedGlobal(CharacterBody body)
+        {
+            if (NetworkServer.active)
+            {
+                if (body.HasBuff(this.buff) && body.inventory.GetItemCount(this.Item) <= 0)
+                    body.RemoveBuff(this.buff);
+            }
         }
 
         private void GlobalEventManager_OnCharacterDeath(DamageReport report)

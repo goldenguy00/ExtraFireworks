@@ -6,7 +6,6 @@ using R2API;
 using RoR2;
 using RoR2.ExpansionManagement;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace ExtraFireworks.Items
 {
@@ -20,7 +19,12 @@ namespace ExtraFireworks.Items
                 throw new InvalidOperationException("Singleton class \"" + typeof(T).Name + "\" inheriting ItemBase was instantiated twice");
 
             Instance = this as T;
-            ExtraFireworks.items.Add(this);
+
+            if (Tier != ItemTier.NoTier)
+            {
+                itemEnabled = PluginConfig.BindOption(ConfigSection, "Enabled", true, "Item enabled?", restartRequired: true);
+                ExtraFireworks.items.Add(this);
+            }
         }
     }
 
@@ -56,6 +60,8 @@ namespace ExtraFireworks.Items
             var prefab = this.Item?.pickupModelPrefab;
             if (prefab)
             {
+                ExtraFireworks.ConvertAllRenderersToHopooShader(prefab);
+
                 if (this.ModelScale.HasValue)
                     prefab.transform.localScale = this.ModelScale.Value;
 
@@ -77,47 +83,41 @@ namespace ExtraFireworks.Items
 
         public virtual void Init(AssetBundle bundle)
         {
+            var subtoken = UniqueName.ToUpper();
+
+            var item = new CustomItem(
+                name: UniqueName,
+                nameToken: $"ITEM_{subtoken}_NAME",
+                descriptionToken: $"ITEM_{subtoken}_DESC",
+                loreToken: Tier == ItemTier.NoTier ? "" : $"ITEM_{subtoken}_LORE",
+                pickupToken: $"ITEM_{subtoken}_PICKUP",
+                pickupIconSprite: bundle.LoadAsset<Sprite>($"Assets/Import/{PickupIconName}"),
+                pickupModelPrefab: bundle.LoadAsset<GameObject>($"Assets/ImportModels/{PickupModelName}"),
+                tags: Tags,
+                tier: Tier,
+                canRemove: Tier != ItemTier.NoTier,
+                hidden: false,
+                unlockableDef: null,
+                itemDisplayRules: DisplayRules);
+
+            this.Item = item.ItemDef;
+            this.Item.deprecatedTier = Tier;
+
+            if (RequireSotV)
+                this.Item.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(def => def.nameToken == "DLC1_NAME");
+
+            AdjustPickupModel();
+
+            LanguageAPI.Add(Item.nameToken, ItemName);
+            LanguageAPI.Add(Item.pickupToken, ItemPickupDescription);
+            LanguageAPI.Add(Item.descriptionToken, ItemDescription);
+            // No lore for consumed item
             if (Tier != ItemTier.NoTier)
-                itemEnabled = PluginConfig.BindOption(ConfigSection, "Enabled", true, "Item enabled?", restartRequired: true);
+                LanguageAPI.Add(Item.loreToken, ItemLore);
 
-            if (IsEnabled)
-            {
-                var subtoken = UniqueName.ToUpper();
+            ItemAPI.Add(item);
 
-                var item = new CustomItem(
-                    name: UniqueName,
-                    nameToken: $"ITEM_{subtoken}_NAME",
-                    descriptionToken: $"ITEM_{subtoken}_DESC",
-                    loreToken: Tier == ItemTier.NoTier ? "" : $"ITEM_{subtoken}_LORE",
-                    pickupToken: $"ITEM_{subtoken}_PICKUP",
-                    pickupIconSprite: bundle.LoadAsset<Sprite>($"Assets/Import/{PickupIconName}"),
-                    pickupModelPrefab: bundle.LoadAsset<GameObject>($"Assets/ImportModels/{PickupModelName}"),
-                    tags: Tags,
-                    tier: Tier,
-                    canRemove: Tier != ItemTier.NoTier,
-                    hidden: false,
-                    unlockableDef: null,
-                    itemDisplayRules: DisplayRules);
-
-                this.Item = item.ItemDef;
-                this.Item.deprecatedTier = Tier;
-
-                if (RequireSotV)
-                    this.Item.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(def => def.nameToken == "DLC1_NAME");
-
-                AdjustPickupModel();
-
-                LanguageAPI.Add(Item.nameToken, ItemName);
-                LanguageAPI.Add(Item.pickupToken, ItemPickupDescription);
-                LanguageAPI.Add(Item.descriptionToken, ItemDescription);
-                // No lore for consumed item
-                if (Tier != ItemTier.NoTier)
-                    LanguageAPI.Add(Item.loreToken, ItemLore);
-
-                ItemAPI.Add(item);
-
-                AddHooks();
-            }
+            AddHooks();
         }
     }
 }
