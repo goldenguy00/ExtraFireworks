@@ -1,0 +1,314 @@
+{
+  "Files": [
+    {
+      "Name": "cab-157b8d91e4787325a078020a6f4486e5",
+      "Assets": [
+        {
+          "PathID": -8371564193185112025,
+          "Name": "texTrimSheetDroneWeaponsWoodDiffuse",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -8358106930362040691,
+          "Name": "texGlowFlowerDiffuse",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -8309901314383945849,
+          "Name": "default",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -8239981138560594966,
+          "Name": "mdlFireworks.001",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -8187422528186239661,
+          "Name": "texGlassJarNormal",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -8046673302979922305,
+          "Name": "default",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -8043677929366222870,
+          "Name": "mdlFireworks.002",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -7907086418310648618,
+          "Name": "texFireworkDiffuse 1",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -7802279736171361061,
+          "Name": "SpareFireworks",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -7415999057217822591,
+          "Name": "texFireworkDiffuse 3",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -7335578700956444466,
+          "Name": "mdlDroneWeaponsPickup",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -6000813265929489389,
+          "Name": "texMushroomEmission",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -5039701534679887876,
+          "Name": "mdlFireworks",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -4707425850272722481,
+          "Name": "texGlowFlowerEmission",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -4705615672891512384,
+          "Name": "default",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -4147587644871483414,
+          "Name": "mdlFireworkProjectile",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -3648108892943684566,
+          "Name": "mdlFireworkProjectile",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -2531075727664487673,
+          "Name": "GlassJarLid",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -2321711941553995474,
+          "Name": "GlowFlowerMesh",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -2164122744098896472,
+          "Name": "default",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -2023861988827984128,
+          "Name": "texAlienHeadDiffuse",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -1077989189489393942,
+          "Name": "mdlFireworks.001",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -913996965026397910,
+          "Name": "GrandFinale",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": -561577861630788395,
+          "Name": "default",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": -128638293241388280,
+          "Name": "PowerWorks",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 619861482693821165,
+          "Name": "Fungus",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 651971516044353522,
+          "Name": "texAlienHeadNormal",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 824102474698048204,
+          "Name": "mdlFireworks",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 898136421495102209,
+          "Name": "FireworkStuffedHead",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 912936914654873679,
+          "Name": "mdlFireworks",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 1263209878460161185,
+          "Name": "GlassJar",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 1544972091392692313,
+          "Name": "FireworkDagger",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 1677731863958379301,
+          "Name": "mdlHealingPotionCorkLiquid",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 2009393693492066300,
+          "Name": "FireworkDaisy",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 2714629445119289543,
+          "Name": "texFireworkDiffuse 6",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 3472537320608591503,
+          "Name": "PowerWorksConsumed",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 3606518241685965157,
+          "Name": "mdlFireworks",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 3773259091901734898,
+          "Name": "default",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 3785176273426670694,
+          "Name": "texMushroomNormal",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 4226769287634831059,
+          "Name": "mdlFireworks",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 4731016008408529503,
+          "Name": "mdlFireworks.002",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 4768758070632084694,
+          "Name": "texGlowFlowerNormal",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 5050173155332351927,
+          "Name": "texHealingPotionCork_Diffuse",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 6005760630098536791,
+          "Name": "texTrimSheetMetalNormal",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 6183597238947681950,
+          "Name": "texHealingPotionCork_Normals",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 6806258668699914818,
+          "Name": "mdlAlienHead",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 7160436325776804860,
+          "Name": "texFireworkDiffuse 5",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 7395244249890314792,
+          "Name": "texMushroomDiffuse",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 7696525194756605052,
+          "Name": "texGlassJarLidNormal",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 7723517536720753055,
+          "Name": "texFireworkDiffuse 4",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 7982352873884406017,
+          "Name": "mdlFireworks.003",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 8040864994757795562,
+          "Name": "MushroomMesh",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 8146096592171395234,
+          "Name": "texFireworkDiffuse",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 8176492715837305278,
+          "Name": "BottledFireworks",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 8328304841532867721,
+          "Name": "mdlFireworks",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 8510165295054840630,
+          "Name": "texFireworkDiffuse 2",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 8614986657015538222,
+          "Name": "mdlHealingPotion",
+          "Type": "Mesh"
+        },
+        {
+          "PathID": 8743473786651654923,
+          "Name": "texHealingPotionCork_Emissive",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 8841059212835542593,
+          "Name": "texTrimSheetDronesBlue",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 8864722863814254930,
+          "Name": "texTrimSheetConstructionEmission",
+          "Type": "Texture2D"
+        },
+        {
+          "PathID": 9222981807801365124,
+          "Name": "GrandFinaleBuff",
+          "Type": "Texture2D"
+        }
+      ]
+    }
+  ]
+}
