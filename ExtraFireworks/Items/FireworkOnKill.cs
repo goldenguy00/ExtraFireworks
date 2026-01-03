@@ -85,7 +85,7 @@ namespace ExtraFireworks.Items
 
             if (report.victimBody && report.attackerBody && report.attackerBody.inventory)
             {
-                var count = report.attackerBody.inventory.GetItemCount(Item);
+                var count = report.attackerBody.inventory.GetItemCountEffective(Item);
 
                 if (!(count > 0))
                     return;

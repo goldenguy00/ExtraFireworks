@@ -53,7 +53,7 @@ namespace ExtraFireworks.Items
             orig(self);
 
             if (NetworkServer.active)
-                self.AddItemBehavior<FireworkAbilityBehaviour>(self.inventory.GetItemCount(this.Item));
+                self.AddItemBehavior<FireworkAbilityBehaviour>(self.inventory.GetItemCountEffective(this.Item));
         }
     }
 

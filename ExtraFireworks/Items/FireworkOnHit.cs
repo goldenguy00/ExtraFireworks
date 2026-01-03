@@ -90,7 +90,7 @@ namespace ExtraFireworks.Items
                 if (!damageInfo.attacker || !damageInfo.attacker.TryGetComponent<CharacterBody>(out var body) || !body.inventory)
                     return;
 
-                var count = body.inventory.GetItemCount(Item);
+                var count = body.inventory.GetItemCountEffective(Item);
                 if (Util.CheckRoll(scaler.GetValue(count) * damageInfo.procCoefficient, body.master))
                 {
                     //var fireworkPos = victim.transform;

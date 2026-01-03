@@ -121,7 +121,7 @@ namespace ExtraFireworks.Items
 
         private void Pulse()
         {
-            var bodies = TeamComponent.GetTeamMembers(TeamIndex.Player).Select(tc => tc.body).Where(body => body && body.inventory && body.inventory.GetItemCount(FireworkDaisy.Instance.Item) > 0);
+            var bodies = TeamComponent.GetTeamMembers(TeamIndex.Player).Select(tc => tc.body).Where(body => body && body.inventory && body.inventory.GetItemCountEffective(FireworkDaisy.Instance.Item) > 0);
             if (bodies.Any())
             {
                 ExtraFireworks.SpawnFireworks(this.transform, bodies.ElementAt(Random.Range(0, bodies.Count())), FireworkDaisy.fireworksPerWave.Value);

@@ -60,7 +60,7 @@ namespace ExtraFireworks.Items
             orig(self);
 
             if (NetworkServer.active)
-                self.AddItemBehavior<FireworkDroneBehaviour>(self.inventory.GetItemCount(this.Item));
+                self.AddItemBehavior<FireworkDroneBehaviour>(self.inventory.GetItemCountEffective(this.Item));
         }
     }
 
@@ -75,7 +75,7 @@ namespace ExtraFireworks.Items
 
         private void OnEnable()
         {
-            this.UpdateAllMinions(this.body.inventory.GetItemCount(FireworkDrones.Instance.Item));
+            this.UpdateAllMinions(this.body.inventory.GetItemCountEffective(FireworkDrones.Instance.Item));
             MasterSummon.onServerMasterSummonGlobal += OnServerMasterSummonGlobal;
         }
 
@@ -132,19 +132,19 @@ namespace ExtraFireworks.Items
 
             if (newStack > 0)
             {
-                int itemCount = inventory.GetItemCount(FireworkDroneWeapon.Instance.Item);
+                int itemCount = inventory.GetItemCountEffective(FireworkDroneWeapon.Instance.Item);
                 if (itemCount < base.stack)
                 {
-                    inventory.GiveItem(FireworkDroneWeapon.Instance.Item, base.stack - itemCount);
+                    inventory.GiveItemPermanent(FireworkDroneWeapon.Instance.Item, base.stack - itemCount);
                 }
                 else if (itemCount > base.stack)
                 {
-                    inventory.RemoveItem(FireworkDroneWeapon.Instance.Item, itemCount - base.stack);
+                    inventory.RemoveItemPermanent(FireworkDroneWeapon.Instance.Item, itemCount - base.stack);
                 }
             }
             else
             {
-                inventory.ResetItem(FireworkDroneWeapon.Instance.Item);
+                inventory.ResetItemPermanent(FireworkDroneWeapon.Instance.Item);
             }
         }
     }

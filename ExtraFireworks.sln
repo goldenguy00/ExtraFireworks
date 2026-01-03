@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35327.3
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraFireworks", "ExtraFireworks\ExtraFireworks.csproj", "{2F8A40CC-6D15-486D-B689-0A7A472DB89E}"
 EndProject
@@ -12,9 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metadata", "Metadata", "{3A
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A3239F13-A3D3-4C43-8617-F909ACD0A4CC}"
-	ProjectSection(SolutionItems) = preProject
-		ExtraFireworks\postbuild.bat = ExtraFireworks\postbuild.bat
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

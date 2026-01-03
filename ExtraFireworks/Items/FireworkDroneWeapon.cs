@@ -34,7 +34,7 @@ namespace ExtraFireworks.Items
             orig(self);
 
             if (NetworkServer.active)
-                self.AddItemBehavior<FireworkDroneWeaponBehaviour>(self.inventory.GetItemCount(this.Item));
+                self.AddItemBehavior<FireworkDroneWeaponBehaviour>(self.inventory.GetItemCountEffective(this.Item));
         }
     }
 

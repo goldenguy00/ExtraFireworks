@@ -118,7 +118,7 @@ namespace ExtraFireworks.Items
             return FireworkMushroom.Instance.Item;
         }
 
-        [InitDuringStartup]
+        [InitDuringStartupPhase(GameInitPhase.PreFrame)]
         private static new void Init()
         {
             fireworkWardPrefab = LegacyResourcesAPI.LoadAsync<GameObject>("Prefabs/NetworkedObjects/MushroomWard").WaitForCompletion().InstantiateClone("FireworkWard");

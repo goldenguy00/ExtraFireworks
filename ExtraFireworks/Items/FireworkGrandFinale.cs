@@ -146,7 +146,7 @@ namespace ExtraFireworks.Items
         {
             if (NetworkServer.active)
             {
-                if (body.HasBuff(this.buff) && body.inventory.GetItemCount(this.Item) <= 0)
+                if (body.HasBuff(this.buff) && body.inventory.GetItemCountEffective(this.Item) <= 0)
                     body.RemoveBuff(this.buff);
             }
         }
@@ -159,7 +159,7 @@ namespace ExtraFireworks.Items
             if (!report.attackerBody || !report.attackerMaster || !report.attackerMaster.inventory)
                 return;
 
-            var count = report.attackerMaster.inventory.GetItemCount(Item);
+            var count = report.attackerMaster.inventory.GetItemCountEffective(Item);
             if (count > 0)
             {
                 var body = report.attackerBody;

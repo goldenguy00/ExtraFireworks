@@ -5,7 +5,10 @@ using ExtraFireworks.Config;
 using R2API;
 using RoR2;
 using RoR2.ExpansionManagement;
+using RoR2BepInExPack;
+using RoR2BepInExPack.GameAssetPaths.Version_1_39_0;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace ExtraFireworks.Items
 {
@@ -104,7 +107,7 @@ namespace ExtraFireworks.Items
             this.Item.deprecatedTier = Tier;
 
             if (RequireSotV)
-                this.Item.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(def => def.nameToken == "DLC1_NAME");
+                this.Item.requiredExpansion = Addressables.LoadAssetAsync<ExpansionDef>(RoR2_DLC1_Common.entitlementDLC1_asset).WaitForCompletion();
 
             AdjustPickupModel();
 
