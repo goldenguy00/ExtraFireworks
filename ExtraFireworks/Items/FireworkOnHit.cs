@@ -1,25 +1,27 @@
 ﻿using BepInEx.Configuration;
-using ExtraFireworks.Config;
+using MiscFixes.Modules;
 using RoR2;
+using RoR2.Items;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UIElements;
 
 namespace ExtraFireworks.Items
 {
     public class FireworkOnHit : ItemBase<FireworkOnHit>
     {
-        private readonly ConfigurableLinearScaling scaler;
-        private readonly ConfigEntry<int> numFireworks;
+        internal readonly ConfigurableLinearScaling scaler;
+        internal readonly ConfigEntry<int> numFireworks;
 
-        private const float MAX_FIREWORK_HEIGHT = 50f;
+        internal const float MAX_FIREWORK_HEIGHT = 50f;
 
         public FireworkOnHit() : base()
         {
-            numFireworks = PluginConfig.BindOptionSlider(ConfigSection,
+            numFireworks = ExtraFireworks.instance.Config.BindOptionSlider(ConfigSection,
                 "FireworksPerHit",
-                2,
                 "Number of fireworks per hit",
+                2,
                 1, 10);
 
             scaler = new ConfigurableLinearScaling(ConfigSection, 10, 10);
@@ -60,6 +62,7 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => "You got stabbed by a firework and is kill.";
 
+#pragma warning disable CS0618 // Type or member is obsolete
         public override void AdjustPickupModel()
         {
             base.AdjustPickupModel();
@@ -71,76 +74,76 @@ namespace ExtraFireworks.Items
                 mdl.localPosition = new Vector3(0f, 2f, 0f);
             }
         }
+#pragma warning restore CS0618 // Type or member is obsolete
+    }
 
-        public override void AddHooks()
+    public class FireworkOnHitBehavior : BaseItemBodyBehavior, IOnDamageDealtServerReceiver
+    {
+        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
+        private static ItemDef GetItemDef() => FireworkOnHit.Instance.Item;
+
+        public void OnDamageDealtServer(DamageReport report)
         {
-            // Implement fireworks on hit
-            On.RoR2.GlobalEventManager.ProcessHitEnemy += (orig, self, damageInfo, victim) =>
+            if (!body)
+                return;
+
+            var damageInfo = report.damageInfo;
+            if (damageInfo.procCoefficient == 0f || damageInfo.rejected)
+                return;
+
+            // Check to make sure fireworks don't proc themselves
+            // Fireworks can't proc themselves even if outside the proc chain
+            if (damageInfo.procChainMask.HasProc(ProcType.MicroMissile) || (damageInfo.inflictor && damageInfo.inflictor.GetComponent<MissileController>()))
+                return;
+
+            if (Util.CheckRoll(FireworkOnHit.Instance.scaler.GetValue(base.stack) * damageInfo.procCoefficient, body.master))
             {
-                orig(self, damageInfo, victim);
+                //var fireworkPos = victim.transform;
+                var victimBody = report.victimBody;
 
-                if (damageInfo?.procCoefficient == 0f || damageInfo.rejected || !NetworkServer.active)
-                    return;
-
-                // Check to make sure fireworks don't proc themselves
-                // Fireworks can't proc themselves even if outside the proc chain
-                if (damageInfo.procChainMask.HasProc(ProcType.MicroMissile) || (damageInfo.inflictor && damageInfo.inflictor.GetComponent<MissileController>()))
-                    return;
-
-                if (!damageInfo.attacker || !damageInfo.attacker.TryGetComponent<CharacterBody>(out var body) || !body.inventory)
-                    return;
-
-                var count = body.inventory.GetItemCountEffective(Item);
-                if (Util.CheckRoll(scaler.GetValue(count) * damageInfo.procCoefficient, body.master))
+                // Try to refine fireworkPos using a raycast
+                var basePos = damageInfo.position;
+                if (victimBody && Vector3.Distance(basePos, Vector3.zero) < Mathf.Epsilon)
                 {
-                    //var fireworkPos = victim.transform;
-                    var victimBody = victim.GetComponent<CharacterBody>();
-
-                    // Try to refine fireworkPos using a raycast
-                    var basePos = damageInfo.position;
-                    if (victimBody && Vector3.Distance(basePos, Vector3.zero) < Mathf.Epsilon)
-                    {
-                        basePos = victimBody.mainHurtBox.randomVolumePoint;
-                    }
-
-                    var bestPoint = basePos;/*
-                    var bestHeight = basePos.y;
-
-                    var hits = Physics.RaycastAll(basePos, Vector3.up, MAX_FIREWORK_HEIGHT);
-                    foreach (var hit in hits)
-                    {
-                        var cm = hit.transform.GetComponentInParent<CharacterModel>();
-                        if (!cm)
-                            continue;
-
-                        var cb = cm.body;
-                        if (!cb)
-                            continue;
-
-                        if (cb != victimBody)
-                            continue;
-
-                        var hurtbox = hit.transform.GetComponentInChildren<HurtBox>();
-                        if (hurtbox)
-                        {
-                            var col = hurtbox.collider;
-                            if (!col)
-                                continue;
-
-                            var highestPoint = col.ClosestPoint(basePos + MAX_FIREWORK_HEIGHT * Vector3.up);
-                            if (highestPoint.y > bestHeight)
-                            {
-                                bestPoint = highestPoint;
-                                bestHeight = highestPoint.y;
-                            }
-                        }
-                    }*/
-
-
-                    ExtraFireworks.CreateLauncher(body, bestPoint + Vector3.up * 2f, numFireworks.Value);
-                    damageInfo.procChainMask.AddProc(ProcType.MicroMissile);
+                    basePos = victimBody.mainHurtBox.randomVolumePoint;
                 }
-            };
+
+                var bestPoint = basePos;/*
+                var bestHeight = basePos.y;
+
+                var hits = Physics.RaycastAll(basePos, Vector3.up, MAX_FIREWORK_HEIGHT);
+                foreach (var hit in hits)
+                {
+                    var cm = hit.transform.GetComponentInParent<CharacterModel>();
+                    if (!cm)
+                        continue;
+
+                    var cb = cm.body;
+                    if (!cb)
+                        continue;
+
+                    if (cb != victimBody)
+                        continue;
+
+                    var hurtbox = hit.transform.GetComponentInChildren<HurtBox>();
+                    if (hurtbox)
+                    {
+                        var col = hurtbox.collider;
+                        if (!col)
+                            continue;
+
+                        var highestPoint = col.ClosestPoint(basePos + MAX_FIREWORK_HEIGHT * Vector3.up);
+                        if (highestPoint.y > bestHeight)
+                        {
+                            bestPoint = highestPoint;
+                            bestHeight = highestPoint.y;
+                        }
+                    }
+                }*/
+
+                ExtraFireworks.CreateLauncher(body, bestPoint + Vector3.up * 2f, FireworkOnHit.Instance.numFireworks.Value);
+                damageInfo.procChainMask.AddProc(ProcType.MicroMissile);
+            }
         }
     }
 }

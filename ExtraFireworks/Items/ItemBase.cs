@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using BepInEx.Configuration;
-using ExtraFireworks.Config;
+using MiscFixes.Modules;
 using R2API;
 using RoR2;
 using RoR2.ExpansionManagement;
-using RoR2BepInExPack;
 using RoR2BepInExPack.GameAssetPaths.Version_1_39_0;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -25,8 +23,9 @@ namespace ExtraFireworks.Items
 
             if (Tier != ItemTier.NoTier)
             {
-                itemEnabled = PluginConfig.BindOption(ConfigSection, "Enabled", true, "Item enabled?", restartRequired: true);
-                ExtraFireworks.items.Add(this);
+                itemEnabled = ExtraFireworks.instance.Config.BindOption(ConfigSection, "Enabled", "Item enabled?", true, Extensions.ConfigFlags.RestartRequired);
+                if (itemEnabled.Value)
+                    ExtraFireworks.items.Add(this);
             }
         }
     }
@@ -56,8 +55,54 @@ namespace ExtraFireworks.Items
         public virtual string ConfigSection => UniqueName;
         public virtual bool RequireSotV => false;
 
-        public abstract void AddHooks();
-        
+        public virtual void Init(AssetBundle bundle)
+        {
+            var subtoken = UniqueName.ToUpper();
+
+            var item = new CustomItem(
+                name: UniqueName,
+                nameToken: $"ITEM_{subtoken}_NAME",
+                descriptionToken: $"ITEM_{subtoken}_DESC",
+                loreToken: "",
+                pickupToken: $"ITEM_{subtoken}_PICKUP",
+                pickupIconSprite: bundle.LoadAsset<Sprite>($"Assets/Import/{PickupIconName}"),
+                pickupModelPrefab: bundle.LoadAsset<GameObject>($"Assets/ImportModels/{PickupModelName}"),
+                tags: Tags,
+                tier: Tier,
+                canRemove: false,
+                hidden: false,
+                unlockableDef: null,
+                itemDisplayRules: DisplayRules);
+
+            this.Item = item.ItemDef;
+#pragma warning disable CS0618 // Type or member is obsolete
+            this.Item.deprecatedTier = Tier;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            if (RequireSotV)
+                this.Item.requiredExpansion = Addressables.LoadAssetAsync<ExpansionDef>(RoR2_DLC1_Common.DLC1_asset).WaitForCompletion();
+
+            AdjustPickupModel();
+
+            LanguageAPI.Add(Item.nameToken, ItemName);
+            LanguageAPI.Add(Item.pickupToken, ItemPickupDescription);
+            LanguageAPI.Add(Item.descriptionToken, ItemDescription);
+            // No lore for consumed item
+            if (Tier != ItemTier.NoTier)
+            {
+                Item.loreToken = $"ITEM_{subtoken}_LORE";
+                Item.canRemove = true;
+                Item.tags = [.. Item.tags, ItemTag.CanBeTemporary];
+
+                LanguageAPI.Add(Item.loreToken, ItemLore);
+            }
+
+            ItemAPI.Add(item);
+
+            AddHooks();
+        }
+
+#pragma warning disable CS0618 // Type or member is obsolete
         public virtual void AdjustPickupModel()
         {
             var prefab = this.Item?.pickupModelPrefab;
@@ -83,44 +128,9 @@ namespace ExtraFireworks.Items
                 }
             }
         }
+#pragma warning restore CS0618 // Type or member is obsolete
 
-        public virtual void Init(AssetBundle bundle)
-        {
-            var subtoken = UniqueName.ToUpper();
+        public virtual void AddHooks() { }
 
-            var item = new CustomItem(
-                name: UniqueName,
-                nameToken: $"ITEM_{subtoken}_NAME",
-                descriptionToken: $"ITEM_{subtoken}_DESC",
-                loreToken: Tier == ItemTier.NoTier ? "" : $"ITEM_{subtoken}_LORE",
-                pickupToken: $"ITEM_{subtoken}_PICKUP",
-                pickupIconSprite: bundle.LoadAsset<Sprite>($"Assets/Import/{PickupIconName}"),
-                pickupModelPrefab: bundle.LoadAsset<GameObject>($"Assets/ImportModels/{PickupModelName}"),
-                tags: Tags,
-                tier: Tier,
-                canRemove: Tier != ItemTier.NoTier,
-                hidden: false,
-                unlockableDef: null,
-                itemDisplayRules: DisplayRules);
-
-            this.Item = item.ItemDef;
-            this.Item.deprecatedTier = Tier;
-
-            if (RequireSotV)
-                this.Item.requiredExpansion = Addressables.LoadAssetAsync<ExpansionDef>(RoR2_DLC1_Common.entitlementDLC1_asset).WaitForCompletion();
-
-            AdjustPickupModel();
-
-            LanguageAPI.Add(Item.nameToken, ItemName);
-            LanguageAPI.Add(Item.pickupToken, ItemPickupDescription);
-            LanguageAPI.Add(Item.descriptionToken, ItemDescription);
-            // No lore for consumed item
-            if (Tier != ItemTier.NoTier)
-                LanguageAPI.Add(Item.loreToken, ItemLore);
-
-            ItemAPI.Add(item);
-
-            AddHooks();
-        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using BepInEx.Configuration;
-using ExtraFireworks.Config;
+using MiscFixes.Modules;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -16,16 +16,16 @@ namespace ExtraFireworks.Items
 
         public PowerWorksVoid() : base()
         {
-            fireworksPerStack = PluginConfig.BindOptionSlider(ConfigSection, 
+            fireworksPerStack = ExtraFireworks.instance.Config.BindOptionSlider(ConfigSection,
                 "FireworksPerUse",
-                20,
                 "Number of fireworks per consumption",
+                20,
                 1, 100);
 
-            hpThreshold = PluginConfig.BindOptionSlider(ConfigSection,
+            hpThreshold = ExtraFireworks.instance.Config.BindOptionSlider(ConfigSection,
                 "HpThreshold",
-                0.25f,
                 "HP threshold before Power Works is consumed",
+                0.25f,
                 0, 1);
         }
 
@@ -86,6 +86,7 @@ namespace ExtraFireworks.Items
             ContentAddition.AddItemRelationshipProvider(provider);
         }
 
+#pragma warning disable CS0618 // Type or member is obsolete
         public override void AdjustPickupModel()
         {
             base.AdjustPickupModel();
@@ -105,92 +106,53 @@ namespace ExtraFireworks.Items
                 mdlFireworks.localPosition = new Vector3(-0.2f, 0.05f, 3.5f);
             }
         }
+#pragma warning restore CS0618 // Type or member is obsolete
+    }
 
-        public override void AddHooks()
+    public class PowerWorksBehavior : BaseItemBodyBehavior, IOnTakeDamageServerReceiver
+    {
+        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
+        private static ItemDef GetItemDef() => PowerWorksVoid.Instance.Item;
+
+        private void Start()
         {
-            CharacterBody.onBodyInventoryChangedGlobal += this.CharacterBody_onBodyInventoryChangedGlobal;
-            On.RoR2.CharacterMaster.OnServerStageBegin += this.CharacterMaster_OnServerStageBegin;
+            body?.healthComponent?.AddOnTakeDamageServerReceiver(this);
         }
 
-        private void CharacterBody_onBodyInventoryChangedGlobal(CharacterBody body)
+        private void OnDestroy()
         {
-            if (NetworkServer.active && body && body.inventory)
-                body.AddItemBehavior<PowerWorksHandler>(body.inventory.GetItemCountEffective(Item.itemIndex));
-            
+            body?.healthComponent?.RemoveOnTakeDamageServerReceiver(this);
         }
-        public class PowerWorksHandler : CharacterBody.ItemBehavior, IOnTakeDamageServerReceiver
+
+        public void OnTakeDamageServer(DamageReport damageReport)
         {
-            private void Awake()
-            {
-                this.enabled = false;
-            }
-
-            private void OnEnable()
-            {
-                if (body && body.healthComponent)
-                    body.healthComponent.AddOnTakeDamageServerReceiver(this);
-            }
-
-            private void OnDisable()
-            {
-                if (body && body.healthComponent)
-                    body.healthComponent.RemoveOnTakeDamageServerReceiver(this);
-            }
-
-            public void OnTakeDamageServer(DamageReport damageReport)
-            {
-                if (body == null || body.inventory == null || body.healthComponent == null)
-                    return;
-
-                // Check if HP threshold met
-                if (body.healthComponent.health / body.healthComponent.fullHealth > Instance.hpThreshold.Value)
-                    return;
-
-                if (new Inventory.ItemTransformation
-                {
-                    allowWhenDisabled = true,
-                    forbidPermanentItems = false,
-                    forbidTempItems = false,
-                    originalItemIndex = Instance.Item.itemIndex,
-                    newItemIndex = PowerWorksVoidConsumed.Instance.Item.itemIndex,
-                    minToTransform = 1,
-                    maxToTransform = int.MaxValue,
-                    transformationType = (ItemTransformationTypeIndex)3
-                }.TryTransform(body.inventory, out var result))
-                {
-                    CharacterMasterNotificationQueue.SendTransformNotification(body.master, Instance.Item.itemIndex,
-                        PowerWorksVoidConsumed.Instance.Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Suppressed);
-
-                    ExtraFireworks.FireFireworks(body, Instance.fireworksPerStack.Value * result.totalTransformed);
-
-                    // Also give void bubble
-                    body.SetBuffCount(DLC1Content.Buffs.BearVoidCooldown.buffIndex, 0);
-                    body.SetBuffCount(DLC1Content.Buffs.BearVoidReady.buffIndex, 1);
-                }
-            }
-
-        }
-        private void CharacterMaster_OnServerStageBegin(On.RoR2.CharacterMaster.orig_OnServerStageBegin orig, CharacterMaster self, Stage stage)
-        {
-            orig(self, stage);
-
-            if (!self.inventory || !NetworkServer.active)
+            if (body?.healthComponent == null)
                 return;
 
-            if (new Inventory.ItemTransformation
+            // Check if HP threshold met
+            if (body.healthComponent.health / body.healthComponent.fullHealth > PowerWorksVoid.Instance.hpThreshold.Value)
+                return;
+
+            if (body.inventory && new Inventory.ItemTransformation
             {
                 allowWhenDisabled = true,
                 forbidPermanentItems = false,
                 forbidTempItems = false,
-                originalItemIndex = PowerWorksVoidConsumed.Instance.Item.itemIndex,
-                newItemIndex = Item.itemIndex,
+                originalItemIndex = PowerWorksVoid.Instance.Item.itemIndex,
+                newItemIndex = PowerWorksVoidConsumed.Instance.Item.itemIndex,
                 minToTransform = 1,
                 maxToTransform = int.MaxValue,
-                transformationType = (ItemTransformationTypeIndex)0
-            }.TryTransform(self.inventory, out var result))
+                transformationType = (ItemTransformationTypeIndex)3
+            }.TryTransform(body.inventory, out var result))
             {
-                CharacterMasterNotificationQueue.SendTransformNotification(self, PowerWorksVoidConsumed.Instance.Item.itemIndex,
-                    Item.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+                CharacterMasterNotificationQueue.SendTransformNotification(body.master, result.takenItem.itemIndex, 
+                    result.givenItem.itemIndex, CharacterMasterNotificationQueue.TransformationType.Suppressed);
+
+                ExtraFireworks.FireFireworks(body, PowerWorksVoid.Instance.fireworksPerStack.Value * result.totalTransformed);
+
+                // Also give void bubble
+                body.SetBuffCount(DLC1Content.Buffs.BearVoidCooldown.buffIndex, 0);
+                body.SetBuffCount(DLC1Content.Buffs.BearVoidReady.buffIndex, 1);
             }
         }
     }

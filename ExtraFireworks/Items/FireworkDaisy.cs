@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using BepInEx.Configuration;
-using ExtraFireworks.Config;
+using HG;
+using MiscFixes.Modules;
 using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -13,11 +14,11 @@ namespace ExtraFireworks.Items
 
         public FireworkDaisy() : base()
         {
-            fireworksPerWave = PluginConfig.BindOptionSlider(
+            fireworksPerWave = ExtraFireworks.instance.Config.BindOptionSlider(
                 ConfigSection,
                 "FireworksPerWave",
-                40,
                 "Number of fireworks per firework daisy wave",
+                40,
                 10, 100);
         }
 
@@ -53,7 +54,8 @@ namespace ExtraFireworks.Items
         {
             orig(self);
 
-            self.gameObject.AddComponent<FireworkDaisyBehaviour>();
+            if (NetworkServer.active)
+                self.gameObject.EnsureComponent<FireworkDaisyBehaviour>();
         }
     }
 
@@ -77,10 +79,6 @@ namespace ExtraFireworks.Items
 
         public void FixedUpdate()
         {
-            if (!NetworkServer.active)
-            {
-                return;
-            }
 
             if (!this.holdoutZone || this.holdoutZone.charge >= 1f)
             {

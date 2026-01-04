@@ -1,5 +1,6 @@
 ﻿using RoR2;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
@@ -25,11 +26,35 @@ namespace ExtraFireworks.Items
 
         public override bool RequireSotV => true;
 
-        public override void AddHooks() { }
-        public override void AdjustPickupModel() { }
         public override void Init(AssetBundle bundle)
         {
             base.Init(bundle);
+        }
+
+        public override void AddHooks()
+        {
+            On.RoR2.CharacterMaster.OnServerStageBegin += this.CharacterMaster_OnServerStageBegin;
+        }
+
+        private void CharacterMaster_OnServerStageBegin(On.RoR2.CharacterMaster.orig_OnServerStageBegin orig, CharacterMaster self, Stage stage)
+        {
+            orig(self, stage);
+
+            if (self.inventory && new Inventory.ItemTransformation
+            {
+                allowWhenDisabled = true,
+                forbidPermanentItems = false,
+                forbidTempItems = false,
+                originalItemIndex = PowerWorksVoidConsumed.Instance.Item.itemIndex,
+                newItemIndex = PowerWorksVoid.Instance.Item.itemIndex,
+                minToTransform = 1,
+                maxToTransform = int.MaxValue,
+                transformationType = (ItemTransformationTypeIndex)0
+            }.TryTransform(self.inventory, out var result))
+            {
+                CharacterMasterNotificationQueue.SendTransformNotification(self, result.takenItem.itemIndex,
+                    result.givenItem.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
+            }
         }
     }
 }

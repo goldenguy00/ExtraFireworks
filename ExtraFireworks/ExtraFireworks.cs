@@ -1,12 +1,9 @@
 using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Bootstrap;
-using ExtraFireworks.Config;
 using ExtraFireworks.Items;
-using R2API.ContentManagement;
 using RoR2;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 [assembly: HG.Reflection.SearchableAttribute.OptIn]
 
@@ -29,15 +26,17 @@ namespace ExtraFireworks
         public static GameObject fireworkLauncherPrefab;
         public static GameObject fireworkPrefab;
         internal static List<ItemBase> items = [];
-        private static Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/HGStandard");
 
         public static bool RooInstalled => Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions");
 
+        public static ExtraFireworks instance { get; private set; }
+
         public void Awake()
         {
-            //Init our logging class so that we can properly log for debugging
+            instance = this;
+
             Log.Init(Logger);
-            PluginConfig.Init(Config);
+
             fireworkLauncherPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/FireworkLauncher");
             fireworkPrefab = fireworkLauncherPrefab.GetComponent<FireworkLauncher>().projectilePrefab;
             
@@ -146,7 +145,7 @@ namespace ExtraFireworks
                 texture = material.GetTexture("_BumpMap");
             }
 
-            material.shader = hotpoo;
+            material.shader = Resources.Load<Shader>("Shaders/Deferred/HGStandard");
             if (texture != null)
             {
                 material.SetTexture("_NormalTex", texture);

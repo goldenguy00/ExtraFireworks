@@ -1,6 +1,7 @@
 ﻿using BepInEx.Configuration;
-using ExtraFireworks.Config;
+using MiscFixes.Modules;
 using RoR2;
+using RoR2.Items;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -13,10 +14,10 @@ namespace ExtraFireworks.Items
 
         public FireworkDrones() : base()
         {
-            fireworkInterval = PluginConfig.BindOptionSlider(ConfigSection,
+            fireworkInterval = ExtraFireworks.instance.Config.BindOptionSlider(ConfigSection,
                 "FireworksInterval",
-                4f,
                 "Number of seconds between bursts of fireworks",
+                4f,
                 1, 10);
             scaler = new ConfigurableLinearScaling(ConfigSection, 4, 2);
         }
@@ -49,65 +50,38 @@ namespace ExtraFireworks.Items
 
             new FireworkDroneWeapon().Init(bundle);
         }
-
-        public override void AddHooks()
-        {
-            On.RoR2.CharacterBody.OnInventoryChanged += this.CharacterBody_OnInventoryChanged;
-        }
-
-        private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
-        {
-            orig(self);
-
-            if (NetworkServer.active)
-                self.AddItemBehavior<FireworkDroneBehaviour>(self.inventory.GetItemCountEffective(this.Item));
-        }
     }
 
-    public class FireworkDroneBehaviour : CharacterBody.ItemBehavior
+    public class FireworkDroneBehaviour : BaseItemBodyBehavior
     {
-        private int previousStack;
+        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
+        private static ItemDef GetItemDef() => FireworkDrones.Instance.Item;
 
-        private void Awake()
+        private void Start()
         {
-            this.enabled = false;
+            this.UpdateAllMinions(this.stack);
+            MinionOwnership.onMinionGroupChangedGlobal += MinionOwnership_onMinionGroupChangedGlobal;
         }
 
-        private void OnEnable()
+        private void OnDestroy()
         {
-            this.UpdateAllMinions(this.body.inventory.GetItemCountEffective(FireworkDrones.Instance.Item));
-            MasterSummon.onServerMasterSummonGlobal += OnServerMasterSummonGlobal;
+            MinionOwnership.onMinionGroupChangedGlobal -= MinionOwnership_onMinionGroupChangedGlobal;
+            UpdateAllMinions();
         }
 
-        private void OnDisable()
+        public override void OnInventoryRefresh()
         {
-            MasterSummon.onServerMasterSummonGlobal -= OnServerMasterSummonGlobal;
-            this.UpdateAllMinions();
+            UpdateAllMinions(base.stack);
         }
 
-        private void FixedUpdate()
+        private void MinionOwnership_onMinionGroupChangedGlobal(MinionOwnership minionGroup)
         {
-            if (this.previousStack != base.stack)
-            {
-                this.UpdateAllMinions(base.stack);
-            }
-        }
-
-        private void OnServerMasterSummonGlobal(MasterSummon.MasterSummonReport summonReport)
-        {
-            if (!base.body || !base.body.master || base.body.master != summonReport.leaderMasterInstance)
-                return;
-
-            var minionMaster = summonReport.summonMasterInstance;
-            if (minionMaster)
-            {
-                this.UpdateMinionInventory(minionMaster.inventory, base.stack);
-            }
+            UpdateAllMinions(base.stack);
         }
 
         private void UpdateAllMinions(int newStack = 0)
         {
-            if (!base.body || !base.body.master)
+            if (!body || !body.master)
                 return;
 
             var minionGroup = MinionOwnership.MinionGroup.FindGroup(base.body.master.netId);
@@ -118,33 +92,20 @@ namespace ExtraFireworks.Items
             {
                 if (minionOwnership && minionOwnership.TryGetComponent<CharacterMaster>(out var master))
                 {
-                    this.UpdateMinionInventory(master.inventory, newStack);
+                    this.UpdateMinionInventory(master, newStack);
                 }
             }
-
-            this.previousStack = newStack;
         }
 
-        private void UpdateMinionInventory(Inventory inventory, int newStack = 0)
+        private void UpdateMinionInventory(CharacterMaster master, int newStack = 0)
         {
-            if (!inventory)
+            if (!master || !master.inventory)
                 return;
 
-            if (newStack > 0)
+            int itemCount = master.inventory.GetItemCountPermanent(FireworkDroneWeapon.Instance.Item);
+            if (newStack != itemCount)
             {
-                int itemCount = inventory.GetItemCountEffective(FireworkDroneWeapon.Instance.Item);
-                if (itemCount < base.stack)
-                {
-                    inventory.GiveItemPermanent(FireworkDroneWeapon.Instance.Item, base.stack - itemCount);
-                }
-                else if (itemCount > base.stack)
-                {
-                    inventory.RemoveItemPermanent(FireworkDroneWeapon.Instance.Item, itemCount - base.stack);
-                }
-            }
-            else
-            {
-                inventory.ResetItemPermanent(FireworkDroneWeapon.Instance.Item);
+                master.inventory.GiveItemPermanent(FireworkDroneWeapon.Instance.Item, newStack - itemCount);
             }
         }
     }

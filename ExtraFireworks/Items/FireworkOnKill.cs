@@ -1,5 +1,6 @@
-﻿using ExtraFireworks.Config;
+﻿using HG;
 using RoR2;
+using RoR2.Items;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
@@ -8,7 +9,7 @@ namespace ExtraFireworks.Items
 {
     public class FireworkOnKill : ItemBase<FireworkOnKill>
     {
-        private readonly ConfigurableLinearScaling scaler;
+        internal readonly ConfigurableLinearScaling scaler;
 
         public FireworkOnKill() : base()
         {
@@ -39,6 +40,7 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => "Revolutionary design.";
 
+#pragma warning disable CS0618 // Type or member is obsolete
         public override void AdjustPickupModel()
         {
             var prefab = this.Item?.pickupModelPrefab;
@@ -56,8 +58,7 @@ namespace ExtraFireworks.Items
                 if (this.ModelScale.HasValue)
                     prefab.transform.localScale = this.ModelScale.Value;
 
-                if (!prefab.TryGetComponent<ModelPanelParameters>(out var mdlParams))
-                    mdlParams = prefab.AddComponent<ModelPanelParameters>();
+                var mdlParams = prefab.EnsureComponent<ModelPanelParameters>();
 
                 if (!mdlParams.focusPointTransform)
                 {
@@ -71,28 +72,21 @@ namespace ExtraFireworks.Items
                 }
             }
         }
+#pragma warning restore CS0618 // Type or member is obsolete
+    }
 
-        public override void AddHooks()
-        {
-            // Implement fireworks on kill
-            GlobalEventManager.onCharacterDeathGlobal += this.GlobalEventManager_onCharacterDeathGlobal;
-        }
+    public class FireworkOnKillBehavior : BaseItemBodyBehavior, IOnKilledOtherServerReceiver
+    {
+        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
+        private static ItemDef GetItemDef() => FireworkOnKill.Instance.Item;
 
-        private void GlobalEventManager_onCharacterDeathGlobal(DamageReport report)
+        public void OnKilledOtherServer(DamageReport report)
         {
-            if (!NetworkServer.active)
+            if (!report.victimBody)
                 return;
 
-            if (report.victimBody && report.attackerBody && report.attackerBody.inventory)
-            {
-                var count = report.attackerBody.inventory.GetItemCountEffective(Item);
-
-                if (!(count > 0))
-                    return;
-                
-                var transform = report.victimBody.coreTransform ? report.victimBody.coreTransform : report.victimBody.transform;
-                ExtraFireworks.SpawnFireworks(transform, report.attackerBody, scaler.GetValueInt(count), false);
-            }
+            var transform = report.victimBody.coreTransform ? report.victimBody.coreTransform : report.victimBody.transform;
+            ExtraFireworks.SpawnFireworks(transform, report.attackerBody, FireworkOnKill.Instance.scaler.GetValueInt(base.stack), false);
         }
     }
 }

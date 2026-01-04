@@ -35,6 +35,7 @@
     <PackageReference Include="MMHOOK.RoR2" Version="2025.12.9">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
+    <PackageReference Include="score-MiscFixes" Version="1.5.7" />
   </ItemGroup>
 
   <!-- Build dependencies: the typical + VoidItemAPI -->

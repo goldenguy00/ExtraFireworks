@@ -1,5 +1,4 @@
-﻿using ExtraFireworks.Config;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
 using RoR2.Items;
@@ -10,6 +9,7 @@ namespace ExtraFireworks.Items
     public class FireworkMushroom : ItemBase<FireworkMushroom>
     {
         internal readonly ConfigurableHyperbolicScaling scaler;
+        internal static GameObject fireworkWardPrefab;
 
         public FireworkMushroom() : base()
         {
@@ -40,6 +40,19 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => "A fun arts and crafts project.";
 
+        public override void Init(AssetBundle bundle)
+        {
+            base.Init(bundle);
+
+            fireworkWardPrefab = LegacyResourcesAPI.LoadAsync<GameObject>("Prefabs/NetworkedObjects/MushroomWard").WaitForCompletion().InstantiateClone("FireworkWard");
+            var oldWard = fireworkWardPrefab.GetComponent<HealingWard>();
+            var newWard = fireworkWardPrefab.AddComponent<FireworkWard>();
+            newWard.rangeIndicator = oldWard.rangeIndicator;
+            newWard.floorWard = oldWard.floorWard;
+            MonoBehaviour.Destroy(oldWard);
+        }
+
+#pragma warning disable CS0618 // Type or member is obsolete
         public override void AdjustPickupModel()
         {
             base.AdjustPickupModel();
@@ -50,9 +63,52 @@ namespace ExtraFireworks.Items
                 prefab.transform.Find("MushroomMesh").SetAsFirstSibling();
             }
         }
+#pragma warning restore CS0618 // Type or member is obsolete
+    }
 
-        public override void AddHooks()
+    public class FireworkMushroomBehavior : BaseItemBodyBehavior
+    {
+        private GameObject fireworkWardGameObject;
+
+        private FireworkWard fireworkWard;
+
+        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
+        private static ItemDef GetItemDef() => FireworkMushroom.Instance.Item;
+
+        private void FixedUpdate()
         {
+            bool isNotMoving = base.stack > 0 && base.body.GetNotMoving();
+            float networkradius = base.body.radius + 3f;
+            if (this.fireworkWardGameObject != isNotMoving)
+            {
+                if (isNotMoving)
+                {
+                    this.fireworkWardGameObject = GameObject.Instantiate(FireworkMushroom.fireworkWardPrefab, base.body.footPosition, Quaternion.identity);
+                    this.fireworkWard = this.fireworkWardGameObject.GetComponent<FireworkWard>();
+                    NetworkServer.Spawn(this.fireworkWardGameObject);
+                }
+                else
+                {
+                    GameObject.Destroy(this.fireworkWardGameObject);
+                    this.fireworkWardGameObject = null;
+                }
+            }
+            if (this.fireworkWard)
+            {
+                this.fireworkWard.radius = networkradius;
+                this.fireworkWard.body = this.body;
+                this.fireworkWard.stack = base.stack;
+                this.fireworkWard.interval = 1f - FireworkMushroom.Instance.scaler.GetValue(base.stack);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (this.fireworkWardGameObject)
+            {
+                GameObject.Destroy(this.fireworkWardGameObject);
+                this.fireworkWardGameObject = null;
+            }
         }
     }
 
@@ -60,7 +116,7 @@ namespace ExtraFireworks.Items
     {
         public Transform rangeIndicator;
         public bool floorWard;
-        
+
         public CharacterBody body;
         public int stack;
         public float radius;
@@ -71,13 +127,10 @@ namespace ExtraFireworks.Items
 
         private void Awake()
         {
-            if (NetworkServer.active)
+            if (this.floorWard && Physics.Raycast(base.transform.position, Vector3.down, out var hitInfo, 500f, LayerIndex.world.mask))
             {
-                if (this.floorWard && Physics.Raycast(base.transform.position, Vector3.down, out var hitInfo, 500f, LayerIndex.world.mask))
-                {
-                    base.transform.position = hitInfo.point;
-                    base.transform.up = hitInfo.normal;
-                }
+                base.transform.position = hitInfo.point;
+                base.transform.up = hitInfo.normal;
             }
         }
 
@@ -100,70 +153,6 @@ namespace ExtraFireworks.Items
                 {
                     ExtraFireworks.FireFireworks(body, 1);
                 }
-            }
-        }
-    }
-
-    public class FireworkBodyBehavior : BaseItemBodyBehavior
-    {
-        private static GameObject fireworkWardPrefab;
-
-        private GameObject fireworkWardGameObject;
-
-        private FireworkWard fireworkWard;
-
-        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
-        {
-            return FireworkMushroom.Instance.Item;
-        }
-
-        [InitDuringStartupPhase(GameInitPhase.PreFrame)]
-        private static new void Init()
-        {
-            fireworkWardPrefab = LegacyResourcesAPI.LoadAsync<GameObject>("Prefabs/NetworkedObjects/MushroomWard").WaitForCompletion().InstantiateClone("FireworkWard");
-            var oldWard = fireworkWardPrefab.GetComponent<HealingWard>();
-            var newWard = fireworkWardPrefab.AddComponent<FireworkWard>();
-            newWard.rangeIndicator = oldWard.rangeIndicator;
-            newWard.floorWard = oldWard.floorWard;
-            Destroy(oldWard);
-        }
-
-        private void FixedUpdate()
-        {
-            if (!NetworkServer.active)
-                return;
-
-            bool isNotMoving = base.stack > 0 && base.body.GetNotMoving();
-            float networkradius = base.body.radius + 3f;
-            if (this.fireworkWardGameObject != isNotMoving)
-            {
-                if (isNotMoving)
-                {
-                    this.fireworkWardGameObject = Object.Instantiate(FireworkBodyBehavior.fireworkWardPrefab, base.body.footPosition, Quaternion.identity);
-                    this.fireworkWard = this.fireworkWardGameObject.GetComponent<FireworkWard>();
-                    NetworkServer.Spawn(this.fireworkWardGameObject);
-                }
-                else
-                {
-                    Object.Destroy(this.fireworkWardGameObject);
-                    this.fireworkWardGameObject = null;
-                }
-            }
-            if (this.fireworkWard)
-            {
-                this.fireworkWard.radius = networkradius;
-                this.fireworkWard.body = this.body;
-                this.fireworkWard.stack = base.stack;
-                this.fireworkWard.interval = 1f - FireworkMushroom.Instance.scaler.GetValue(base.stack);
-            }
-        }
-
-        private void OnDisable()
-        {
-            if (this.fireworkWardGameObject)
-            {
-                Object.Destroy(this.fireworkWardGameObject);
             }
         }
     }

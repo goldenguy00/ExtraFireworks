@@ -1,8 +1,8 @@
 ﻿using BepInEx.Configuration;
-using ExtraFireworks.Config;
+using MiscFixes.Modules;
 using RoR2;
+using RoR2.Items;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
@@ -15,11 +15,11 @@ namespace ExtraFireworks.Items
         {
             scaler = new ConfigurableLinearScaling(ConfigSection, 1, 1);
 
-            noSkillRestriction = PluginConfig.BindOption(
+            noSkillRestriction = ExtraFireworks.instance.Config.BindOption(
                 ConfigSection,
-                "PrimaryAbilityFireworks", 
-                false,
-                "Whether abilities without a cooldown should spawn fireworks... be wary of brokenness, especially on Commando and Railgunner");
+                "PrimaryAbilityFireworks",
+                "Whether abilities without a cooldown should spawn fireworks... be wary of brokenness, especially on Commando and Railgunner",
+                false);
         }
 
         public override string UniqueName => "FireworkAbility";
@@ -42,41 +42,27 @@ namespace ExtraFireworks.Items
             $"<style=cIsDamage>300%</style> base damage.";
 
         public override string ItemLore => "Holy shit it's a head with fireworks sticking out of it";
-
-        public override void AddHooks()
-        {
-            On.RoR2.CharacterBody.OnInventoryChanged += this.CharacterBody_OnInventoryChanged;
-        }
-
-        private void CharacterBody_OnInventoryChanged(On.RoR2.CharacterBody.orig_OnInventoryChanged orig, CharacterBody self)
-        {
-            orig(self);
-
-            if (NetworkServer.active)
-                self.AddItemBehavior<FireworkAbilityBehaviour>(self.inventory.GetItemCountEffective(this.Item));
-        }
     }
 
-    public class FireworkAbilityBehaviour : CharacterBody.ItemBehavior
+    public class FireworkAbilityBehaviour : BaseItemBodyBehavior
     {
-        private void Awake()
-        {
-            this.enabled = false;
-        }
+        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
+        private static ItemDef GetItemDef() => FireworkAbility.Instance.Item;
 
-        private void OnEnable()
+        private void Start()
         {
-            body.onSkillActivatedServer += Body_onSkillActivatedServer;
+            if (!ReferenceEquals(body, null))
+                body.onSkillActivatedServer += Body_onSkillActivatedServer;
         }
-        private void OnDisable()
+        private void OnDestroy()
         {
-            if (body)
+            if (!ReferenceEquals(body, null))
                 body.onSkillActivatedServer -= Body_onSkillActivatedServer;
         }
 
         private void Body_onSkillActivatedServer(GenericSkill skill)
         {
-            if (this.stack > 0 && skill && skill.skillDef)
+            if (skill?.skillDef)
             {
                 if (FireworkAbility.noSkillRestriction.Value || (skill.baseRechargeInterval >= 1f - Mathf.Epsilon && skill.skillDef.stockToConsume > 0))
                     ExtraFireworks.FireFireworks(body, FireworkAbility.scaler.GetValueInt(stack));

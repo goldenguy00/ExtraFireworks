@@ -1,15 +1,14 @@
 ﻿using BepInEx.Configuration;
-using ExtraFireworks.Config;
+using MiscFixes.Modules;
 using R2API;
 using RoR2;
+using RoR2.Items;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
-
     public class FireworkGrandFinale : ItemBase<FireworkGrandFinale>
     {
         internal readonly ConfigEntry<float> fireworkDamage;
@@ -23,24 +22,24 @@ namespace ExtraFireworks.Items
 
         public FireworkGrandFinale() : base()
         {
-            fireworkDamage = PluginConfig.BindOptionSteppedSlider(ConfigSection,
+            fireworkDamage = ExtraFireworks.instance.Config.BindOptionSteppedSlider(ConfigSection,
                 "DamageCoefficient",
+                "Damage of Grand Finale firework as coefficient of base damage",
                 50f,
                 1,
-                "Damage of Grand Finale firework as coefficient of base damage",
                 1, 100);
 
-            fireworkExplosionSize = PluginConfig.BindOptionSteppedSlider(ConfigSection,
+            fireworkExplosionSize = ExtraFireworks.instance.Config.BindOptionSteppedSlider(ConfigSection,
                 "ExplosionRadius",
+                "Explosion radius of Grand Finale firework",
                 10f,
                 1,
-                "Explosion radius of Grand Finale firework",
                 1, 20);
 
-            fireworkEnemyKillcount = PluginConfig.BindOptionSlider(ConfigSection,
+            fireworkEnemyKillcount = ExtraFireworks.instance.Config.BindOptionSlider(ConfigSection,
                 "KillThreshold",
-                10,
                 "Number of enemies required to proc the Grand Finale firework",
+                10,
                 1, 20);
         }
 
@@ -133,57 +132,50 @@ namespace ExtraFireworks.Items
             var boxCollider = projectilePrefab.GetComponent<BoxCollider>();
             boxCollider.size *= 5f;
         }
+    }
 
-        public override void AddHooks()
+    public class FireworkFinaleBehaviour : BaseItemBodyBehavior, IOnDamageDealtServerReceiver
+    {
+        [ItemDefAssociation(useOnServer = true, useOnClient = false)]
+        private static ItemDef GetItemDef() => FireworkGrandFinale.Instance.Item;
+        private BuffDef BuffDef => FireworkGrandFinale.Instance.buff;
+
+        private void OnDestroy()
         {
-            // Implement fireworks on kill
-            RoR2.GlobalEventManager.onCharacterDeathGlobal += this.GlobalEventManager_OnCharacterDeath;
-            RoR2.CharacterBody.onBodyInventoryChangedGlobal += this.CharacterBody_onBodyInventoryChangedGlobal;
+            if (body?.inventory == null)
+                return;
 
-        }
-
-        private void CharacterBody_onBodyInventoryChangedGlobal(CharacterBody body)
-        {
-            if (NetworkServer.active)
+            if (body.inventory.GetItemCountPermanent(GetItemDef()) == 0
+                && body.inventory.GetItemCountTemp(GetItemDef()) == 0
+                && body.inventory.GetItemCountChanneled(GetItemDef()) == 0)
             {
-                if (body.HasBuff(this.buff) && body.inventory.GetItemCountEffective(this.Item) <= 0)
-                    body.RemoveBuff(this.buff);
+                body.SetBuffCount(BuffDef.buffIndex, 0);
             }
         }
 
-        private void GlobalEventManager_OnCharacterDeath(DamageReport report)
+        public void OnDamageDealtServer(DamageReport report)
         {
-            if (!NetworkServer.active || report == null)
+            if (!body)
                 return;
 
-            if (!report.attackerBody || !report.attackerMaster || !report.attackerMaster.inventory)
-                return;
-
-            var count = report.attackerMaster.inventory.GetItemCountEffective(Item);
-            if (count > 0)
+            var buffCount = body.GetBuffCount(BuffDef);
+            if (buffCount > 0)
             {
-                var body = report.attackerBody;
-                var buffCount = body.GetBuffCount(this.buff);
-
-                if (buffCount <= 0)
-                {
-                    ProjectileManager.instance.FireProjectile(new FireProjectileInfo
-                    {
-                        projectilePrefab = projectilePrefab,
-                        position = body.corePosition + Vector3.up * body.radius,
-                        rotation = Quaternion.LookRotation(Vector3.up),
-                        owner = body.gameObject,
-                        damage = fireworkDamage.Value * body.baseDamage,
-                        force = 500f,
-                        crit = body.RollCrit()
-                    });
-                    body.SetBuffCount(this.buff.buffIndex, this.fireworkEnemyKillcount.Value);
-                }
-                else
-                {
-                    body.RemoveBuff(this.buff);
-                }
+                body.RemoveBuff(BuffDef);
+                return;
             }
+
+            body.SetBuffCount(BuffDef.buffIndex, FireworkGrandFinale.Instance.fireworkEnemyKillcount.Value);
+            ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+            {
+                projectilePrefab = FireworkGrandFinale.Instance.projectilePrefab,
+                position = body.corePosition + Vector3.up * body.radius,
+                rotation = Quaternion.LookRotation(Vector3.up),
+                owner = body.gameObject,
+                damage = FireworkGrandFinale.Instance.fireworkDamage.Value * body.baseDamage,
+                force = 500f,
+                crit = body.RollCrit()
+            });
         }
     }
 }
