@@ -119,10 +119,20 @@ namespace ExtraFireworks.Items
 
         private void Pulse()
         {
-            var bodies = TeamComponent.GetTeamMembers(TeamIndex.Player).Select(tc => tc.body).Where(body => body && body.inventory && body.inventory.GetItemCountEffective(FireworkDaisy.Instance.Item) > 0);
-            if (bodies.Any())
+            int bodyCount = 0;
+            using var _ = ListPool<CharacterBody>.RentCollection(out var bodies);
+            foreach (var tc in TeamComponent.GetTeamMembers(TeamIndex.Player))
             {
-                ExtraFireworks.SpawnFireworks(this.transform, bodies.ElementAt(Random.Range(0, bodies.Count())), FireworkDaisy.fireworksPerWave.Value);
+                if (tc?.body && tc.body.inventory && tc.body.inventory.GetItemCountEffective(FireworkDaisy.Instance.Item) > 0)
+                {
+                    bodies.Add(tc.body);
+                    bodyCount++;
+                }
+            }
+
+            if (bodyCount > 0)
+            {
+                ExtraFireworks.SpawnFireworks(this.transform, bodies[Random.Range(0, bodyCount)], FireworkDaisy.fireworksPerWave.Value);
             }
         }
     }

@@ -54,6 +54,7 @@ namespace ExtraFireworks.Items
         public virtual Vector3? ModelScale { get; }
         public virtual string ConfigSection => UniqueName;
         public virtual bool RequireSotV => false;
+        public virtual bool CanBeTemp => Tier != ItemTier.NoTier;
 
         public virtual void Init(AssetBundle bundle)
         {
@@ -69,15 +70,18 @@ namespace ExtraFireworks.Items
                 pickupModelPrefab: bundle.LoadAsset<GameObject>($"Assets/ImportModels/{PickupModelName}"),
                 tags: Tags,
                 tier: Tier,
-                canRemove: false,
+                canRemove: Tier != ItemTier.NoTier,
                 hidden: false,
                 unlockableDef: null,
                 itemDisplayRules: DisplayRules);
 
-            this.Item = item.ItemDef;
 #pragma warning disable CS0618 // Type or member is obsolete
+            this.Item = item.ItemDef;
             this.Item.deprecatedTier = Tier;
 #pragma warning restore CS0618 // Type or member is obsolete
+
+            if (CanBeTemp)
+                this.Item.tags = [.. Item.tags, ItemTag.CanBeTemporary];
 
             if (RequireSotV)
                 this.Item.requiredExpansion = Addressables.LoadAssetAsync<ExpansionDef>(RoR2_DLC1_Common.DLC1_asset).WaitForCompletion();
@@ -91,9 +95,6 @@ namespace ExtraFireworks.Items
             if (Tier != ItemTier.NoTier)
             {
                 Item.loreToken = $"ITEM_{subtoken}_LORE";
-                Item.canRemove = true;
-                Item.tags = [.. Item.tags, ItemTag.CanBeTemporary];
-
                 LanguageAPI.Add(Item.loreToken, ItemLore);
             }
 

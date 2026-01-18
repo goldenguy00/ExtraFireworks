@@ -5,7 +5,6 @@ using RoR2;
 using RoR2.Items;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
@@ -56,6 +55,7 @@ namespace ExtraFireworks.Items
         public override string ItemLore => "MMMM YUM.";
 
         public override bool RequireSotV => true;
+        public override bool CanBeTemp => false;
 
         public override void Init(AssetBundle bundle)
         {
@@ -126,16 +126,16 @@ namespace ExtraFireworks.Items
 
         public void OnTakeDamageServer(DamageReport damageReport)
         {
-            if (body?.healthComponent == null)
+            if (!body.inventory)
                 return;
 
             // Check if HP threshold met
-            if (body.healthComponent.health / body.healthComponent.fullHealth > PowerWorksVoid.Instance.hpThreshold.Value)
+            if (body.healthComponent.healthFraction > PowerWorksVoid.Instance.hpThreshold.Value)
                 return;
 
             if (body.inventory && new Inventory.ItemTransformation
             {
-                allowWhenDisabled = true,
+                allowWhenDisabled = false,
                 forbidPermanentItems = false,
                 forbidTempItems = false,
                 originalItemIndex = PowerWorksVoid.Instance.Item.itemIndex,
@@ -151,8 +151,11 @@ namespace ExtraFireworks.Items
                 ExtraFireworks.FireFireworks(body, PowerWorksVoid.Instance.fireworksPerStack.Value * result.totalTransformed);
 
                 // Also give void bubble
-                body.SetBuffCount(DLC1Content.Buffs.BearVoidCooldown.buffIndex, 0);
-                body.SetBuffCount(DLC1Content.Buffs.BearVoidReady.buffIndex, 1);
+                if (body.HasBuff(DLC1Content.Buffs.BearVoidCooldown))
+                    body.SetBuffCount(DLC1Content.Buffs.BearVoidCooldown.buffIndex, 0);
+
+                if (!body.HasBuff(DLC1Content.Buffs.BearVoidReady))
+                    body.AddBuff(DLC1Content.Buffs.BearVoidReady);
             }
         }
     }

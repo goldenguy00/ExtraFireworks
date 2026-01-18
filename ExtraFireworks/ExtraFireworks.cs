@@ -67,7 +67,7 @@ namespace ExtraFireworks
             if (!owner)
                 return null;
 
-            var transform = owner.coreTransform ? owner.coreTransform : owner.transform;
+            var transform = owner.coreTransform ?? owner.transform;
             var fireworkLauncher = SpawnFireworks(transform, owner, count);
             fireworkLauncher.transform.parent = transform;
 

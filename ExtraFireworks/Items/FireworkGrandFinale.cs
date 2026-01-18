@@ -155,9 +155,6 @@ namespace ExtraFireworks.Items
 
         public void OnDamageDealtServer(DamageReport report)
         {
-            if (!body)
-                return;
-
             var buffCount = body.GetBuffCount(BuffDef);
             if (buffCount > 0)
             {

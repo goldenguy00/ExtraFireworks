@@ -103,7 +103,7 @@ namespace ExtraFireworks.Items
 
                 // Try to refine fireworkPos using a raycast
                 var basePos = damageInfo.position;
-                if (victimBody && Vector3.Distance(basePos, Vector3.zero) < Mathf.Epsilon)
+                if (victimBody?.mainHurtBox && Vector3.Distance(basePos, Vector3.zero) < Mathf.Epsilon)
                 {
                     basePos = victimBody.mainHurtBox.randomVolumePoint;
                 }
