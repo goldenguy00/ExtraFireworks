@@ -40,6 +40,11 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => "Revolutionary design.";
 
+        public override void Init(AssetBundle bundle)
+        {
+            base.Init(bundle);
+        }
+
 #pragma warning disable CS0618 // Type or member is obsolete
         public override void AdjustPickupModel()
         {
@@ -78,7 +83,7 @@ namespace ExtraFireworks.Items
     public class FireworkOnKillBehavior : BaseItemBodyBehavior, IOnKilledOtherServerReceiver
     {
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => FireworkOnKill.Instance.Item;
+        private static ItemDef GetItemDef() => FireworkOnKill.Instance?.Item;
 
         public void OnKilledOtherServer(DamageReport report)
         {

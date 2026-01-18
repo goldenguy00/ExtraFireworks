@@ -23,12 +23,17 @@ namespace ExtraFireworks.Items
         public override string ItemDescription => string.Empty;
 
         public override string ItemLore => string.Empty;
+
+        public override void Init(AssetBundle bundle)
+        {
+            base.Init(bundle);
+        }
     }
 
     public class FireworkDroneWeaponBehaviour : BaseItemBodyBehavior
     {
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => FireworkDroneWeapon.Instance.Item;
+        private static ItemDef GetItemDef() => FireworkDroneWeapon.Instance?.Item;
 
         private float timer;
 

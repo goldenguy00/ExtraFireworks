@@ -73,7 +73,7 @@ namespace ExtraFireworks.Items
         private FireworkWard fireworkWard;
 
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => FireworkMushroom.Instance.Item;
+        private static ItemDef GetItemDef() => FireworkMushroom.Instance?.Item;
 
         private void FixedUpdate()
         {

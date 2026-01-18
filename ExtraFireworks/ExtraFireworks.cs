@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using BepInEx;
 using BepInEx.Bootstrap;
 using ExtraFireworks.Items;
@@ -39,15 +40,15 @@ namespace ExtraFireworks
 
             fireworkLauncherPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/FireworkLauncher");
             fireworkPrefab = fireworkLauncherPrefab.GetComponent<FireworkLauncher>().projectilePrefab;
-            
+
             //Define all the items
             new FireworkAbility();
             new FireworkDaisy();
             new FireworkDrones();
+            new FireworkGrandFinale();
             new FireworkMushroom();
             new FireworkOnHit();
             new FireworkOnKill();
-            new FireworkGrandFinale();
             new PowerWorksVoid();
 
             // Load assetpack and initialize
@@ -67,7 +68,7 @@ namespace ExtraFireworks
             if (!owner)
                 return null;
 
-            var transform = owner.coreTransform ? owner.coreTransform : owner.transform;
+            var transform = owner.coreTransform ?? owner.transform;
             var fireworkLauncher = SpawnFireworks(transform, owner, count);
             fireworkLauncher.transform.parent = transform;
 

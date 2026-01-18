@@ -47,7 +47,6 @@ namespace ExtraFireworks.Items
         public override void Init(AssetBundle bundle)
         {
             base.Init(bundle);
-
             new FireworkDroneWeapon().Init(bundle);
         }
     }
@@ -55,7 +54,7 @@ namespace ExtraFireworks.Items
     public class FireworkDroneBehaviour : BaseItemBodyBehavior
     {
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => FireworkDrones.Instance.Item;
+        private static ItemDef GetItemDef() => FireworkDrones.Instance?.Item;
 
         private void Start()
         {
@@ -66,11 +65,13 @@ namespace ExtraFireworks.Items
         private void OnDestroy()
         {
             MinionOwnership.onMinionGroupChangedGlobal -= MinionOwnership_onMinionGroupChangedGlobal;
-            UpdateAllMinions();
+            UpdateAllMinions(0);
         }
 
         public override void OnInventoryRefresh()
         {
+            base.OnInventoryRefresh();
+
             UpdateAllMinions(base.stack);
         }
 
@@ -79,9 +80,9 @@ namespace ExtraFireworks.Items
             UpdateAllMinions(base.stack);
         }
 
-        private void UpdateAllMinions(int newStack = 0)
+        private void UpdateAllMinions(int newStack)
         {
-            if (!body || !body.master)
+            if (!base.body.master)
                 return;
 
             var minionGroup = MinionOwnership.MinionGroup.FindGroup(base.body.master.netId);
@@ -97,9 +98,9 @@ namespace ExtraFireworks.Items
             }
         }
 
-        private void UpdateMinionInventory(CharacterMaster master, int newStack = 0)
+        private void UpdateMinionInventory(CharacterMaster master, int newStack)
         {
-            if (!master || !master.inventory)
+            if (!master?.inventory)
                 return;
 
             int itemCount = master.inventory.GetItemCountPermanent(FireworkDroneWeapon.Instance.Item);

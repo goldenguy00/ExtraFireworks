@@ -42,12 +42,17 @@ namespace ExtraFireworks.Items
             $"<style=cIsDamage>300%</style> base damage.";
 
         public override string ItemLore => "Holy shit it's a head with fireworks sticking out of it";
+
+        public override void Init(AssetBundle bundle)
+        {
+            base.Init(bundle);
+        }
     }
 
     public class FireworkAbilityBehaviour : BaseItemBodyBehavior
     {
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => FireworkAbility.Instance.Item;
+        private static ItemDef GetItemDef() => FireworkAbility.Instance?.Item;
 
         private void Start()
         {

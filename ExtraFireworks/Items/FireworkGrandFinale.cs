@@ -131,13 +131,14 @@ namespace ExtraFireworks.Items
 
             var boxCollider = projectilePrefab.GetComponent<BoxCollider>();
             boxCollider.size *= 5f;
+            ContentAddition.AddProjectile(projectilePrefab);
         }
     }
 
     public class FireworkFinaleBehaviour : BaseItemBodyBehavior, IOnDamageDealtServerReceiver
     {
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => FireworkGrandFinale.Instance.Item;
+        private static ItemDef GetItemDef() => FireworkGrandFinale.Instance?.Item;
         private BuffDef BuffDef => FireworkGrandFinale.Instance.buff;
 
         private void OnDestroy()
@@ -155,9 +156,6 @@ namespace ExtraFireworks.Items
 
         public void OnDamageDealtServer(DamageReport report)
         {
-            if (!body)
-                return;
-
             var buffCount = body.GetBuffCount(BuffDef);
             if (buffCount > 0)
             {

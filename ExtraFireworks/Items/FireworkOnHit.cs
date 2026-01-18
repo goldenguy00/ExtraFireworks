@@ -62,6 +62,11 @@ namespace ExtraFireworks.Items
 
         public override string ItemLore => "You got stabbed by a firework and is kill.";
 
+        public override void Init(AssetBundle bundle)
+        {
+            base.Init(bundle);
+        }
+
 #pragma warning disable CS0618 // Type or member is obsolete
         public override void AdjustPickupModel()
         {
@@ -80,7 +85,7 @@ namespace ExtraFireworks.Items
     public class FireworkOnHitBehavior : BaseItemBodyBehavior, IOnDamageDealtServerReceiver
     {
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => FireworkOnHit.Instance.Item;
+        private static ItemDef GetItemDef() => FireworkOnHit.Instance?.Item;
 
         public void OnDamageDealtServer(DamageReport report)
         {
@@ -103,7 +108,7 @@ namespace ExtraFireworks.Items
 
                 // Try to refine fireworkPos using a raycast
                 var basePos = damageInfo.position;
-                if (victimBody && Vector3.Distance(basePos, Vector3.zero) < Mathf.Epsilon)
+                if (victimBody?.mainHurtBox && Vector3.Distance(basePos, Vector3.zero) < Mathf.Epsilon)
                 {
                     basePos = victimBody.mainHurtBox.randomVolumePoint;
                 }

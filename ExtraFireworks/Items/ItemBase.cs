@@ -13,20 +13,14 @@ namespace ExtraFireworks.Items
     public abstract class ItemBase<T> : ItemBase where T : ItemBase<T>
     {
         public static T Instance { get; private set; }
-
-        public ItemBase()
+        public ItemBase() : base()
         {
             if (Instance != null)
                 throw new InvalidOperationException("Singleton class \"" + typeof(T).Name + "\" inheriting ItemBase was instantiated twice");
 
             Instance = this as T;
 
-            if (Tier != ItemTier.NoTier)
-            {
-                itemEnabled = ExtraFireworks.instance.Config.BindOption(ConfigSection, "Enabled", "Item enabled?", true, Extensions.ConfigFlags.RestartRequired);
-                if (itemEnabled.Value)
-                    ExtraFireworks.items.Add(this);
-            }
+            Log.LogInfo($"{GetType()} ctor");
         }
     }
 
@@ -38,7 +32,6 @@ namespace ExtraFireworks.Items
         public ItemDef Item { get; protected set; }
 
         protected ConfigEntry<bool> itemEnabled;
-        public bool IsEnabled => itemEnabled?.Value ?? true;
 
         public abstract string ItemName { get; }
         public abstract string UniqueName { get; }
@@ -54,9 +47,24 @@ namespace ExtraFireworks.Items
         public virtual Vector3? ModelScale { get; }
         public virtual string ConfigSection => UniqueName;
         public virtual bool RequireSotV => false;
+        public virtual bool CanBeTemp => Tier != ItemTier.NoTier;
+
+        public ItemBase()
+        {
+            if (Tier != ItemTier.NoTier)
+            {
+                itemEnabled = ExtraFireworks.instance.Config.BindOption(ConfigSection, "Enabled", "Item enabled?", true, Extensions.ConfigFlags.RestartRequired);
+
+                if (itemEnabled.Value)
+                    ExtraFireworks.items.Add(this);
+            }
+            Log.LogInfo($"{GetType()} ctor");
+        }
 
         public virtual void Init(AssetBundle bundle)
         {
+            Log.LogInfo($"{GetType()} Init");
+
             var subtoken = UniqueName.ToUpper();
 
             var item = new CustomItem(
@@ -69,15 +77,18 @@ namespace ExtraFireworks.Items
                 pickupModelPrefab: bundle.LoadAsset<GameObject>($"Assets/ImportModels/{PickupModelName}"),
                 tags: Tags,
                 tier: Tier,
-                canRemove: false,
+                canRemove: Tier != ItemTier.NoTier,
                 hidden: false,
                 unlockableDef: null,
                 itemDisplayRules: DisplayRules);
 
-            this.Item = item.ItemDef;
 #pragma warning disable CS0618 // Type or member is obsolete
+            this.Item = item.ItemDef;
             this.Item.deprecatedTier = Tier;
 #pragma warning restore CS0618 // Type or member is obsolete
+
+            if (CanBeTemp)
+                this.Item.tags = [.. Item.tags, ItemTag.CanBeTemporary];
 
             if (RequireSotV)
                 this.Item.requiredExpansion = Addressables.LoadAssetAsync<ExpansionDef>(RoR2_DLC1_Common.DLC1_asset).WaitForCompletion();
@@ -91,9 +102,6 @@ namespace ExtraFireworks.Items
             if (Tier != ItemTier.NoTier)
             {
                 Item.loreToken = $"ITEM_{subtoken}_LORE";
-                Item.canRemove = true;
-                Item.tags = [.. Item.tags, ItemTag.CanBeTemporary];
-
                 LanguageAPI.Add(Item.loreToken, ItemLore);
             }
 

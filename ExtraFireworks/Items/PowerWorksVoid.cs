@@ -3,9 +3,9 @@ using MiscFixes.Modules;
 using R2API;
 using RoR2;
 using RoR2.Items;
+using RoR2BepInExPack.GameAssetPaths.Version_1_39_0;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
 
 namespace ExtraFireworks.Items
 {
@@ -56,19 +56,20 @@ namespace ExtraFireworks.Items
         public override string ItemLore => "MMMM YUM.";
 
         public override bool RequireSotV => true;
+        public override bool CanBeTemp => false;
 
         public override void Init(AssetBundle bundle)
         {
             base.Init(bundle);
 
             new PowerWorksVoidConsumed().Init(bundle);
-
-            var healingPotion = Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/HealingPotion/HealingPotion.asset").WaitForCompletion();
-            var healingPotionConsumed = Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/HealingPotion/HealingPotionConsumed.asset").WaitForCompletion();
+            
+            var healingPotion = Addressables.LoadAssetAsync<ItemDef>(RoR2_DLC1_HealingPotion.HealingPotion_asset).WaitForCompletion();
+            var healingPotionConsumed = Addressables.LoadAssetAsync<ItemDef>(RoR2_DLC1_HealingPotion.HealingPotionConsumed_asset).WaitForCompletion();
 
             var provider = ScriptableObject.CreateInstance<ItemRelationshipProvider>();
             provider.name = "ExtraFireworksContagiousItemProvider";
-            provider.relationshipType = Addressables.LoadAssetAsync<ItemRelationshipType>("RoR2/DLC1/Common/ContagiousItem.asset").WaitForCompletion();
+            provider.relationshipType = Addressables.LoadAssetAsync<ItemRelationshipType>(RoR2_DLC1_Common.ContagiousItem_asset).WaitForCompletion();
             provider.relationships =
             [
                 new ItemDef.Pair
@@ -112,7 +113,7 @@ namespace ExtraFireworks.Items
     public class PowerWorksBehavior : BaseItemBodyBehavior, IOnTakeDamageServerReceiver
     {
         [ItemDefAssociation(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef() => PowerWorksVoid.Instance.Item;
+        private static ItemDef GetItemDef() => PowerWorksVoid.Instance?.Item;
 
         private void Start()
         {
@@ -126,16 +127,16 @@ namespace ExtraFireworks.Items
 
         public void OnTakeDamageServer(DamageReport damageReport)
         {
-            if (body?.healthComponent == null)
+            if (!body.inventory)
                 return;
 
             // Check if HP threshold met
-            if (body.healthComponent.health / body.healthComponent.fullHealth > PowerWorksVoid.Instance.hpThreshold.Value)
+            if (body.healthComponent.healthFraction > PowerWorksVoid.Instance.hpThreshold.Value)
                 return;
 
             if (body.inventory && new Inventory.ItemTransformation
             {
-                allowWhenDisabled = true,
+                allowWhenDisabled = false,
                 forbidPermanentItems = false,
                 forbidTempItems = false,
                 originalItemIndex = PowerWorksVoid.Instance.Item.itemIndex,
@@ -151,8 +152,11 @@ namespace ExtraFireworks.Items
                 ExtraFireworks.FireFireworks(body, PowerWorksVoid.Instance.fireworksPerStack.Value * result.totalTransformed);
 
                 // Also give void bubble
-                body.SetBuffCount(DLC1Content.Buffs.BearVoidCooldown.buffIndex, 0);
-                body.SetBuffCount(DLC1Content.Buffs.BearVoidReady.buffIndex, 1);
+                if (body.HasBuff(DLC1Content.Buffs.BearVoidCooldown))
+                    body.SetBuffCount(DLC1Content.Buffs.BearVoidCooldown.buffIndex, 0);
+
+                if (!body.HasBuff(DLC1Content.Buffs.BearVoidReady))
+                    body.AddBuff(DLC1Content.Buffs.BearVoidReady);
             }
         }
     }
